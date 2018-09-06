@@ -17,7 +17,7 @@ class SamplePatientResource extends Resource
     {
         return [
             'id'                => $this->id,
-            'full_name'         => sprintf('%d %d', $this->first_name,$this->last_name),
+            'full_name'         => sprintf('%s %s', $this->first_name,$this->last_name),
             'birth_date'        => $this->birth_date,
             'email'             => $this->email,
             'phone_no'             => $this->phone_no,
