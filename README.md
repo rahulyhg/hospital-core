@@ -13,3 +13,6 @@
 ####  Generate a new JWT authentication secret key
 
 `php artisan jwt:secret`
+
+### demo git by thien.dang
+
