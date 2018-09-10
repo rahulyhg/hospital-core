@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Resources\SamplePatientResource;
-use App\Models\SamplePatients\SamplePatient;
-use App\Repositories\SamplePatientsRepository;
 use Illuminate\Http\Request;
-use Validator;
+use App\Services\SamplePatientService;
 
 class SamplePatientController extends APIController
 {
@@ -16,9 +13,9 @@ class SamplePatientController extends APIController
      *
      * @param $repository
      */
-    public function __construct(SamplePatientsRepository $repository)
+    public function __construct(SamplePatientService $service)
     {
-        $this->repository = $repository;
+        $this->service = $service;
     }
     
     /**
@@ -28,12 +25,9 @@ class SamplePatientController extends APIController
      */
     public function index(Request $request)
     {
-        $offset = $request->query('offset',0);
+        $data = $this->service->getDataPatient($request);
         
-        //return array('result' => 'success');
-        return SamplePatientResource::collection(
-           $this->repository->getForDataTable($offset)
-        );
+        return $data;
     }
     
     /**
@@ -45,8 +39,9 @@ class SamplePatientController extends APIController
      */
     public function show($id)
     {
-        $patient = SamplePatient::findOrfail($id);
-        return new SamplePatientResource($patient);
+        $patient = $this->service->showPatient($id);
+        
+        return $patient;
     }
     
     /**
@@ -58,14 +53,9 @@ class SamplePatientController extends APIController
      */
     public function store(Request $request)
     {
-        $validation = $this->validatePatient($request);
-        if ($validation->fails()) {
-            return $this->throwValidation($validation->messages()->first());
-        }
-        $this->repository->create($request->all());
-        $patient = SamplePatient::orderBy('id', 'desc')->first();
+        $patient = $this->service->makePatient($request);
         
-        return new SamplePatientResource($patient);
+        return $patient;
     }
     
     /**
@@ -78,15 +68,9 @@ class SamplePatientController extends APIController
      */
     public function update(Request $request, $id)
     {
-        $validation = $this->validatePatient($request, 'update');
-        if ($validation->fails()) {
-            return $this->throwValidation($validation->messages()->first());
-        }
-        $patient = SamplePatient::findOrfail($id);
-        $this->repository->update($patient, $request->all());
-        $patient = SamplePatient::findOrfail($patient->id);
+        $patient = $this->service->updatePatient($request, $id);
         
-        return new SamplePatientResource($patient);
+        return $patient;
     }
     /**
      * Delete SamplePatient.
@@ -96,30 +80,11 @@ class SamplePatientController extends APIController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(Request $request, $id)
+    public function delete($id)
     {
-        $patient = SamplePatient::findOrfail($id);
-        $this->repository->delete($patient);
-        return $this->respond([
-            'message' => trans('alerts.backend.sample_patients.deleted'),
-        ]);
+        $message = $this->service->deletePatient($id);
+        
+        return $message;
     }
-    /**
-     * validate SamplePatient.
-     *
-     * @param $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function validatePatient(Request $request, $action = 'insert')
-    {
-        $validation = Validator::make($request->all(), [
-            'first_name'    => 'required|max:191',
-            'last_name'     => 'required|max:191',
-            'birth_date'    => 'required',
-            'email'         => 'required',
-            'phone_no'      => 'required',
-        ]);
-        return $validation;
-    }
+    
 }
