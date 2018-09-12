@@ -32,7 +32,7 @@ class SamplePatientService {
     {
         $validation = $this->validatePatient($request);
         if ($validation->fails()) {
-            return $this->throwValidation($validation->messages()->first());
+            return $validation->messages()->first();
         }
         
         $this->repository->create($request->all());
@@ -44,7 +44,7 @@ class SamplePatientService {
     public function updatePatient(Request $request, $id){
         $validation = $this->validatePatient($request, 'update');
         if ($validation->fails()) {
-            return $this->throwValidation($validation->messages()->first());
+            return $validation->messages()->first();
         }
         
         $patient = SamplePatient::findOrfail($id);

@@ -23,6 +23,7 @@ class SamplePatientsRepository extends BaseRepository
         $patient = DB::table('sample_patients')
                 ->offset($offset)
                 ->limit($limit)
+                ->orderBy("id", "desc")
                 ->get();
         return $patient;        
     }
