@@ -7,11 +7,10 @@ use App\Services\SamplePatientService;
 
 class SamplePatientController extends APIController
 {
-    protected $repository;
     /**
      * __construct.
      *
-     * @param $repository
+     * @param SamplePatientService $service
      */
     public function __construct(SamplePatientService $service)
     {
@@ -20,6 +19,8 @@ class SamplePatientController extends APIController
     
     /**
      * Return the SamplePatient.
+     * 
+     * @param Request $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -33,7 +34,7 @@ class SamplePatientController extends APIController
     /**
      * Return the specified resource.
      *
-     * @param SamplePatient $patient
+     * @param int $id
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -61,8 +62,8 @@ class SamplePatientController extends APIController
     /**
      * Update SamplePatient.
      *
-     * @param SamplePatient     $patient
      * @param Request           $request
+     * @param int               $id
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -72,11 +73,11 @@ class SamplePatientController extends APIController
         
         return $patient;
     }
+    
     /**
      * Delete SamplePatient.
      *
-     * @param SamplePatient     $patient
-     * @param Request           $request
+     * @param int $id
      *
      * @return \Illuminate\Http\JsonResponse
      */

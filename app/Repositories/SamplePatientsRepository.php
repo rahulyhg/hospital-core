@@ -82,7 +82,7 @@ class SamplePatientsRepository extends BaseRepository
             }
             
             throw new GeneralException(
-                trans('exceptions.backend.blogs.delete_error')
+                trans('exceptions.backend.sample_patients.delete_error')
             );
         });
     }
