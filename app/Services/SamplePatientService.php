@@ -4,12 +4,12 @@ namespace App\Services;
 
 use App\Models\SamplePatients\SamplePatient;
 use App\Http\Resources\SamplePatientResource;
-use App\Repositories\SamplePatientsRepository;
+use App\Repositories\SamplePatientRepository;
 use Illuminate\Http\Request;
 use Validator;
 
 class SamplePatientService {
-    public function __construct(SamplePatientsRepository $repository)
+    public function __construct(SamplePatientRepository $repository)
     {
         $this->repository = $repository;
     }
