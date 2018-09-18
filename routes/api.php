@@ -30,6 +30,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::get('patient', 'SamplePatientController@index');
+    Route::get('patient/{id}', 'SamplePatientController@show');
+    Route::post('patient', 'SamplePatientController@store');
+    Route::post('patient/{id}', 'SamplePatientController@update');
+    Route::delete('patient/{id}', 'SamplePatientController@delete');
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
