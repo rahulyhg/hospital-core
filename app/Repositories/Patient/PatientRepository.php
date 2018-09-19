@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories\Patient;
+
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\Patient;
