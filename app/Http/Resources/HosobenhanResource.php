@@ -2,7 +2,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
-
+use Carbon\Carbon;
 class HosobenhanResource extends Resource
 {
     /**
@@ -21,6 +21,7 @@ class HosobenhanResource extends Resource
             'hosobenhanid'                => $this->hosobenhanid,
             'birthday'                    => $this->birthday,
             'birthday_year'               => $this->birthday_year,
+            'age'                         => Carbon::parse($this->birthday)->diffInYears(Carbon::now()),
             ];
     }
 }
