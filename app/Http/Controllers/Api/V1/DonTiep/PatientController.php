@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\DonTiep;
 
 //use App\Http\Resources\SamplePatientResource;
 //use App\Repositories\SamplePatientRepository;

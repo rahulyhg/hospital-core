@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
