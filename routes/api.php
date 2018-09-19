@@ -35,8 +35,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
     
-    Route::get('quetthe/{bhytcode}','BhytController@getTypePatientByCode');
+    Route::get('patient', 'PatientController@index');
+    //Route::post('patient/register', 'SamplePatientController@register');
+    Route::get('typepatient/{patientid}', 'HosobenhanController@typePatient');
+    //Route::get('typepatient', 'PatientController@typePatient');
+
     
+    Route:: group(['prefix' => 'dontiep'], function () {
+    Route::get('quetthe/{bhytcode}','DonTiep\DonTiepController@getTypePatientByCode');
+    });
     Route:: group(['prefix' => 'dangkykhambenh'], function () {
         Route::post('dangky', 'DangKyKhamBenhController@dangky');
     });
