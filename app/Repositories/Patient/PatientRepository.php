@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Repositories\Patient;
+
 use DB;
 use App\Repositories\BaseRepositoryV2;
+use App\Models\Patient;
 
 /**
  * Class PatientRepository.
@@ -29,7 +31,7 @@ class PatientRepository extends BaseRepositoryV2
     }*/
     public function getModel()
     {
-        return \App\Models\Patient::class;
+        return Patient::class;
     }
     //public function getTypePatient(){
     
