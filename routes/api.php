@@ -35,6 +35,12 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
     
+    Route::get('quetthe/{bhytcode}','BhytController@getTypePatientByCode');
+    
+    Route:: group(['prefix' => 'dangkykhambenh'], function () {
+        Route::post('dangky', 'DangKyKhamBenhController@dangky');
+    });
+    
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');
