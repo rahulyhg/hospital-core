@@ -39,7 +39,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 
     
     Route:: group(['prefix' => 'dontiep'], function () {
-        Route::get('quetthe/{bhytcode}','DonTiep\DonTiepController@getTypePatientByCode');
+        Route::get('quetthe/{bhytcode}','DonTiep\BhytController@getTypePatientByCode');
         Route::get('patient', 'DonTiep\PatientController@index');
         //Route::post('patient/register', 'SamplePatientController@register');
         Route::get('typepatient/{patientid}', 'DonTiep\HosobenhanController@typePatient');

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\BhytService;
 
-class DonTiepController extends Controller
+class BhytController extends Controller
 {
     //
      /**
