@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\DangKyKhamBenh;
 
 use Illuminate\Http\Request;
 use App\Services\DangKyKhamBenhService;
+use App\Http\Controllers\API\V1\APIController;
 
 class DangKyKhamBenhController extends APIController
 {
@@ -31,6 +32,19 @@ class DangKyKhamBenhController extends APIController
     //     return $data;
     // }
     
+    // get danh sach phong kham theo departmentgroupid va departmenttypy
+    public function getListDepartment(Request $request)
+    {
+        $data = $this->service->getListDepartment($request);
+        return $data;
+    }
+    
+    public function ListYeuCauKham(Request $request)
+    {
+        $data = $this->service->getListYeuCauKham($request);
+        return $data;
+    }
+    
     /**
      * Return the specified resource.
      *
@@ -44,7 +58,7 @@ class DangKyKhamBenhController extends APIController
         
     //     return $patient;
     // }
-    
+
     /**
      * Creates the Resource for DangKyKhamBenh.
      *
