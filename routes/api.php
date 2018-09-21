@@ -59,6 +59,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::post('dangky', 'DangKyKhamBenhController@dangky');
 		Route::get('listphong/{departmenttype}/{departmentgroupid}','DangKyKhamBenh\DangKyKhamBenhController@getListDepartment');
     	Route::get('yeucaukham/{servicegrouptype}','DangKyKhamBenh\DangKyKhamBenhController@ListYeuCauKham');
+    	Route::get('listnghenghiep','DangKyKhamBenh\DangKyKhamBenhController@GetListNgheNghiep');
+    	Route::get('listbenhvien','DangKyKhamBenh\DangKyKhamBenhController@GetListBenhVien');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
