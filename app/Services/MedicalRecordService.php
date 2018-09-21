@@ -17,8 +17,6 @@ class MedicalRecordService {
     public function getListBN_HC($start_day, $end_day, $offset, $limit){
         $data = $this->MedicalRecordRepository->getListBN_HC($start_day, $end_day, $offset, $limit);
         
-        
-        
         return $data;
     }
     
