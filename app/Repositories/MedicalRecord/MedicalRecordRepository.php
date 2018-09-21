@@ -57,4 +57,11 @@ class MedicalRecordRepository extends BaseRepositoryV2
         
         return $data;
     }
+    
+    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit = 10)
+    {
+        
+        
+        return $data;
+    }
 }
