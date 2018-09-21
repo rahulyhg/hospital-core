@@ -45,6 +45,31 @@ class RedSttDontiepService {
     {
         $this->RedSttDontiepRepository->insertCurrentSTTUT($attributes);
     }
+    
+    // public function showSttDontiep($id){
+    //     $stt_dontiep = $this->repository->showSttDontiep($id);
+        
+    //     return new RedSttDontiepResource($stt_dontiep);
+    // }
+    
+    // public function makeSttDontiep(Request $request)
+    // {
+    //     $this->repository->create($request->all());
+    //     $stt_dontiep = RedSttDontiep::orderBy('id', 'desc')->first();
+        
+    //     return new RedSttDontiepResource($stt_dontiep);
+    // }
+    
+    // public function updateSttDontiep(Request $request, $id){
+    //     $stt_dontiep = $this->repository->showSttDontiep($id);
+    //     $this->repository->update($stt_dontiep, $request->all());
+    // }
+   
+    public function getInfoPatientByStt($stt, $id_phong, $id_benh_vien){
+        $data = $this->RedSttDontiepRepository->getInfoPatientByStt($stt, $id_phong, $id_benh_vien);
+        
+        return new RedSttDontiepResource($data);
+    }
     //public function makeSttDontiep(Request $request)
     //{
      //   $this->repository->create($request->all());
@@ -58,5 +83,9 @@ class RedSttDontiepService {
         //$this->repository->update($stt_dontiep, $request->all());
     //}
     
-   
+    public function getListPatientByKhoaPhong($loaibenhanid, $departmentid, $id_benh_vien){
+        
+        
+        //return new RedSttDontiepResource($data);
+    }
 }
