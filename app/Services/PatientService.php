@@ -9,25 +9,25 @@ use Illuminate\Http\Request;
 use Validator;
 
 class PatientService{
-    //protected $PatientRepository;
-    /**
-     * __construct.
-     *
-     * @param $PatientRepository
-     */
     public function __construct(PatientRepository $PatientRepository)
     {
         $this->PatientRepository = $PatientRepository;
     }
+    
     public function getDataPatient(Request $request)
     {
         $offset = $request->query('offset',0);
         //return array('result' => 'success');
-        $Patient =$this->PatientRepository->getAll();
+        $Patient = $this->PatientRepository->getAll();
         return PatientResource::collection(
            //$this->repository->getForDataTable($offset)
            $Patient
         );
+    }
+    
+    public function getDataPatientByStt($stt, $id_phong, $id_benh_vien)
+    {
+        
     }
    
 }

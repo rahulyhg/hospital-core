@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\DonTiep;
 
-//use App\Http\Resources\SamplePatientResource;
-//use App\Repositories\SamplePatientRepository;
 use App\Services\PatientService;
 use Illuminate\Http\Request;
-//use Validator;
 
 class PatientController extends APIController
 {
-    protected $repository;
     /**
      * __construct.
      *
@@ -18,7 +14,6 @@ class PatientController extends APIController
      */
     public function __construct(PatientService $service)
     {
-        //$this->repository = $repository;
         $this->service = $service;
     }
     
@@ -33,9 +28,12 @@ class PatientController extends APIController
         
         return $data;
     }
+    
     public function register(Request $request)
     {
         //return SamplePatientResource::create($request->all());
     }
+    
+    
     
 }

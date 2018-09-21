@@ -2,13 +2,13 @@
 namespace App\Repositories\Hosobenhan;
 use DB;
 use App\Repositories\BaseRepositoryV2;
-//use App\Models\Patient;
+use App\Models\Hosobenhan;
 
 class HosobenhanRepository extends BaseRepositoryV2
 {
     public function getModel()
     {
-        return \App\Models\Hosobenhan::class;
+        return Hosobenhan::class;
     }
     //public function getTypePatient($id){
       //  $typepatient = \App\Models\Hosobenhan::find($id)->with('patient')->get();
