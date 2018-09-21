@@ -65,6 +65,7 @@ return [
             'prefix' => '',
             'schema' => 'public',
             'sslmode' => 'prefer',
+            'timezone' => config('app.timezone'),
         ],
 
         'sqlsrv' => [
