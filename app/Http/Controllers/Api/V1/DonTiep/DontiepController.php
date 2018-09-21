@@ -43,4 +43,8 @@ class DontiepController extends Controller
         
         return $list_BN;
     }
+    
+    public function getInfoPatientByPatientID($patientid){
+        
+    }
 }

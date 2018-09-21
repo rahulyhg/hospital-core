@@ -83,9 +83,5 @@ class RedSttDontiepService {
         //$this->repository->update($stt_dontiep, $request->all());
     //}
     
-    public function getListPatientByKhoaPhong($loaibenhanid, $departmentid, $id_benh_vien){
-        
-        
-        //return new RedSttDontiepResource($data);
-    }
+
 }

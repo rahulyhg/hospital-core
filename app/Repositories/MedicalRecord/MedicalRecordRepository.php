@@ -25,18 +25,17 @@ class MedicalRecordRepository extends BaseRepositoryV2
         ];
         
         $column = [
-            'hosobenhan.patientid',
+            'hosobenhan.patientcode',
             'hosobenhan.patientname',
             //'hosobenhan.birthday',
             'hosobenhan.birthday_year',
-            'bhyt.bhytcode',
+            'hosobenhan.bhytcode',
             //'medicalrecord.thoigianvaovien'
         ];
         
         if($start_day == $end_day){
             $data = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
-                ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
                 ->where($where)
                 ->whereDate('thoigianvaovien', '=', $start_day)
                 ->orderBy('thoigianvaovien', 'asc')
@@ -46,7 +45,6 @@ class MedicalRecordRepository extends BaseRepositoryV2
         } else {
             $data = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
-                ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
                 ->where($where)
                 ->whereBetween('thoigianvaovien', [$start_day, $end_day])
                 ->orderBy('thoigianvaovien', 'asc')
@@ -68,17 +66,16 @@ class MedicalRecordRepository extends BaseRepositoryV2
         ];
         
         $column = [
-            'hosobenhan.patientid',
+            'hosobenhan.patientcode',
             'hosobenhan.patientname',
             //'hosobenhan.birthday',
             'hosobenhan.birthday_year',
-            'bhyt.bhytcode',
+            'hosobenhan.bhytcode',
             //'medicalrecord.thoigianvaovien'
         ];
         
         $data = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
-                ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
                 ->where($where)
                 ->whereDate('thoigianvaovien', '=', $start_day)
                 ->orderBy('thoigianvaovien', 'asc')

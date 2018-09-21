@@ -18,6 +18,7 @@ class HosobenhanService{
     {
         $this->HosobenhanRepository = $HosobenhanRepository;
     }
+    
     public function getDataPatient(Request $request)
     {
         $offset = $request->query('offset',0);
@@ -28,6 +29,7 @@ class HosobenhanService{
           // $Patient
         //);
     }
+    
     /*public function getTypePatient($id)
     {
         $TypePatient = $this->HosobenhanRepository->getTypePatient($id);
@@ -36,10 +38,16 @@ class HosobenhanService{
            $TypePatient
         );
     }*/
-     public function getTypePatient($patientid){
-         $typepatient = $this->HosobenhanRepository->getTypePatient($patientid);
-         return new HosobenhanResource($typepatient);
-        //return $typepatient;
+    
+    /**
+     * lay ho so benh an theo patientid
+     *
+     * @param $patientid    int
+     */
+    public function getHosobenhanByPatientID($patientid){
+         $data = $this->HosobenhanRepository->getTypePatient($patientid);
+         
+         return new HosobenhanResource($data);
     }
     
 }
