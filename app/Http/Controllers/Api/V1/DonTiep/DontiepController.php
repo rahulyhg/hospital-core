@@ -27,12 +27,12 @@ class DontiepController extends Controller
         return $data;
     }
     
-    public function getListPatientByKhoaPhong($type = 'HC', $departmentid = 0, $start_day, $end_day)
+    public function getListPatientByKhoaPhong($type = 'HC', $departmentid = 0, $start_day, $end_day, $offset, $limit)
     {
         if($type == "HC"){
-            $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day);
+            $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit);
         } else {
-            $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day);
+            $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit);
         }
         
         return $list_BN;
