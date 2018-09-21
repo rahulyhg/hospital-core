@@ -52,7 +52,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         
         
         Route::get('getInfoPatientByStt/{stt}/{id_phong}/{id_benh_vien}','DonTiep\DontiepController@getInfoPatientByStt');
-        Route::get('getListPatientByKhoaPhong/{type}/{departmentid}/{start_day}/{end_day}','DonTiep\DontiepController@getListPatientByKhoaPhong');
+        Route::get('getListPatientByKhoaPhong/{type}/{departmentid}','DonTiep\DontiepController@getListPatientByKhoaPhong');
     });
     
     Route:: group(['prefix' => 'dangkykhambenh'], function () {
