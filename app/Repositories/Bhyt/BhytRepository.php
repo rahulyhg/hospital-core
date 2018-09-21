@@ -2,12 +2,13 @@
 namespace App\Repositories\Bhyt;
 use DB;
 use App\Repositories\BaseRepositoryV2;
-
+use App\Models\Bhyt;
+use App\Models\Hosobenhan;
 class BhytRepository extends BaseRepositoryV2
 {
     public function getModel()
     {
-        return \App\Models\Bhyt::class;
+        return Bhyt::class;
     }
      public function getTypePatientByCode($bhytcode)
     {
@@ -18,7 +19,7 @@ class BhytRepository extends BaseRepositoryV2
         //$patientid = $result['patientid'];
         //$hosobenhanid = $result['hosobenhanid'];
         //$patientname = \App\Models\Patient::find($result['patientid'])->first();
-        $datapatient = \App\Models\Hosobenhan::find($result['hosobenhanid']);
+        $datapatient = Hosobenhan::find($result['hosobenhanid']);
         //return $result;
         return $datapatient;
     }
