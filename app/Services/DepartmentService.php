@@ -19,4 +19,12 @@ class DepartmentService {
         
         //return new DepartmentResource($data);
     }
+
+    public function getListDepartment(Request $request)
+    {
+        $offset = $request->query('offset',0);
+        return DepartmentResource::collection(
+           $this->repository->getDataListDepartment($offset, $request)
+        );
+    }
 }

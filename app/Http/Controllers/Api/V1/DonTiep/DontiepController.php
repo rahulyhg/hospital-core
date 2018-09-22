@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\RedSttDontiepService;
 use App\Services\MedicalRecordService;
+use Carbon\Carbon;
 
 class DontiepController extends Controller
 {
@@ -27,12 +28,17 @@ class DontiepController extends Controller
         return $data;
     }
     
-    public function getListPatientByKhoaPhong($type = 'HC', $departmentid = 0, $start_day, $end_day)
+    public function getListPatientByKhoaPhong($type = 'HC', $departmentid = 0, Request $request)
     {
+        $start_day = $request->query('start_day', Carbon::today());
+        $end_day = $request->query('end_day', Carbon::today());
+        $offset = $request->query('offset', 0);
+        $limit = $request->query('limit', 10);
+        
         if($type == "HC"){
-            $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day);
+            $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit);
         } else {
-            $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day);
+            $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit);
         }
         
         return $list_BN;

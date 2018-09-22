@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('register', 'Api\V1\AuthController@register');
+//Route::post('register', 'Api\V1\AuthController@register');
 
 
 Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', 'as' => 'v1.'], function () {
@@ -52,11 +52,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         
         
         Route::get('getInfoPatientByStt/{stt}/{id_phong}/{id_benh_vien}','DonTiep\DontiepController@getInfoPatientByStt');
-        Route::get('getListPatientByKhoaPhong/{type}/{departmentid}/{start_day}/{end_day}','DonTiep\DontiepController@getListPatientByKhoaPhong');
+        Route::get('getListPatientByKhoaPhong/{type}/{departmentid}','DonTiep\DontiepController@getListPatientByKhoaPhong');
     });
     
     Route:: group(['prefix' => 'dangkykhambenh'], function () {
         Route::post('dangky', 'DangKyKhamBenhController@dangky');
+		Route::get('listphong/{departmenttype}/{departmentgroupid}','DangKyKhamBenh\DangKyKhamBenhController@getListDepartment');
+    	Route::get('yeucaukham/{servicegrouptype}','DangKyKhamBenh\DangKyKhamBenhController@ListYeuCauKham');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

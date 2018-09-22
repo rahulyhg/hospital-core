@@ -14,37 +14,54 @@ class MedicalRecordRepository extends BaseRepositoryV2
         return Medicalrecord::class;
     }
     
-    public function getListBN_HC($start_day, $end_day)
+    public function getListBN_HC($start_day, $end_day, $offset, $limit = 10)
     {
         $loaibenhanid = 24; //kham benh
         $departmentgroupid = 3; //khoa kham benh
         
+        $where = [
+            ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+            ['medicalrecord.departmentgroupid', '=', $departmentgroupid],
+        ];
+        
+        $column = [
+            'hosobenhan.patientid',
+            'hosobenhan.patientname',
+            //'hosobenhan.birthday',
+            'hosobenhan.birthday_year',
+            'bhyt.bhytcode',
+            //'medicalrecord.thoigianvaovien'
+        ];
+        
         if($start_day == $end_day){
-            $dieu_kien = [
-                ['loaibenhanid', '=', $loaibenhanid],
-                ['departmentgroupid', '=', $departmentgroupid],
-            ];
-            
-            $arr_hosobenhanid = DB::table('medicalrecord')
-                ->where($dieu_kien)
+            $data = DB::table('medicalrecord')
+                ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
+                ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
+                ->where($where)
                 ->whereDate('thoigianvaovien', '=', $start_day)
                 ->orderBy('thoigianvaovien', 'asc')
-                ->pluck('hosobenhanid')
-                ->toArray();
+                ->offset($offset)
+                ->limit($limit)
+                ->get($column);
         } else {
-            $dieu_kien = [
-                ['loaibenhanid', '=', $loaibenhanid],
-                ['departmentgroupid', '=', $departmentgroupid],
-            ];
-            
-            $arr_hosobenhanid = DB::table('medicalrecord')
-                ->where($dieu_kien)
+            $data = DB::table('medicalrecord')
+                ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
+                ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
+                ->where($where)
                 ->whereBetween('thoigianvaovien', [$start_day, $end_day])
                 ->orderBy('thoigianvaovien', 'asc')
-                ->pluck('hosobenhanid')
-                ->toArray();
+                ->offset($offset)
+                ->limit($limit)
+                ->get($column);
         }
         
-        return $arr_hosobenhanid;
+        return $data;
+    }
+    
+    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit = 10)
+    {
+        
+        
+        return $data;
     }
 }
