@@ -14,15 +14,22 @@ class MedicalRecordRepository extends BaseRepositoryV2
         return Medicalrecord::class;
     }
     
-    public function getListBN_HC($start_day, $end_day, $offset, $limit = 10)
+    public function getListBN_HC($start_day, $end_day, $offset, $limit = 10, $patientname = '')
     {
         $loaibenhanid = 24; //kham benh
         $departmentgroupid = 3; //khoa kham benh
         
-        $where = [
-            ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
-            ['medicalrecord.departmentgroupid', '=', $departmentgroupid],
-        ];
+        if($patientname != '')
+            $where = [
+                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+                ['medicalrecord.departmentgroupid', '=', $departmentgroupid],
+                ['hosobenhan.patientname', 'like', "%$patientname%"]
+            ];
+        else
+            $where = [
+                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+                ['medicalrecord.departmentgroupid', '=', $departmentgroupid],
+            ];
         
         $column = [
             'hosobenhan.patientcode',
@@ -57,14 +64,21 @@ class MedicalRecordRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit = 10)
+    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit = 10, $patientname = '')
     {
         $loaibenhanid = 24; //kham benh
         
-        $where = [
-            ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
-            ['medicalrecord.departmentid', '=', $departmentid],
-        ];
+        if($patientname != '')
+            $where = [
+                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+                ['medicalrecord.departmentid', '=', $departmentid],
+                ['hosobenhan.patientname', 'like', '%$patientname%']
+            ];
+        else
+            $where = [
+                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+                ['medicalrecord.departmentid', '=', $departmentid],
+            ];
         
         $column = [
             'hosobenhan.patientcode',

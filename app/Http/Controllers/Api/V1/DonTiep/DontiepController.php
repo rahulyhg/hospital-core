@@ -36,11 +36,12 @@ class DontiepController extends APIController
         $end_day = $request->query('end_day', Carbon::today());
         $offset = $request->query('offset', 0);
         $limit = $request->query('limit', 10);
+        $patientname = $request->query('patientname', '');
         
         if($type == "HC"){
-            $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit);
+            $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit, $patientname);
         } else {
-            $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit);
+            $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit, $patientname);
         }
         
         return $list_BN;
