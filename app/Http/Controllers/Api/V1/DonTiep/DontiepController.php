@@ -43,4 +43,10 @@ class DontiepController extends Controller
         
         return $list_BN;
     }
+    
+    public function getInfoPatientByPatientID($patientid){
+        $data = $this->medicalrecordservice->getInfoPatientByPatientID($patientid);
+        
+        return $data;
+    }
 }
