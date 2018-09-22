@@ -44,15 +44,5 @@ class HosobenhanService{
         return new HosobenhanResource($data);
     }
     
-    public function getListBN_HC($start_day, $end_day, $offset, $limit){
-        $data = $this->HosobenhanRepository->getListBN_HC($start_day, $end_day, $offset, $limit);
-        
-        return $data;
-    }
     
-    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit){
-        $data = $this->HosobenhanRepository->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit);
-        
-        return $data;
-    }
 }

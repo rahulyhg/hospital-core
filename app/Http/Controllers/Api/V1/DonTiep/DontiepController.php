@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\RedSttDontiepService;
 use App\Services\MedicalRecordService;
-use App\Services\HosobenhanService;
 use Carbon\Carbon;
 
 class DontiepController extends Controller
@@ -16,11 +15,10 @@ class DontiepController extends Controller
      *
      * @param $service
      */
-    public function __construct(RedSttDontiepService $sttdontiepservice, MedicalRecordService $medicalrecordservice, HosobenhanService $hosobenhanservice)
+    public function __construct(RedSttDontiepService $sttdontiepservice, MedicalRecordService $medicalrecordservice)
     {
         $this->sttdontiepservice = $sttdontiepservice;
         $this->medicalrecordservice = $medicalrecordservice;
-        $this->hosobenhanservice = $hosobenhanservice;
     }
     
     public function getInfoPatientByStt($stt, $id_phong, $id_benh_vien)
@@ -38,9 +36,9 @@ class DontiepController extends Controller
         $limit = $request->query('limit', 10);
         
         if($type == "HC"){
-            $list_BN = $this->hosobenhanservice->getListBN_HC($start_day, $end_day, $offset, $limit);
+            $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit);
         } else {
-            $list_BN = $this->hosobenhanservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit);
+            $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit);
         }
         
         return $list_BN;
