@@ -2,36 +2,90 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Resources\SamplePatientResource;
-use App\Repositories\SamplePatientRepository;
 use Illuminate\Http\Request;
-use Validator;
+use App\Services\SamplePatientService;
 
 class SamplePatientController extends APIController
 {
-    protected $repository;
     /**
      * __construct.
      *
-     * @param $repository
+     * @param SamplePatientService $service
      */
-    public function __construct(SamplePatientRepository $repository)
+    public function __construct(SamplePatientService $service)
     {
-        $this->repository = $repository;
+        $this->service = $service;
     }
     
     /**
-     * Return the blogs.
+     * Return the SamplePatient.
+     * 
+     * @param Request $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $offset = $request->query('offset',0);
+        $data = $this->service->getDataPatient($request);
         
-        //return array('result' => 'success');
-        return SamplePatientResource::collection(
-           $this->repository->getForDataTable($offset)
-        );
+        return $data;
     }
+    
+    /**
+     * Return the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        $patient = $this->service->showPatient($id);
+        
+        return $patient;
+    }
+    
+    /**
+     * Creates the Resource for SamplePatient.
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request)
+    {
+        $patient = $this->service->makePatient($request);
+        
+        return $patient;
+    }
+    
+    /**
+     * Update SamplePatient.
+     *
+     * @param Request           $request
+     * @param int               $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $patient = $this->service->updatePatient($request, $id);
+        
+        return $patient;
+    }
+    
+    /**
+     * Delete SamplePatient.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete($id)
+    {
+        $message = $this->service->deletePatient($id);
+        
+        return $message;
+    }
+    
 }
