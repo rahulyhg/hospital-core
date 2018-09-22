@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Services\RedSttDontiepService;
+use App\Http\Controllers\Api\V1\APIController;
 
-class RedSttDontiepController extends Controller
+class RedSttDontiepController extends APIController
 {
     /**
      * __construct.

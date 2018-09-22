@@ -26,9 +26,5 @@ class MedicalRecordService {
         return $data;
     }
    
-    public function getInfoPatientByPatientID($patientid){
-        $data = $this->MedicalRecordRepository->getInfoPatientByPatientID($patientid);
-         
-        return $data;
-    }
+    
 }

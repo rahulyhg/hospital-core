@@ -88,22 +88,5 @@ class MedicalRecordRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function getInfoPatientByPatientID($patientid)
-    {
-        $column = [
-            'hosobenhan.patientcode',
-            'hosobenhan.patientname',
-            //'hosobenhan.birthday',
-            'hosobenhan.birthday_year',
-            'hosobenhan.bhytcode',
-            //'medicalrecord.thoigianvaovien'
-        ];
-        
-        $data = DB::table('medicalrecord')
-                ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
-                ->where('medicalrecord.patientid', '=', $patientid)
-                ->get($column);
-        
-        return $data;
-    }
+    
 }

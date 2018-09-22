@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\DangKyKhamBenh;
 
 use Illuminate\Http\Request;
 use App\Services\DangKyKhamBenhService;
+use App\Http\Controllers\Api\V1\APIController;
 
 class DangKyKhamBenhController extends APIController
 {
