@@ -47,7 +47,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('laysttut','DonTiep\RedSttDontiepController@getCurrentSTTUT');
         Route::get('laysttkm/{age}','DonTiep\RedSttDontiepController@getSTTKM');
         //Route::post('patient/register', 'SamplePatientController@register');
-        Route::get('typepatient/{patientid}', 'DonTiep\HosobenhanController@typePatient');
+        Route::get('getHosobenhan/{patientid}', 'DonTiep\HosobenhanController@getHosobenhan');
         //Route::get('typepatient', 'PatientController@typePatient');
         
         
