@@ -44,5 +44,10 @@ class HosobenhanService{
         return new HosobenhanResource($data);
     }
     
+    public function getHSBAByHosobenhanID($hosobenhanid){
+        $data = $this->HosobenhanRepository->getHSBAByHosobenhanID($hosobenhanid);
+         
+        return $data;
+    }
     
 }
