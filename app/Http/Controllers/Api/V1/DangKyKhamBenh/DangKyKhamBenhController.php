@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1\DangKyKhamBenh;
 
 use Illuminate\Http\Request;
-use App\Services\DangKyKhamBenhService;
 use App\Services\DepartmentService;
 use App\Services\ServicepricerefService;
 use App\Services\NghenghiepService;
@@ -18,7 +17,6 @@ class DangKyKhamBenhController extends APIController
      * @param DangKyKhamBenhService $service
      */
     public function __construct(
-        DangKyKhamBenhService $service ,
         DepartmentService $DepartmentService, 
         ServicepricerefService $servicepricerefService,
         NghenghiepService $nghenghiepservice,
