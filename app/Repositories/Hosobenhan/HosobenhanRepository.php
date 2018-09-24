@@ -45,14 +45,35 @@ class HosobenhanRepository extends BaseRepositoryV2
             'hosobenhan.hc_thon',
             'hosobenhan.hc_xaname',
             'hosobenhan.hc_huyenname',
-            'hosobenhan.hc_tinhname'
+            'hosobenhan.hc_tinhname',
+            'hosobenhan.imagedata',
+            'hosobenhan.imagesize',
+            'hosobenhan.nguoithan',
+            'hosobenhan.nguoithan_name',
+            'hosobenhan.nguoithan_phone',
+            'hosobenhan.nguoithan_address',
+            'bhyt.bhytcode',
+            'bhyt.bhyt_loaiid',
+            'bhyt.bhytfromdate',
+            'bhyt.bhytutildate',
+            'bhyt.macskcbbd',
+            'bhyt.noisinhsong',
+            'bhyt.du5nam6thangluongcoban',
+            'medicalrecord.medicalrecordcode',
+            'medicalrecord.chandoantuyenduoi',
+            'medicalrecord.chandoantuyenduoi_code',
+            'medicalrecord.noigioithieucode',
+            'medicalrecord.departmentid'
         ];
         
         $data = DB::table('hosobenhan')
                 ->join('medicalrecord', 'medicalrecord.hosobenhanid', '=', 'hosobenhan.hosobenhanid')
+                ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
                 ->where($where)
                 ->get($column);
+          
+        $array = json_decode($data, true);
         
-        return $data;
+        return collect($array)->first();
     }
 }
