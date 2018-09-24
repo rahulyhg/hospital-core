@@ -63,6 +63,7 @@ class HosobenhanRepository extends BaseRepositoryV2
             'hosobenhan.nguoithan_name',
             'hosobenhan.nguoithan_phone',
             'hosobenhan.nguoithan_address',
+            'tt2.diengiai as doituongbenhnhan',
             'bhyt.bhytcode',
             'bhyt.bhyt_loaiid',
             'bhyt.bhytfromdate',
@@ -94,6 +95,10 @@ class HosobenhanRepository extends BaseRepositoryV2
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'medicalrecord.loaibenhanid')
                         ->where('tt1.tablename', '=', 'loaibenhanid');
+                })
+                ->leftJoin('red_trangthai as tt2', function($join) {
+                    $join->on('tt2.giatri', '=', 'medicalrecord.doituongbenhnhanid')
+                        ->where('tt2.tablename', '=', 'doituongbenhnhan');
                 })
                 ->leftJoin('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'medicalrecord.departmentgroupid')
                 ->leftJoin('department', 'department.departmentid', '=', 'medicalrecord.departmentid')
