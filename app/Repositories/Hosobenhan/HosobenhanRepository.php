@@ -36,6 +36,11 @@ class HosobenhanRepository extends BaseRepositoryV2
         
         $column = [
             'hosobenhan.hosobenhanid',
+            'hosobenhan.soluutru',
+            'hosobenhan.sovaovien',
+            'vienphi.vienphicode',
+            'departmentgroup.departmentgroupname',
+            'department.departmentname',
             'hosobenhan.patientid',
             'hosobenhan.patientcode',
             'hosobenhan.patientname',
@@ -66,6 +71,7 @@ class HosobenhanRepository extends BaseRepositoryV2
             'bhyt.noisinhsong',
             'bhyt.du5nam6thangluongcoban',
             'medicalrecord.medicalrecordcode',
+            'tt1.diengiai as loaibenhan_name',
             'medicalrecord.chandoantuyenduoi',
             'medicalrecord.chandoantuyenduoi_code',
             'medicalrecord.noigioithieucode',
@@ -85,7 +91,14 @@ class HosobenhanRepository extends BaseRepositoryV2
         
         $data = DB::table('hosobenhan')
                 ->join('medicalrecord', 'medicalrecord.hosobenhanid', '=', 'hosobenhan.hosobenhanid')
+                ->leftJoin('red_trangthai as tt1', function($join) {
+                    $join->on('tt1.giatri', '=', 'medicalrecord.loaibenhanid')
+                        ->where('tt1.tablename', '=', 'loaibenhanid');
+                })
+                ->leftJoin('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'medicalrecord.departmentgroupid')
+                ->leftJoin('department', 'department.departmentid', '=', 'medicalrecord.departmentid')
                 ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
+                ->join('vienphi', 'vienphi.hosobenhanid', '=', 'hosobenhan.hosobenhanid')
                 ->where($where)
                 ->get($column);
           
