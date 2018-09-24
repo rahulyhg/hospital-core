@@ -19,17 +19,28 @@ class HosobenhanRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getHSBAByHosobenhanID($hosobenhanid)
+    public function getHSBAByHosobenhanID($hosobenhanid, $departmentid)
     {
         $loaibenhanid = 24; //kham benh
         
-        $where = [
-            ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
-            ['hosobenhan.hosobenhanid', '=', $hosobenhanid],
-        ];
+        if($departmentid != 0)
+            $where = [
+                ['medicalrecord.departmentid', '=', $departmentid],
+                ['hosobenhan.hosobenhanid', '=', $hosobenhanid]
+            ];
+        else
+            $where = [
+                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+                ['hosobenhan.hosobenhanid', '=', $hosobenhanid]
+            ];
         
         $column = [
             'hosobenhan.hosobenhanid',
+            'hosobenhan.soluutru',
+            'hosobenhan.sovaovien',
+            'vienphi.vienphicode',
+            'departmentgroup.departmentgroupname',
+            'department.departmentname',
             'hosobenhan.patientid',
             'hosobenhan.patientcode',
             'hosobenhan.patientname',
@@ -52,6 +63,7 @@ class HosobenhanRepository extends BaseRepositoryV2
             'hosobenhan.nguoithan_name',
             'hosobenhan.nguoithan_phone',
             'hosobenhan.nguoithan_address',
+            'tt2.diengiai as doituongbenhnhan',
             'bhyt.bhytcode',
             'bhyt.bhyt_loaiid',
             'bhyt.bhytfromdate',
@@ -60,15 +72,38 @@ class HosobenhanRepository extends BaseRepositoryV2
             'bhyt.noisinhsong',
             'bhyt.du5nam6thangluongcoban',
             'medicalrecord.medicalrecordcode',
+            'tt1.diengiai as loaibenhan_name',
             'medicalrecord.chandoantuyenduoi',
             'medicalrecord.chandoantuyenduoi_code',
             'medicalrecord.noigioithieucode',
-            'medicalrecord.departmentid'
+            'medicalrecord.departmentid',
+            'medicalrecord.thoigianvaovien',
+            'medicalrecord.noigioithieuid',
+            'medicalrecord.chandoanvaovien',
+            'medicalrecord.hinhthucvaovienid',
+            'medicalrecord.thoigianravien',
+            'medicalrecord.chandoanravien_code',
+            'medicalrecord.chandoanravien',
+            'medicalrecord.chandoanravien_kemtheo_code',
+            'medicalrecord.chandoanravien_kemtheo',
+            'medicalrecord.ketquadieutriid',
+            'medicalrecord.hinhthucravienid'
         ];
         
         $data = DB::table('hosobenhan')
                 ->join('medicalrecord', 'medicalrecord.hosobenhanid', '=', 'hosobenhan.hosobenhanid')
+                ->leftJoin('red_trangthai as tt1', function($join) {
+                    $join->on('tt1.giatri', '=', 'medicalrecord.loaibenhanid')
+                        ->where('tt1.tablename', '=', 'loaibenhanid');
+                })
+                ->leftJoin('red_trangthai as tt2', function($join) {
+                    $join->on('tt2.giatri', '=', 'medicalrecord.doituongbenhnhanid')
+                        ->where('tt2.tablename', '=', 'doituongbenhnhan');
+                })
+                ->leftJoin('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'medicalrecord.departmentgroupid')
+                ->leftJoin('department', 'department.departmentid', '=', 'medicalrecord.departmentid')
                 ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
+                ->join('vienphi', 'vienphi.hosobenhanid', '=', 'hosobenhan.hosobenhanid')
                 ->where($where)
                 ->get($column);
           
