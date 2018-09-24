@@ -23,7 +23,6 @@ class DangKyKhamBenhController extends APIController
         BenhVienService $benhvienservice
         )
     {
-        $this->service = $service;
         $this->departmentService = $DepartmentService;
         $this->servicepricerefService = $servicepricerefService;
         $this->nghenghiepservice = $nghenghiepservice;
