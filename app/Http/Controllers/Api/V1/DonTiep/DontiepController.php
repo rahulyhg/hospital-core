@@ -8,6 +8,7 @@ use App\Services\MedicalRecordService;
 use App\Services\HosobenhanService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
+//use Illuminate\Support\Facades\Redis;
 
 class DontiepController extends APIController
 {
@@ -38,17 +39,32 @@ class DontiepController extends APIController
         $limit = $request->query('limit', 10);
         $patientname = $request->query('patientname', '');
         
+        //$redis = Redis::connection();
+        
         if($type == "HC"){
-            $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit, $patientname);
+            //$redis->set('list_BN_HC', $list_BN);
+            //$data = $redis->get('list_BN_HC');
+            
+            //if($data) {
+                //$list_BN = $data;
+            //} else {
+                $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit, $patientname);
+            //}
         } else {
-            $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit, $patientname);
+            //$data = $redis->get('list_BN_PK');
+            
+            //if($data) {
+                //$list_BN = $data;
+            //} else {
+                $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit, $patientname);
+            //}
         }
         
         return $list_BN;
     }
     
-    public function getHSBAByHosobenhanID($hosobenhanid){
-        $data = $this->hosobenhanservice->getHSBAByHosobenhanID($hosobenhanid);
+    public function getHSBAByHosobenhanID($hosobenhanid, $departmentid){
+        $data = $this->hosobenhanservice->getHSBAByHosobenhanID($hosobenhanid, $departmentid);
         
         return $data;
     }

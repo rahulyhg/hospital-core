@@ -39,12 +39,23 @@ class MedicalRecordRepository extends BaseRepositoryV2
             'hosobenhan.hosobenhanid',
             'medicalrecord.medicalrecordid',
             'medicalrecord.medicalrecordcode',
-            'medicalrecord.medicalrecordstatus'
+            'medicalrecord.canlamsangstatus',
+            'tt1.diengiai as canlamsang_name',
+            'medicalrecord.medicalrecordstatus',
+            'tt2.diengiai as medicalrecord_name'
         ];
         
         if($start_day == $end_day){
             $data = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
+                ->leftJoin('red_trangthai as tt1', function($join) {
+                    $join->on('tt1.giatri', '=', 'medicalrecord.canlamsangstatus')
+                        ->where('tt1.tablename', '=', 'canlamsang');
+                })
+                ->leftJoin('red_trangthai as tt2', function($join) {
+                    $join->on('tt2.giatri', '=', 'medicalrecord.medicalrecordstatus')
+                        ->where('tt2.tablename', '=', 'patientstatus');
+                })
                 ->where($where)
                 ->whereDate('thoigianvaovien', '=', $start_day)
                 ->orderBy('thoigianvaovien', 'asc')
@@ -54,6 +65,14 @@ class MedicalRecordRepository extends BaseRepositoryV2
         } else {
             $data = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
+                ->leftJoin('red_trangthai as tt1', function($join) {
+                    $join->on('tt1.giatri', '=', 'medicalrecord.canlamsangstatus')
+                        ->where('tt1.tablename', '=', 'canlamsang');
+                })
+                ->leftJoin('red_trangthai as tt2', function($join) {
+                    $join->on('tt2.giatri', '=', 'medicalrecord.medicalrecordstatus')
+                        ->where('tt2.tablename', '=', 'patientstatus');
+                })
                 ->where($where)
                 ->whereBetween('thoigianvaovien', [$start_day, $end_day])
                 ->orderBy('thoigianvaovien', 'asc')
@@ -89,11 +108,22 @@ class MedicalRecordRepository extends BaseRepositoryV2
             'hosobenhan.hosobenhanid',
             'medicalrecord.medicalrecordid',
             'medicalrecord.medicalrecordcode',
-            'medicalrecord.medicalrecordstatus'
+            'medicalrecord.canlamsangstatus',
+            'tt1.diengiai as canlamsang_name',
+            'medicalrecord.medicalrecordstatus',
+            'tt2.diengiai as medicalrecord_name'
         ];
         
         $data = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
+                ->leftJoin('red_trangthai as tt1', function($join) {
+                    $join->on('tt1.giatri', '=', 'medicalrecord.canlamsangstatus')
+                        ->where('tt1.tablename', '=', 'canlamsang');
+                })
+                ->leftJoin('red_trangthai as tt2', function($join) {
+                    $join->on('tt2.giatri', '=', 'medicalrecord.medicalrecordstatus')
+                        ->where('tt2.tablename', '=', 'patientstatus');
+                })
                 ->where($where)
                 ->whereDate('thoigianvaovien', '=', $start_day)
                 ->orderBy('thoigianvaovien', 'asc')

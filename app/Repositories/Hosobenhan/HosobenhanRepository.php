@@ -19,14 +19,20 @@ class HosobenhanRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getHSBAByHosobenhanID($hosobenhanid)
+    public function getHSBAByHosobenhanID($hosobenhanid, $departmentid)
     {
         $loaibenhanid = 24; //kham benh
         
-        $where = [
-            ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
-            ['hosobenhan.hosobenhanid', '=', $hosobenhanid],
-        ];
+        if($departmentid != 0)
+            $where = [
+                ['medicalrecord.departmentid', '=', $departmentid],
+                ['hosobenhan.hosobenhanid', '=', $hosobenhanid]
+            ];
+        else
+            $where = [
+                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+                ['hosobenhan.hosobenhanid', '=', $hosobenhanid]
+            ];
         
         $column = [
             'hosobenhan.hosobenhanid',
@@ -63,7 +69,18 @@ class HosobenhanRepository extends BaseRepositoryV2
             'medicalrecord.chandoantuyenduoi',
             'medicalrecord.chandoantuyenduoi_code',
             'medicalrecord.noigioithieucode',
-            'medicalrecord.departmentid'
+            'medicalrecord.departmentid',
+            'medicalrecord.thoigianvaovien',
+            'medicalrecord.noigioithieuid',
+            'medicalrecord.chandoanvaovien',
+            'medicalrecord.hinhthucvaovienid',
+            'medicalrecord.thoigianravien',
+            'medicalrecord.chandoanravien_code',
+            'medicalrecord.chandoanravien',
+            'medicalrecord.chandoanravien_kemtheo_code',
+            'medicalrecord.chandoanravien_kemtheo',
+            'medicalrecord.ketquadieutriid',
+            'medicalrecord.hinhthucravienid'
         ];
         
         $data = DB::table('hosobenhan')
