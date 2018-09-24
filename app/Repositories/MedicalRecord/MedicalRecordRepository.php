@@ -38,7 +38,8 @@ class MedicalRecordRepository extends BaseRepositoryV2
             'hosobenhan.bhytcode',
             'hosobenhan.hosobenhanid',
             'medicalrecord.medicalrecordid',
-            'medicalrecord.medicalrecordcode'
+            'medicalrecord.medicalrecordcode',
+            'medicalrecord.medicalrecordstatus'
         ];
         
         if($start_day == $end_day){
@@ -87,7 +88,8 @@ class MedicalRecordRepository extends BaseRepositoryV2
             'hosobenhan.bhytcode',
             'hosobenhan.hosobenhanid',
             'medicalrecord.medicalrecordid',
-            'medicalrecord.medicalrecordcode'
+            'medicalrecord.medicalrecordcode',
+            'medicalrecord.medicalrecordstatus'
         ];
         
         $data = DB::table('medicalrecord')
