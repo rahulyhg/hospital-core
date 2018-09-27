@@ -14,22 +14,15 @@ class MedicalRecordRepository extends BaseRepositoryV2
         return Medicalrecord::class;
     }
     
-    public function getListBN_HC($start_day, $end_day, $offset, $limit = 10, $patientname = '')
+    public function getListBN_HC($start_day, $end_day, $offset, $limit = 10, $keyword = '')
     {
         $loaibenhanid = 24; //kham benh
         $departmentgroupid = 3; //khoa kham benh
         
-        if($patientname != '')
-            $where = [
-                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
-                ['medicalrecord.departmentgroupid', '=', $departmentgroupid],
-                ['hosobenhan.patientname', 'like', "%$patientname%"]
-            ];
-        else
-            $where = [
-                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
-                ['medicalrecord.departmentgroupid', '=', $departmentgroupid],
-            ];
+        $where = [
+            ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+            ['medicalrecord.departmentgroupid', '=', $departmentgroupid],
+        ];
         
         $column = [
             'hosobenhan.patientcode',
@@ -37,6 +30,11 @@ class MedicalRecordRepository extends BaseRepositoryV2
             'hosobenhan.birthday_year',
             'hosobenhan.bhytcode',
             'hosobenhan.hosobenhanid',
+            'hosobenhan.hosobenhanstatus',
+            'hosobenhan.hosobenhandate',
+            'hosobenhan.hosobenhandate_ravien',
+            'medicalrecord.thoigianvaovien',
+            'medicalrecord.thoigianravien',
             'medicalrecord.medicalrecordid',
             'medicalrecord.medicalrecordcode',
             'medicalrecord.canlamsangstatus',
@@ -46,7 +44,7 @@ class MedicalRecordRepository extends BaseRepositoryV2
         ];
         
         if($start_day == $end_day){
-            $data = DB::table('medicalrecord')
+            $query = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'medicalrecord.canlamsangstatus')
@@ -60,10 +58,9 @@ class MedicalRecordRepository extends BaseRepositoryV2
                 ->whereDate('thoigianvaovien', '=', $start_day)
                 ->orderBy('thoigianvaovien', 'asc')
                 ->offset($offset)
-                ->limit($limit)
-                ->get($column);
+                ->limit($limit);
         } else {
-            $data = DB::table('medicalrecord')
+            $query = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'medicalrecord.canlamsangstatus')
@@ -77,28 +74,30 @@ class MedicalRecordRepository extends BaseRepositoryV2
                 ->whereBetween('thoigianvaovien', [$start_day, $end_day])
                 ->orderBy('thoigianvaovien', 'asc')
                 ->offset($offset)
-                ->limit($limit)
-                ->get($column);
+                ->limit($limit);
         }
+        
+        if($keyword != ''){
+            $query = $query->where(function($query_adv) use ($keyword) {
+                $query_adv->where('hosobenhan.patientname', 'like', "%$keyword%")
+                        ->orWhere('hosobenhan.patientcode', 'like', "%$keyword%")
+                        ->orWhere('hosobenhan.bhytcode', 'like', "%$keyword%");
+            });
+        }
+        
+        $data = $query->get($column);
         
         return $data;
     }
     
-    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit = 10, $patientname = '')
+    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit = 10, $keyword = '')
     {
         $loaibenhanid = 24; //kham benh
         
-        if($patientname != '')
-            $where = [
-                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
-                ['medicalrecord.departmentid', '=', $departmentid],
-                ['hosobenhan.patientname', 'like', '%$patientname%']
-            ];
-        else
-            $where = [
-                ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
-                ['medicalrecord.departmentid', '=', $departmentid],
-            ];
+        $where = [
+            ['medicalrecord.loaibenhanid', '=', $loaibenhanid],
+            ['medicalrecord.departmentid', '=', $departmentid],
+        ];
         
         $column = [
             'hosobenhan.patientcode',
@@ -106,6 +105,11 @@ class MedicalRecordRepository extends BaseRepositoryV2
             'hosobenhan.birthday_year',
             'hosobenhan.bhytcode',
             'hosobenhan.hosobenhanid',
+            'hosobenhan.hosobenhanstatus',
+            'hosobenhan.hosobenhandate',
+            'hosobenhan.hosobenhandate_ravien',
+            'medicalrecord.thoigianvaovien',
+            'medicalrecord.thoigianravien',
             'medicalrecord.medicalrecordid',
             'medicalrecord.medicalrecordcode',
             'medicalrecord.canlamsangstatus',
@@ -114,7 +118,7 @@ class MedicalRecordRepository extends BaseRepositoryV2
             'tt2.diengiai as medicalrecord_name'
         ];
         
-        $data = DB::table('medicalrecord')
+        $query = DB::table('medicalrecord')
                 ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'medicalrecord.canlamsangstatus')
@@ -128,8 +132,17 @@ class MedicalRecordRepository extends BaseRepositoryV2
                 ->whereDate('thoigianvaovien', '=', $start_day)
                 ->orderBy('thoigianvaovien', 'asc')
                 ->offset($offset)
-                ->limit($limit)
-                ->get($column);
+                ->limit($limit);
+                
+        if($keyword != ''){
+            $query = $query->where(function($query_adv) use ($keyword) {
+                $query_adv->where('hosobenhan.patientname', 'like', "%$keyword%")
+                        ->orWhere('hosobenhan.patientcode', 'like', "%$keyword%")
+                        ->orWhere('hosobenhan.bhytcode', 'like', "%$keyword%");
+            });
+        }
+        
+        $data = $query->get($column);
         
         return $data;
     }

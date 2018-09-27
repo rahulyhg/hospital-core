@@ -8,7 +8,7 @@ use App\Services\MedicalRecordService;
 use App\Services\HosobenhanService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
-//use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Redis;
 
 class DontiepController extends APIController
 {
@@ -37,18 +37,19 @@ class DontiepController extends APIController
         $end_day = $request->query('end_day', Carbon::today());
         $offset = $request->query('offset', 0);
         $limit = $request->query('limit', 10);
-        $patientname = $request->query('patientname', '');
+        $keyword = $request->query('keyword', '');
         
-        //$redis = Redis::connection();
+        $redis = Redis::connection();
         
         if($type == "HC"){
-            //$redis->set('list_BN_HC', $list_BN);
+            
             //$data = $redis->get('list_BN_HC');
             
             //if($data) {
                 //$list_BN = $data;
             //} else {
-                $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit, $patientname);
+                $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit, $keyword);
+                //$redis->set('list_BN_HC', $list_BN);
             //}
         } else {
             //$data = $redis->get('list_BN_PK');
@@ -56,7 +57,7 @@ class DontiepController extends APIController
             //if($data) {
                 //$list_BN = $data;
             //} else {
-                $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit, $patientname);
+                $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit, $keyword);
             //}
         }
         
