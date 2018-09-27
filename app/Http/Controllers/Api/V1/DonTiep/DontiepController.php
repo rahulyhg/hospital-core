@@ -8,7 +8,7 @@ use App\Services\MedicalRecordService;
 use App\Services\HosobenhanService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Redis;
+//use Illuminate\Support\Facades\Redis;
 
 class DontiepController extends APIController
 {
@@ -39,7 +39,7 @@ class DontiepController extends APIController
         $limit = $request->query('limit', 10);
         $keyword = $request->query('keyword', '');
         
-        $redis = Redis::connection();
+        //$redis = Redis::connection();
         
         if($type == "HC"){
             
