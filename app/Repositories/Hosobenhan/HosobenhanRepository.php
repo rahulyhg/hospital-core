@@ -24,4 +24,10 @@ class HosobenhanRepository extends BaseRepositoryV2
         
         return $result;
     }
+    
+    public function CreateDataHosobenhan(array $input)
+    {
+        $id = Hosobenhan::create($input)->hosobenhanid;
+        return $id;
+    }
 }

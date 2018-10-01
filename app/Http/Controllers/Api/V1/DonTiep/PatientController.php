@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use App\Services\PatientService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\APIController;
 
 class PatientController extends APIController
 {
@@ -31,7 +32,8 @@ class PatientController extends APIController
     
     public function register(Request $request)
     {
-        //return SamplePatientResource::create($request->all());
+         $data = $this->service->CreateDataPatient($request);
+         return $data;
     }
     
     
