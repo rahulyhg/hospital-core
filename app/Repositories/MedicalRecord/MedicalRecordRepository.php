@@ -44,7 +44,6 @@ class MedicalRecordRepository extends BaseRepositoryV2
         ];
         
         $query = DB::table('medicalrecord')
-            //->select($column, DB::raw('convertTVkdau(hosobenhan.patientname) as patient_name'))
             ->join('hosobenhan', 'hosobenhan.hosobenhanid', '=', 'medicalrecord.hosobenhanid')
             ->leftJoin('red_trangthai as tt1', function($join) {
                 $join->on('tt1.giatri', '=', 'medicalrecord.canlamsangstatus')
