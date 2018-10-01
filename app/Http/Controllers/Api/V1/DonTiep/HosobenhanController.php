@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\DonTiep;
+
+use App\Http\Controllers\Controller;
 use App\Services\HosobenhanService;
 use Illuminate\Http\Request;
 
-class HosobenhanController extends APIController
+class HosobenhanController extends Controller
 {
     //
     protected $repository;
@@ -34,9 +36,9 @@ class HosobenhanController extends APIController
     {
         //return SamplePatientResource::create($request->all());
     }
-    public function typePatient($patientid)
+    public function getHosobenhan($patientid)
     {
-        $data = $this->service->getTypePatient($patientid);
+        $data = $this->service->getHosobenhanByPatientID($patientid);
         return $data;
     }
 }

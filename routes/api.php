@@ -47,12 +47,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('laysttut','DonTiep\RedSttDontiepController@getCurrentSTTUT');
         Route::get('laysttkm/{age}','DonTiep\RedSttDontiepController@getSTTKM');
         //Route::post('patient/register', 'SamplePatientController@register');
-        Route::get('typepatient/{patientid}', 'DonTiep\HosobenhanController@typePatient');
+        Route::get('getHosobenhan/{patientid}', 'DonTiep\HosobenhanController@getHosobenhan');
         //Route::get('typepatient', 'PatientController@typePatient');
         
         
         Route::get('getInfoPatientByStt/{stt}/{id_phong}/{id_benh_vien}','DonTiep\DontiepController@getInfoPatientByStt');
         Route::get('getListPatientByKhoaPhong/{type}/{departmentid}','DonTiep\DontiepController@getListPatientByKhoaPhong');
+        Route::get('getHSBAByHosobenhanID/{hosobenhanid}/{departmentid}','DonTiep\DontiepController@getHSBAByHosobenhanID');
     });
     
     Route:: group(['prefix' => 'dangkykhambenh'], function () {

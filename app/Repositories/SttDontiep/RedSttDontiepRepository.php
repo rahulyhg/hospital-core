@@ -175,6 +175,8 @@ class RedSttDontiepRepository extends BaseRepositoryV2
     
     public function getInfoPatientByStt($stt, $id_phong, $id_benh_vien)
     {
+        $today = Carbon::today();
+        
         $dieu_kien = [
             'loai_stt'      => $stt[0],
             'so_thu_tu'     => (int)substr($stt, 1, 4),
@@ -184,6 +186,7 @@ class RedSttDontiepRepository extends BaseRepositoryV2
         
         $data = DB::table('red_stt_dontiep')
                 ->where($dieu_kien)
+                ->whereDate('thoi_gian_phat', '=', $today)
                 ->orderBy('id', 'desc')
                 ->first();
                 
