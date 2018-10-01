@@ -52,7 +52,9 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getInfoPatientByStt/{stt}/{id_phong}/{id_benh_vien}','DonTiep\DontiepController@getInfoPatientByStt');
         Route::get('getListPatientByKhoaPhong/{type}/{departmentid}','DonTiep\DontiepController@getListPatientByKhoaPhong');
         Route::get('getHSBAByHosobenhanID/{hosobenhanid}/{departmentid}','DonTiep\DontiepController@getHSBAByHosobenhanID');
-		Route::post('scanqrcode', 'ScanQRCodeController@getInfoFromCard');
+		    Route::post('scanqrcode', 'ScanQRCodeController@getInfoFromCard');
+        Route::post('register','DonTiep\PatientController@register');
+
     });
     
     Route:: group(['prefix' => 'dangkykhambenh'], function () {
