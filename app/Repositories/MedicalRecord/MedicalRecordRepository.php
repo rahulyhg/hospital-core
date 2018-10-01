@@ -139,5 +139,10 @@ class MedicalRecordRepository extends BaseRepositoryV2
         return $data;
     }
     
-    
+    public function CreateDataMedicalRecord(array $input)
+    {
+         $id = Medicalrecord::create($input)->medicalrecordid;
+         return $id;
+    }
+
 }

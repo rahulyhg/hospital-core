@@ -40,4 +40,12 @@ class PatientRepository extends BaseRepositoryV2
        // return $typepatient;
     //}
     
+    public function CreateDataPatient(array $input)
+    {
+        //echo '<pre>';        var_dump($input);        echo '</pre>'; 
+        
+         $id = Patient::create($input)->patientid;
+         return $id;
+    }
+    
 }
