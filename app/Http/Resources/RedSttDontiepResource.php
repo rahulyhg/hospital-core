@@ -26,7 +26,7 @@ class RedSttDontiepResource extends Resource
             'ma_so_kiosk'           => $this->ma_so_kiosk,
             'id_phong'              => $this->id_phong,
             'id_benh_vien'          => $this->id_benh_vien,
-            'thong_tin_so_bo'       => $this->thong_tin_so_bo
+            'thong_tin_so_bo'       => json_decode($this->thong_tin_so_bo)
         ];
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Services;
 use App\Http\Resources\HosobenhanResource;
 use App\Http\Resources\PatientResource;
-//use App\Repositories\Patient\PatientRepositoryInterface;
 use App\Repositories\Hosobenhan\HosobenhanRepository;
 use Illuminate\Http\Request;
 use Validator;
@@ -18,6 +17,7 @@ class HosobenhanService{
     {
         $this->HosobenhanRepository = $HosobenhanRepository;
     }
+    
     public function getDataPatient(Request $request)
     {
         $offset = $request->query('offset',0);
@@ -28,6 +28,7 @@ class HosobenhanService{
           // $Patient
         //);
     }
+    
     /*public function getTypePatient($id)
     {
         $TypePatient = $this->HosobenhanRepository->getTypePatient($id);
@@ -36,10 +37,17 @@ class HosobenhanService{
            $TypePatient
         );
     }*/
-     public function getTypePatient($patientid){
-         $typepatient = $this->HosobenhanRepository->getTypePatient($patientid);
-         return new HosobenhanResource($typepatient);
-        //return $typepatient;
+    
+    public function getHosobenhanByPatientID($patientid){
+        $data = $this->HosobenhanRepository->getHosobenhanByPatientID($patientid);
+         
+        return new HosobenhanResource($data);
+    }
+    
+    public function getHSBAByHosobenhanID($hosobenhanid, $departmentid){
+        $data = $this->HosobenhanRepository->getHSBAByHosobenhanID($hosobenhanid, $departmentid);
+         
+        return $data;
     }
     
 }

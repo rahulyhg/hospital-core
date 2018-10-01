@@ -13,16 +13,18 @@ class MedicalRecordService {
     {
         $this->MedicalRecordRepository = $MedicalRecordRepository;
     }
-   
-    public function getListBN_HC($start_day, $end_day, $offset, $limit){
-        $data = $this->MedicalRecordRepository->getListBN_HC($start_day, $end_day, $offset, $limit);
+    
+    public function getListBN_HC($start_day, $end_day, $offset, $limit, $keyword){
+        $data = $this->MedicalRecordRepository->getListBN_HC($start_day, $end_day, $offset, $limit, $keyword);
         
         return $data;
     }
     
-    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit){
-        $data = $this->MedicalRecordRepository->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit);
+    public function getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit, $keyword){
+        $data = $this->MedicalRecordRepository->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit, $keyword);
         
         return $data;
     }
+   
+    
 }

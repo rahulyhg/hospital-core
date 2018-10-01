@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Department;
 use App\Http\Resources\DepartmentResource;
-use App\Repositories\SttDontiep\DepartmentRepository;
+use App\Repositories\DepartmentRepository;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -24,7 +24,7 @@ class DepartmentService {
     {
         $offset = $request->query('offset',0);
         return DepartmentResource::collection(
-           $this->repository->getDataListDepartment($offset, $request)
+           $this->DepartmentRepository->getDataListDepartment($offset, $request)
         );
     }
 }
