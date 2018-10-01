@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api\V1\DangKyKhamBenh;
 
 use Illuminate\Http\Request;
-use App\Services\DangKyKhamBenhService;
 use App\Services\DepartmentService;
 use App\Services\ServicepricerefService;
+use App\Services\NghenghiepService;
+use App\Services\BenhVienService;
 use App\Http\Controllers\API\V1\APIController;
 
 class DangKyKhamBenhController extends APIController
@@ -15,11 +16,17 @@ class DangKyKhamBenhController extends APIController
      *
      * @param DangKyKhamBenhService $service
      */
-    public function __construct(DangKyKhamBenhService $service , DepartmentService $DepartmentService, ServicepricerefService $servicepricerefService)
+    public function __construct(
+        DepartmentService $DepartmentService, 
+        ServicepricerefService $servicepricerefService,
+        NghenghiepService $nghenghiepservice,
+        BenhVienService $benhvienservice
+        )
     {
-        $this->service = $service;
         $this->departmentService = $DepartmentService;
         $this->servicepricerefService = $servicepricerefService;
+        $this->nghenghiepservice = $nghenghiepservice;
+        $this->benhvienservice = $benhvienservice;
     }
     
     /**
@@ -49,6 +56,17 @@ class DangKyKhamBenhController extends APIController
         return $data;
     }
     
+    public function GetListNgheNghiep(Request $request)
+    {
+        $data = $this->nghenghiepservice->getListNgheNghiep($request);
+        return $data;
+    }
+    
+    public function GetListBenhVien(Request $request)
+    {
+        $data = $this->benhvienservice->getListBenhVien($request);
+        return $data;
+    }
     /**
      * Return the specified resource.
      *

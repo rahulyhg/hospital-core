@@ -113,4 +113,10 @@ class HosobenhanRepository extends BaseRepositoryV2
         
         return collect($array)->first();
     }
+  
+    public function CreateDataHosobenhan(array $input)
+    {
+        $id = Hosobenhan::create($input)->hosobenhanid;
+        return $id;
+    }
 }
