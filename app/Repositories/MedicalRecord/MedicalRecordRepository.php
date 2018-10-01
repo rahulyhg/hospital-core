@@ -58,7 +58,7 @@ class MedicalRecordRepository extends BaseRepositoryV2
         if($start_day == $end_day){
             $query = $query->whereDate('thoigianvaovien', '=', $start_day);
         } else {
-            $query = $query->whereBetween('thoigianvaovien', [$start_day, $end_day]);
+            $query = $query->whereBetween('thoigianvaovien', [Carbon::parse($start_day)->startOfDay(), Carbon::parse($end_day)->endOfDay()]);
         }
         
         if($keyword != ''){
@@ -129,7 +129,7 @@ class MedicalRecordRepository extends BaseRepositoryV2
         if($start_day == $end_day){
             $query = $query->whereDate('thoigianvaovien', '=', $start_day);
         } else {
-            $query = $query->whereBetween('thoigianvaovien', [$start_day, $end_day]);
+            $query = $query->whereBetween('thoigianvaovien', [Carbon::parse($start_day)->startOfDay(), Carbon::parse($end_day)->endOfDay()]);
         }   
                 
         if($keyword != ''){
