@@ -36,13 +36,14 @@ class HosobenhanRepository extends BaseRepositoryV2
         
         $column = [
             'hosobenhan.hosobenhanid',
+            'hosobenhan.patientid',
+            'hosobenhan.patientcode',
+            'tt1.diengiai as loaibenhan_name',
             'hosobenhan.soluutru',
             'hosobenhan.sovaovien',
             'vienphi.vienphicode',
             'departmentgroup.departmentgroupname',
             'department.departmentname',
-            'hosobenhan.patientid',
-            'hosobenhan.patientcode',
             'hosobenhan.patientname',
             'hosobenhan.birthday',
             'hosobenhan.birthday_year',
@@ -50,29 +51,30 @@ class HosobenhanRepository extends BaseRepositoryV2
             'hosobenhan.nghenghiepname',
             'hosobenhan.hc_quocgianame',
             'hosobenhan.hc_dantocname',
-            'hosobenhan.bhytcode',
             'hosobenhan.noilamviec',
             'hosobenhan.hc_sonha',
             'hosobenhan.hc_thon',
             'hosobenhan.hc_xaname',
             'hosobenhan.hc_huyenname',
             'hosobenhan.hc_tinhname',
+            'hosobenhan.patientphone',
+            'hosobenhan.patientemail',
             'hosobenhan.imagedata',
             'hosobenhan.imagesize',
             'hosobenhan.nguoithan',
             'hosobenhan.nguoithan_name',
             'hosobenhan.nguoithan_phone',
             'hosobenhan.nguoithan_address',
-            'tt2.diengiai as doituongbenhnhan',
-            'bhyt.bhytcode',
+            'hosobenhan.nguoithan_cmnn_cccd',
+            'hosobenhan.bhytcode',
             'bhyt.bhyt_loaiid',
             'bhyt.bhytfromdate',
             'bhyt.bhytutildate',
             'bhyt.macskcbbd',
             'bhyt.noisinhsong',
             'bhyt.du5nam6thangluongcoban',
+            'tt2.diengiai as doituongbenhnhan',
             'medicalrecord.medicalrecordcode',
-            'tt1.diengiai as loaibenhan_name',
             'medicalrecord.chandoantuyenduoi',
             'medicalrecord.chandoantuyenduoi_code',
             'medicalrecord.noigioithieucode',
@@ -92,16 +94,16 @@ class HosobenhanRepository extends BaseRepositoryV2
         
         $data = DB::table('hosobenhan')
                 ->join('medicalrecord', 'medicalrecord.hosobenhanid', '=', 'hosobenhan.hosobenhanid')
-                ->leftJoin('red_trangthai as tt1', function($join) {
+                ->join('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'medicalrecord.loaibenhanid')
                         ->where('tt1.tablename', '=', 'loaibenhanid');
                 })
-                ->leftJoin('red_trangthai as tt2', function($join) {
+                ->join('red_trangthai as tt2', function($join) {
                     $join->on('tt2.giatri', '=', 'medicalrecord.doituongbenhnhanid')
                         ->where('tt2.tablename', '=', 'doituongbenhnhan');
                 })
-                ->leftJoin('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'medicalrecord.departmentgroupid')
-                ->leftJoin('department', 'department.departmentid', '=', 'medicalrecord.departmentid')
+                ->join('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'medicalrecord.departmentgroupid')
+                ->join('department', 'department.departmentid', '=', 'medicalrecord.departmentid')
                 ->join('bhyt', 'bhyt.bhytid', '=', 'medicalrecord.bhytid')
                 ->join('vienphi', 'vienphi.hosobenhanid', '=', 'hosobenhan.hosobenhanid')
                 ->where($where)
