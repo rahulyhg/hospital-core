@@ -72,6 +72,7 @@ class MedicalRecordRepository extends BaseRepositoryV2
                         ->orWhere('hosobenhan.patientname', 'like', '%'.$lowercase.'%')
                         ->orWhere('hosobenhan.patientname', 'like', '%'.$titlecase.'%')
                         ->orWhere('hosobenhan.patientname', 'like', '%'.$keyword.'%')
+                        ->orWhere(DB::raw('convertTVkdau(hosobenhan.patientname)'), 'like', '%'.$uppercase.'%')
                         ->orWhere('hosobenhan.patientcode', 'like', '%'.$keyword.'%')
                         ->orWhere('hosobenhan.bhytcode', 'like', '%'.$keyword.'%')
                         ->orWhere('hosobenhan.bhytcode', 'like', '%'.$uppercase.'%');
@@ -142,6 +143,7 @@ class MedicalRecordRepository extends BaseRepositoryV2
                         ->orWhere('hosobenhan.patientname', 'like', '%'.$lowercase.'%')
                         ->orWhere('hosobenhan.patientname', 'like', '%'.$titlecase.'%')
                         ->orWhere('hosobenhan.patientname', 'like', '%'.$keyword.'%')
+                        ->orWhere(DB::raw('convertTVkdau(hosobenhan.patientname)'), 'like', '%'.$uppercase.'%')
                         ->orWhere('hosobenhan.patientcode', 'like', '%'.$keyword.'%')
                         ->orWhere('hosobenhan.bhytcode', 'like', '%'.$keyword.'%')
                         ->orWhere('hosobenhan.bhytcode', 'like', '%'.$uppercase.'%');
