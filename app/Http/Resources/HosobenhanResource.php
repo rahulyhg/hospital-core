@@ -16,25 +16,25 @@ class HosobenhanResource extends Resource
      public function toArray($request)
     {
         return [
-            'hosobenhanid'              => $this->hosobenhanid,
-            'gioitinhcode'              => $this->gioitinhcode,
-            'gioitinhname'              => $this->gioitinhname,
-            'nghenghiepcode'            => $this->nghenghiepcode,
-            'nghenghiepname'            => $this->nghenghiepname,
-            'hc_dantoccode'             => $this->hc_dantoccode,
-            'hc_dantocname'             => $this->hc_dantocname,
-            'hc_quocgiacode'            => $this->hc_quocgiacode,
-            'hc_quocgianame'            => $this->hc_quocgianame,
-            'loaibenhanid'              => $this->loaibenhanid,
-            'patientname'               => $this->patientname,
-            'patientid'                 => $this->patientid,
-            'patientcode'               => $this->patientcode,
-            'bhytcode'                  => $this->bhytcode,
-            'birthday'                  => $this->birthday,
-            'birthday_year'             => $this->birthday_year,
-            'age'                       => Carbon::parse($this->birthday)->diffInYears(Carbon::now()),
-            'diachi'                    => sprintf("%s %s, %s, %s, %s", $this->hc_sonha, $this->hc_thon, $this->hc_xaname, $this->hc_huyenname, $this->hc_tinhname),
-            'noilamviec'                => $this->noilamviec
+            'hosobenhanid'              => $this->id,
+            'gioitinhcode'              => $this->gioi_tinh,
+            //'gioitinhname'              => $this->gioitinhname,
+            'nghenghiepcode'            => $this->nghe_nghiep_id,
+            'nghenghiepname'            => $this->ten_nghe_nghiep,
+            'hc_dantoccode'             => $this->dan_toc_id,
+            'hc_dantocname'             => $this->ten_dan_toc,
+            'hc_quocgiacode'            => $this->quoc_tich_id,
+            'hc_quocgianame'            => $this->ten_quoc_tich,
+            'loaibenhanid'              => $this->loai_benh_an,
+            'patientname'               => $this->ten_benh_nhan,
+            'patientid'                 => $this->benh_nhan_id,
+            //'patientcode'               => $this->patientcode,
+            'bhytcode'                  => $this->ms_bhyt,
+            'birthday'                  => $this->ngay_sinh,
+            'birthday_year'             => $this->nam_sinh,
+            'age'                       => Carbon::parse($this->ngay_sinh)->diffInYears(Carbon::now()),
+            'diachi'                    => sprintf("%s %s, %s, %s, %s", $this->so_nha, $this->duong_thon, $this->ten_phuong_xa, $this->ten_quan_huyen, $this->ten_tinh_thanh_pho),
+            'noilamviec'                => $this->noi_lam_viec
         ];
     }
 }
