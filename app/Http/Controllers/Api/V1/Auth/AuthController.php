@@ -37,18 +37,20 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
-        $roles = $this->authservice->getUserRolesByEmail($request->email);
+        
         $credentials = $request->only('email', 'password');
-        $extraPayload = array(
-            'roles' => $roles
-        );
-        if (!$token = JWTAuth::attempt($credentials,$extraPayload)) {
+        
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response([
                 'status' => 'error',
                 'error' => 'invalid.credentials',
                 'msg' => 'Invalid Credentials.'
             ], 400);
         }
+        $roles = $this->authservice->getUserRolesByEmail($request->email);
+        $extraPayload = array(
+            'roles' => $roles
+        );
         return response([
             'status' => 'success',
             'token' => $token,
