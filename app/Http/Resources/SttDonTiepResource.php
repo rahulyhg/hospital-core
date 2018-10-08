@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class RedSttDontiepResource extends Resource
+class SttDonTiepResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -24,9 +24,11 @@ class RedSttDontiepResource extends Resource
             'thoi_gian_goi'         => $this->thoi_gian_goi,
             'thoi_gian_ket_thuc'    => $this->thoi_gian_ket_thuc,
             'ma_so_kiosk'           => $this->ma_so_kiosk,
-            'id_phong'              => $this->id_phong,
-            'id_benh_vien'          => $this->id_benh_vien,
-            'thong_tin_so_bo'       => json_decode($this->thong_tin_so_bo)
+            'phong_id'              => $this->phong_id,
+            'benh_vien_id'          => $this->benh_vien_id,
+            'quay_so'               => $this->quay_so,
+            'thong_tin_so_bo'       => $this->thong_tin_so_bo,
+            'in_so'                 => $this->loai_stt.sprintf('%03d',$this->so_thu_tu),
         ];
     }
 }

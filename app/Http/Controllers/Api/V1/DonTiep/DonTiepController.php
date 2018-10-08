@@ -3,35 +3,35 @@
 namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
-use App\Services\RedSttDontiepService;
-use App\Services\MedicalRecordService;
-use App\Services\HosobenhanService;
+use App\Services\SttDonTiepService;
+use App\Services\HsbaKhoaPhongService;
+use App\Services\HsbaService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 //use Illuminate\Support\Facades\Redis;
 
-class DontiepController extends APIController
+class DonTiepController extends APIController
 {
      /**
      * __construct.
      *
      * @param $service
      */
-    public function __construct(RedSttDontiepService $sttdontiepservice, MedicalRecordService $medicalrecordservice, HosobenhanService $hosobenhanservice)
+    public function __construct(SttDonTiepService $SttDonTiepService, HsbaKhoaPhongService $HsbaKhoaPhongService, HsbaService $HsbaService)
     {
-        $this->sttdontiepservice = $sttdontiepservice;
-        $this->medicalrecordservice = $medicalrecordservice;
-        $this->hosobenhanservice = $hosobenhanservice;
+        $this->SttDonTiepService = $SttDonTiepService;
+        $this->HsbaKhoaPhongService = $HsbaKhoaPhongService;
+        $this->HsbaService = $HsbaService;
     }
     
-    public function getInfoPatientByStt($stt, $id_phong, $id_benh_vien)
+    public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
     {
-        $data = $this->sttdontiepservice->getInfoPatientByStt($stt, $id_phong, $id_benh_vien);
+        $data = $this->SttDonTiepService->getInfoPatientByStt($stt, $phong_id, $benh_vien_id);
         
         return $data;
     }
     
-    public function getListPatientByKhoaPhong($type = 'HC', $departmentid = 0, Request $request)
+    public function getListPatientByKhoaPhong($type = 'HC', $phong_id = 0, Request $request)
     {
         $start_day = $request->query('start_day', Carbon::today());
         $end_day = $request->query('end_day', Carbon::today());
@@ -48,7 +48,7 @@ class DontiepController extends APIController
             //if($data) {
                 //$list_BN = $data;
             //} else {
-                $list_BN = $this->medicalrecordservice->getListBN_HC($start_day, $end_day, $offset, $limit, $keyword);
+                $list_BN = $this->HsbaKhoaPhongService->getListBN_HC($start_day, $end_day, $offset, $limit, $keyword);
                 //$redis->set('list_BN_HC', $list_BN);
             //}
         } else {
@@ -57,15 +57,15 @@ class DontiepController extends APIController
             //if($data) {
                 //$list_BN = $data;
             //} else {
-                $list_BN = $this->medicalrecordservice->getListBN_PK($departmentid, $start_day, $end_day, $offset, $limit, $keyword);
+                $list_BN = $this->HsbaKhoaPhongService->getListBN_PK($phong_id, $start_day, $end_day, $offset, $limit, $keyword);
             //}
         }
         
         return $list_BN;
     }
     
-    public function getHSBAByHosobenhanID($hosobenhanid, $departmentid){
-        $data = $this->hosobenhanservice->getHSBAByHosobenhanID($hosobenhanid, $departmentid);
+    public function getHsbaByHsbaId($hsba_id, $phong_id){
+        $data = $this->HsbaService->getHsbaByHsbaId($hsba_id, $phong_id);
         
         return $data;
     }
