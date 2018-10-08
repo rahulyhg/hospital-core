@@ -39,21 +39,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 
     
     Route:: group(['prefix' => 'dontiep'], function () {
-        Route::get('quetthe/{bhytcode}','DonTiep\BhytController@getTypePatientByCode');
-        Route::get('patient', 'DonTiep\PatientController@index');
-        Route::post('taostt', 'DonTiep\RedSttDontiepController@insertCurrentSTTBT');
-        Route::get('laystt', 'DonTiep\RedSttDontiepController@getCurrentSTTBT');
-        Route::post('taosttut','DonTiep\RedSttDontiepController@insertCurrentSTTUT');
-        Route::get('laysttut','DonTiep\RedSttDontiepController@getCurrentSTTUT');
-        Route::get('laysttkm/{age}','DonTiep\RedSttDontiepController@getSTTKM');
-        //Route::post('patient/register', 'SamplePatientController@register');
-        Route::get('getHosobenhan/{patientid}', 'DonTiep\HosobenhanController@getHosobenhan');
-        //Route::get('typepatient', 'PatientController@typePatient');
+        Route::post('checkCardCode','DonTiep\SttDonTiepController@checkCardCode');
+        Route::get('getSttDonTiep','DonTiep\SttDonTiepController@getSttDonTiep');
+        Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep');
+        Route::get('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');
         
-        
-        Route::get('getInfoPatientByStt/{stt}/{id_phong}/{id_benh_vien}','DonTiep\DontiepController@getInfoPatientByStt');
-        Route::get('getListPatientByKhoaPhong/{type}/{departmentid}','DonTiep\DontiepController@getListPatientByKhoaPhong');
-        Route::get('getHSBAByHosobenhanID/{hosobenhanid}/{departmentid}','DonTiep\DontiepController@getHSBAByHosobenhanID');
+        Route::get('getInfoPatientByStt/{stt}/{phong_id}/{benh_vien_id}','DonTiep\DonTiepController@getInfoPatientByStt');
+        Route::get('getListPatientByKhoaPhong/{type}/{phong_id}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
+        Route::get('getHsbaByHsbaId/{hsba_id}/{phong_id}','DonTiep\DonTiepController@getHsbaByHsbaId');
        
         Route::post('register','DonTiep\PatientController@register');
 
