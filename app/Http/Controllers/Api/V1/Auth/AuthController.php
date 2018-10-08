@@ -9,9 +9,15 @@ use Tymon\JWTAuth\Facades\JWTFactory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Services\AuthService;
 
 class AuthController extends Controller
 {
+    public function __construct(AuthService $service)
+    {
+        
+        $this->authservice = $service;
+    }
     public function register(RegisterFormRequest $request)
     {
         
@@ -31,25 +37,28 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
+        
         $credentials = $request->only('email', 'password');
-        $extraPayload = array(
-            'roles' => array(
-                1,2
-            )
-        );
-        if (!$token = JWTAuth::attempt($credentials,$extraPayload)) {
+        
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response([
                 'status' => 'error',
                 'error' => 'invalid.credentials',
                 'msg' => 'Invalid Credentials.'
             ], 400);
         }
+        $roles = $this->authservice->getUserRolesByEmail($request->email);
+        $extraPayload = array(
+            'roles' => $roles
+        );
         return response([
             'status' => 'success',
             'token' => $token,
             'payload' => $extraPayload
         ]);
     }
+    
+
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
