@@ -153,9 +153,9 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function CreateDataHsbaKhoaPhong(array $input)
+    public function createDataHsbaKhoaPhong(array $input)
     {
-         $id = HsbaKhoaPhong::create($input)->medicalrecordid;
+         $id = HsbaKhoaPhong::create($input)->id;
          return $id;
     }
 
