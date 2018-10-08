@@ -123,9 +123,9 @@ class HsbaRepository extends BaseRepositoryV2
         return collect($array)->first();
     }
   
-    public function CreateDataHosobenhan(array $input)
+    public function createDataHsba(array $input)
     {
-        $id = Hosobenhan::create($input)->hosobenhanid;
+        $id = Hsba::create($input)->id;
         return $id;
     }
 }
