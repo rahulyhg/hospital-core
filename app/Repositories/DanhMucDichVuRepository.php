@@ -3,14 +3,13 @@ namespace App\Repositories;
 use DB;
 use App\Repositories\BaseRepository;
 
-class ServicepricerefRepository extends BaseRepository
+class DanhMucDichVuRepository extends BaseRepository
 {
 
-    public function getDataYeuCauKham($offset, $request)
+    public function getDataYeuCauKham($request)
     {
-        $data = DB::table('servicepriceref')
+        $data = DB::table('danh_muc_dich_vu')
                 ->where('servicegrouptype',$request->servicegrouptype)
-                ->offset($offset)
                 ->orderBy('servicepricename')
                 ->get();
         return $data;    
