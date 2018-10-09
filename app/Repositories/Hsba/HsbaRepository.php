@@ -102,19 +102,19 @@ class HsbaRepository extends BaseRepositoryV2
         ];
         
         $data = DB::table('hsba')
-                ->join('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
-                ->join('red_trangthai as tt1', function($join) {
+                ->leftJoin('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
+                ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'hsba_khoa_phong.loai_benh_an')
                         ->where('tt1.tablename', '=', 'loaibenhanid');
                 })
-                ->join('red_trangthai as tt2', function($join) {
+                ->leftJoin('red_trangthai as tt2', function($join) {
                     $join->on('tt2.giatri', '=', 'hsba_khoa_phong.doi_tuong_benh_nhan')
                         ->where('tt2.tablename', '=', 'doituongbenhnhan');
                 })
-                ->join('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'hsba_khoa_phong.khoa_hien_tai')
-                ->join('department', 'department.departmentid', '=', 'hsba_khoa_phong.phong_hien_tai')
-                ->join('bhyt', 'bhyt.bhytid', '=', 'hsba_khoa_phong.bhyt_id')
-                ->join('vienphi', 'vienphi.hosobenhanid', '=', 'hsba.id')
+                ->leftJoin('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'hsba_khoa_phong.khoa_hien_tai')
+                ->leftJoin('department', 'department.departmentid', '=', 'hsba_khoa_phong.phong_hien_tai')
+                ->leftJoin('bhyt', 'bhyt.bhytid', '=', 'hsba_khoa_phong.bhyt_id')
+                ->leftJoin('vienphi', 'vienphi.hosobenhanid', '=', 'hsba.id')
                 ->where($where)
                 ->get($column);
           
