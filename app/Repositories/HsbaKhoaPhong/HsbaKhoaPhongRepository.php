@@ -70,9 +70,9 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titlecase.'%')
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$keyword.'%')
                         ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$uppercase.'%')
-                        ->orWhere('hsba.id', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ms_bhyt', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ms_bhyt', 'like', '%'.$uppercase.'%');
+                        ->orWhereRaw("cast(hsba.id as text) like '%$keyword%'")
+                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$keyword%'")
+                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$uppercase%'");
             });
         }
         
@@ -139,9 +139,9 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titlecase.'%')
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$keyword.'%')
                         ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$uppercase.'%')
-                        ->orWhere('hsba.id', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ms_bhyt', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ms_bhyt', 'like', '%'.$uppercase.'%');
+                        ->orWhereRaw("cast(hsba.id as text) like '%$keyword%'")
+                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$keyword%'")
+                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$uppercase%'");
             });
         }
         
