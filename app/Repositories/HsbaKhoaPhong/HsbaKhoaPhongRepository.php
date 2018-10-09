@@ -69,7 +69,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$lowercase.'%')
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titlecase.'%')
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ten_benh_nhan_ko_dau', 'like', '%'.$uppercase.'%')
+                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$uppercase.'%')
                         ->orWhere('hsba.id', 'like', '%'.$keyword.'%')
                         ->orWhere('hsba.ms_bhyt', 'like', '%'.$keyword.'%')
                         ->orWhere('hsba.ms_bhyt', 'like', '%'.$uppercase.'%');
@@ -138,7 +138,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$lowercase.'%')
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titlecase.'%')
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ten_benh_nhan_ko_dau', 'like', '%'.$uppercase.'%')
+                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$uppercase.'%')
                         ->orWhere('hsba.id', 'like', '%'.$keyword.'%')
                         ->orWhere('hsba.ms_bhyt', 'like', '%'.$keyword.'%')
                         ->orWhere('hsba.ms_bhyt', 'like', '%'.$uppercase.'%');
@@ -153,9 +153,9 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function CreateDataHsbaKhoaPhong(array $input)
+    public function createDataHsbaKhoaPhong(array $input)
     {
-         $id = HsbaKhoaPhong::create($input)->medicalrecordid;
+         $id = HsbaKhoaPhong::create($input)->id;
          return $id;
     }
 
