@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\SttDonTiepService;
 use App\Services\HsbaKhoaPhongService;
 use App\Services\HsbaService;
+use App\Services\BenhNhanService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 //use Illuminate\Support\Facades\Redis;
@@ -17,11 +18,12 @@ class DonTiepController extends APIController
      *
      * @param $service
      */
-    public function __construct(SttDonTiepService $SttDonTiepService, HsbaKhoaPhongService $HsbaKhoaPhongService, HsbaService $HsbaService)
+    public function __construct(SttDonTiepService $SttDonTiepService, HsbaKhoaPhongService $HsbaKhoaPhongService, HsbaService $HsbaService, BenhNhanService $BenhNhanService)
     {
         $this->SttDonTiepService = $SttDonTiepService;
         $this->HsbaKhoaPhongService = $HsbaKhoaPhongService;
         $this->HsbaService = $HsbaService;
+        $this->BenhNhanService = $BenhNhanService;
     }
     
     public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
@@ -66,7 +68,12 @@ class DonTiepController extends APIController
     
     public function getHsbaByHsbaId($hsba_id, $phong_id){
         $data = $this->HsbaService->getHsbaByHsbaId($hsba_id, $phong_id);
-        
+        return $data;
+    }
+    
+    public function register(Request $request)
+    {
+        $data = $this->BenhNhanService->createBenhNhan($request);
         return $data;
     }
 }

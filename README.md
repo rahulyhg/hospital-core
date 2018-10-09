@@ -14,5 +14,7 @@
 
 `php artisan jwt:secret`
 
-### demo git by thien.dang
+### Run command
+
+git config core.fileMode false
 
