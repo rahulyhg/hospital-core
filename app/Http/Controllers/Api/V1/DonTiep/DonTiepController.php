@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\DangKyKhamBenhFormRequest;
 use App\Services\SttDonTiepService;
 use App\Services\HsbaKhoaPhongService;
 use App\Services\HsbaService;
@@ -70,10 +71,24 @@ class DonTiepController extends APIController
         $data = $this->HsbaService->getHsbaByHsbaId($hsba_id, $phong_id);
         return $data;
     }
-    
-    public function register(Request $request)
-    {
-        $data = $this->BenhNhanService->createBenhNhan($request);
-        return $data;
+   
+    public function register(DangKyKhamBenhFormRequest $request)
+    //public function register(Request $request)
+    {   
+        try {
+            
+            $id = $this->BenhNhanService->createBenhNhan($request);
+            return $id;
+            
+            // return $this->respondCreatedWithData(
+            //     [
+            //         'id'=>$id
+            //     ]
+            // );
+        } catch (\Exception $ex) {
+            //return $this->respondInternalError($ex->getMessage());
+            return $ex;
+        }
+        
     }
 }
