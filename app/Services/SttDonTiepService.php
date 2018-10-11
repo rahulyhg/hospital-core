@@ -34,14 +34,27 @@ class SttDonTiepService {
         
         $stt = $this->SttDonTiepRepository->getSttDontiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
         
-        return $stt;
+        $stt_dangphucvu = $this->SttDonTiepRepository->getSttDangPhucVu($loai_stt, $phong_id, $benh_vien_id);
+        
+        if($stt_dangphucvu != '')
+            $thoigiancho = $this->SttDonTiepRepository->calcTime($stt_dangphucvu, $loai_stt, $phong_id, $benh_vien_id);
+        else
+            $thoigiancho = '';
+        
+        $data = [
+            'so_thu_tu' => $loai_stt . sprintf('%03d', $stt),
+            'dang_phuc_vu' => $stt_dangphucvu ? $loai_stt . sprintf('%03d', $stt_dangphucvu) : '',
+            'thoi_gian_cho' => $thoigiancho
+        ];
+        
+        return $data;
     }
     
     public function goiSttDonTiep(Request $request)
     {
-        $stt = $this->SttDonTiepRepository->goiSttDonTiep($request);
+        $data = $this->SttDonTiepRepository->goiSttDonTiep($request);
         
-        return $stt;
+        return $data;
     }
     
     public function loadSttDonTiep(Request $request)
@@ -65,12 +78,14 @@ class SttDonTiepService {
                     'data' => '',
                     'benh_nhan_cu' => 0,
                     'dang_ky_truoc' => 0,
-                    'stt' => ''];
+                    'stt' => '',
+                    'dang_phuc_vu' => '',
+                    'thoi_gian_cho' => ''];
         
         if($length > 12) {  //kiem tra co phai qrcode the bhyt khong
             $info = $this->getInfoPatientFromQRCode($card_code);
             //$bhytcode = $card_code;
-            if(count($info) > 10) {
+            if(count($info) > 10) { 
                 $bhytcode = $info['Msbhyt'];
                 
                 $data = $this->BhytRepository->getInfoPatientByBhytCode($bhytcode);
@@ -102,7 +117,16 @@ class SttDonTiepService {
         if($result ['message'] != 'error card code') {  //ma the hop le moi kiem tra de cap STT
             if($result['dang_ky_truoc'] == 1){  //dang ky truoc => cap STT luon
                 $loai_stt = "D";
-                $result['stt'] = $this->SttDonTiepRepository->getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
+                $stt = $this->SttDonTiepRepository->getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
+                $stt_dangphucvu = $this->SttDonTiepRepository->getSttDangPhucVu($loai_stt, $phong_id, $benh_vien_id);
+                if($stt_dangphucvu != '')
+                    $thoigiancho = $this->SttDonTiepRepository->calcTime($stt_dangphucvu, $loai_stt, $phong_id, $benh_vien_id);
+                else
+                    $thoigiancho = '';
+                
+                $result['stt'] = $loai_stt . sprintf('%03d', $stt);
+                $result['dang_phuc_vu'] = $stt_dangphucvu ? $loai_stt . sprintf('%03d', $stt_dangphucvu) : '';
+                $result['thoi_gian_cho'] = $thoigiancho;
             } else {
                 if($result['benh_nhan_cu'] == 1) {
                     if($result['data']['trang_thai_hsba'] == 1){   //hsba cu da dong => cap STT theo do tuoi luon
@@ -114,7 +138,16 @@ class SttDonTiepService {
                             $loai_stt = "C";
                         }
                         
-                        $result['stt'] = $this->SttDonTiepRepository->getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
+                        $stt = $this->SttDonTiepRepository->getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
+                        $stt_dangphucvu = $this->SttDonTiepRepository->getSttDangPhucVu($loai_stt, $phong_id, $benh_vien_id);
+                        if($stt_dangphucvu != '')
+                            $thoigiancho = $this->SttDonTiepRepository->calcTime($stt_dangphucvu, $loai_stt, $phong_id, $benh_vien_id);
+                        else
+                            $thoigiancho = '';
+                        
+                        $result['stt'] = $loai_stt . sprintf('%03d', $stt);
+                        $result['dang_phuc_vu'] = $stt_dangphucvu ? $loai_stt . sprintf('%03d', $stt_dangphucvu) : '';
+                        $result['thoi_gian_cho'] = $thoigiancho;
                     } else {    //hsba cu chua dong, kiem tra co phai ngoai tru ko
                         if($result['data']['loai_benh_an'] != 20) { //khong phai ngoai tru => xuat thong bao dang co hsba ton tai
                             $result ['message'] = 'hsba exist';
@@ -132,7 +165,16 @@ class SttDonTiepService {
                         $loai_stt = "C";
                     }
                     
-                    $result['stt'] = $this->SttDonTiepRepository->getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
+                    $stt = $this->SttDonTiepRepository->getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
+                    $stt_dangphucvu = $this->SttDonTiepRepository->getSttDangPhucVu($loai_stt, $phong_id, $benh_vien_id);
+                    if($stt_dangphucvu != '')
+                        $thoigiancho = $this->SttDonTiepRepository->calcTime($stt_dangphucvu, $loai_stt, $phong_id, $benh_vien_id);
+                    else
+                        $thoigiancho = '';
+                    
+                    $result['stt'] = $loai_stt . sprintf('%03d', $stt);
+                    $result['dang_phuc_vu'] = $stt_dangphucvu ? $loai_stt . sprintf('%03d', $stt_dangphucvu) : '';
+                    $result['thoi_gian_cho'] = $thoigiancho;
                 }
             }
         }

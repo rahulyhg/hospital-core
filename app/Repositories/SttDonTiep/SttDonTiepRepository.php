@@ -52,9 +52,68 @@ class SttDonTiepRepository extends BaseRepositoryV2
                     
         $this->model->create($attributes);
         
-        $stt = $loai_stt . sprintf('%03d', $so_thu_tu);
+        $stt = $so_thu_tu;
         
         return $stt;
+    }
+    
+    public function getSttDangPhucVu($loai_stt, $phong_id, $benh_vien_id) 
+    {
+        $today = Carbon::today();
+        
+        $where = [
+            ['loai_stt', '=', $loai_stt],
+            ['phong_id', '=', $phong_id],
+            ['benh_vien_id', '=', $benh_vien_id]
+        ];
+        
+        $result = $this->model->where($where)
+                            ->whereBetween('thoi_gian_goi', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->orderBy('id', 'desc')
+                            ->first();
+        
+        if($result)                    
+            $stt_dangphucvu = $result['so_thu_tu'];
+        else
+            $stt_dangphucvu = '';
+        
+        return $stt_dangphucvu;
+    }
+    
+    public function calcTime($stt_dangphucvu, $loai_stt, $phong_id, $benh_vien_id)
+    {
+        $today = Carbon::today();
+        
+        $where = [
+            ['loai_stt', '=', $loai_stt],
+            ['phong_id', '=', $phong_id],
+            ['benh_vien_id', '=', $benh_vien_id],
+            ['trang_thai', '=', 1],
+            ['so_thu_tu', '>', $stt_dangphucvu]
+        ];
+        
+        $result = $this->model->where($where)
+                            ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->get();
+        
+        if($result) {
+            $seconds = 0;
+            foreach($result as $item) {
+                if($item['thong_tin_so_bo'])
+                    $seconds += 30;
+                else
+                    $seconds += 180;
+            }
+            
+            $time = gmdate('H:i', $seconds);
+            $arr_time = explode(':', $time);
+            
+            $thoi_gian_cho = ($arr_time[0] != '00' ? $arr_time[0] . ' giờ ' . $arr_time[1] . ' phút' : $arr_time[1] . ' phút');
+        } else {
+            $thoi_gian_cho = '00 phút';
+        }
+        
+        return $thoi_gian_cho;
     }
     
     public function goiSttDonTiep($request)
@@ -86,9 +145,11 @@ class SttDonTiepRepository extends BaseRepositoryV2
         
         $this->model->where('id', '=', $id)->update($attributes);
         
-        return $result;
+        $data = $this->model->findOrFail($id);
+        
+        return $data;
     }
-
+    
     public function loadSttDonTiep($request)
     {
         $phong_id = $request->query('phong_id', 1);
