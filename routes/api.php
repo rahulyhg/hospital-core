@@ -52,7 +52,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route:: group(['prefix' => 'dangkykhambenh'], function () {
         Route::post('dangky', 'DangKyKhamBenhController@dangky');
-		Route::get('listphong/{departmenttype}/{departmentgroupid}','DangKyKhamBenh\DangKyKhamBenhController@getListPhong');
+		Route::get('listphong/{loaiphong}/{khoaid}','DangKyKhamBenh\DangKyKhamBenhController@getListPhong');
     	Route::get('yeucaukham/{servicegrouptype}','DangKyKhamBenh\DangKyKhamBenhController@getListYeuCauKham');
     	Route::get('listnghenghiep','DangKyKhamBenh\DangKyKhamBenhController@getListNgheNghiep');
     	Route::get('listbenhvien','DangKyKhamBenh\DangKyKhamBenhController@getListBenhVien');

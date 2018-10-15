@@ -5,19 +5,18 @@ namespace App\Services;
 use App\Models\Department;
 use App\Http\Resources\DanhMucTongHopResource;
 use App\Http\Resources\BenhVienResource;
-use App\Http\Resources\TinhResource;
 use App\Http\Resources\HanhChinhResource;
 use App\Repositories\DanhMucTongHopRepository;
 use Illuminate\Http\Request;
 use Validator;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhmuctonghoprepository)
+    public function __construct(DanhMucTongHopRepository $danhmuctonghopRepository)
     {
-        $this->DanhMucTongHopRepository = $danhmuctonghoprepository;
+        $this->DanhMucTongHopRepository = $danhmuctonghopRepository;
     }
 
-    public function GetListNgheNghiep()
+    public function getListNgheNghiep()
     {
         return DanhMucTongHopResource::collection(
            $this->DanhMucTongHopRepository->getListNgheNghiep()
@@ -30,7 +29,7 @@ class DanhMucTongHopService {
            $this->DanhMucTongHopRepository->getListBenhVien()
         );
     }
-    
+
     public function getListDanToc()
     {
         return DanhMucTongHopResource::collection(
