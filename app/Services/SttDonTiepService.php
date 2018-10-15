@@ -31,8 +31,9 @@ class SttDonTiepService {
         $ma_so_kiosk = $request->query('ma_so_kiosk', 1);
         $phong_id = $request->query('phong_id', 1);
         $benh_vien_id = $request->query('benh_vien_id', 1);
+        $data = '';
         
-        $stt = $this->SttDonTiepRepository->getSttDontiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
+        $stt = $this->SttDonTiepRepository->getSttDontiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id, $data);
         
         $stt_dangphucvu = $this->SttDonTiepRepository->getSttDangPhucVu($loai_stt, $phong_id, $benh_vien_id);
         
@@ -86,7 +87,7 @@ class SttDonTiepService {
             $info = $this->getInfoPatientFromQRCode($card_code);
             //$bhytcode = $card_code;
             if(count($info) > 9) { 
-                $bhytcode = $info['Msbhyt'];
+                $bhytcode = $info['ma_so_bhyt'];
                 
                 $data = $this->BhytRepository->getInfoPatientByBhytCode($bhytcode);
                 
@@ -149,7 +150,7 @@ class SttDonTiepService {
             }
             
             if($loai_stt != ''){
-                $stt = $this->SttDonTiepRepository->getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id);
+                $stt = $this->SttDonTiepRepository->getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id, $result['data']);
                 $stt_dangphucvu = $this->SttDonTiepRepository->getSttDangPhucVu($loai_stt, $phong_id, $benh_vien_id);
                 if($stt_dangphucvu != '')
                     $thoigiancho = $this->SttDonTiepRepository->calcTime($stt_dangphucvu, $loai_stt, $phong_id, $benh_vien_id);
@@ -168,8 +169,8 @@ class SttDonTiepService {
     public function getInfoPatientFromQRCode($qrCode){
         $qrCodeParts = explode('|', $qrCode);
         
-        if(count($qrCodeParts) > 10) {
-            $info['Msbhyt'] = $qrCodeParts[0];
+        if(count($qrCodeParts) >= 10) {
+            $info['ma_so_bhyt'] = $qrCodeParts[0];
             $info['ten_benh_nhan'] = hex2bin($qrCodeParts[1]);
             $info['ngay_sinh'] = $qrCodeParts[2];
             $info['gioi_tinh'] = ($qrCodeParts[3] == 1) ? 'Nam' : 'Nữ';
@@ -181,7 +182,7 @@ class SttDonTiepService {
             $info['ma_quan_ly'] = $qrCodeParts[9];
             //$info['cha_me'] = hex2bin($qrCodeParts[10]);
         } else {
-            $info['MSBHYT'] = $qrCodeParts[0];
+            $info['ma_so_bhyt'] = $qrCodeParts[0];
         }
         
         return $info;

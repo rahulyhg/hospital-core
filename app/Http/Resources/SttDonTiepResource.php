@@ -27,7 +27,7 @@ class SttDonTiepResource extends Resource
             'phong_id'              => $this->phong_id,
             'benh_vien_id'          => $this->benh_vien_id,
             'quay_so'               => $this->quay_so,
-            'thong_tin_so_bo'       => $this->thong_tin_so_bo,
+            'thong_tin_so_bo'       => json_decode($this->thong_tin_so_bo),
             'in_so'                 => $this->loai_stt.sprintf('%03d',$this->so_thu_tu),
         ];
     }

@@ -14,7 +14,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
         return SttDonTiep::class;
     }
     
-    public function getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id)
+    public function getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id, $data)
     {
         $today = Carbon::today();
         
@@ -46,7 +46,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
                         'ma_so_kiosk' => $ma_so_kiosk,
                         'phong_id' => $phong_id,
                         'benh_vien_id' => $benh_vien_id,
-                        'thong_tin_so_bo' => null,
+                        'thong_tin_so_bo' => $data ? json_encode($data) : null,
                         'quay_so' => null,
                     ];
                     
@@ -174,7 +174,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
     {
-        $today = Carbon::today();
+        $today = Carbon::today()->addDays(-3);
         
         $dieu_kien = [
             'loai_stt'      => $stt[0],
