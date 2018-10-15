@@ -40,9 +40,31 @@ class DanhMucTongHopRepository extends BaseRepository
     
     public function getListTinh()
     {
-        $tinh = DB::table('danh_muc_tong_hop')
-                ->where('khoa','tinh')
+        $tinh = DB::table('hanh_chinh')
+                ->where('ma_tinh','<>',0)
                 ->get();
         return $tinh;    
+    }
+    
+    public function getListHuyen($matinh)
+    {
+        $huyen = DB::table('hanh_chinh')
+                ->where('ma_tinh',0)
+                ->where('huyen_matinh',$matinh)
+                ->orderBy('ten_huyen')
+                ->get();
+        return $huyen;    
+    }
+    
+    public function getListXa($mahuyen,$matinh)
+    {
+        $xa = DB::table('hanh_chinh')
+                ->where([
+                    'ma_tinh' => '0',
+                    'ma_huyen' => '0',
+                    'xa_mahuyen'=>$mahuyen,
+                    'xa_matinh'=>$matinh])
+                ->get();
+        return $xa;    
     }
 }

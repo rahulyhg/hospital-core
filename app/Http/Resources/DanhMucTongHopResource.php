@@ -15,10 +15,10 @@ class DanhMucTongHopResource extends Resource
     public function toArray($request)
     {
         return [
-            'id'      => $this->id,
-            'khoa'    => $this->khoa,
-            'gia_tri'    => $this->gia_tri,
-            'dien_giai'    => $this->dien_giai
+            'id'            => $this->id,
+            'khoa'          => $this->khoa,
+            'gia_tri'       => $this->gia_tri,
+            'dien_giai'     => $this->dien_giai
         ];
     }
 }

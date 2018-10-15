@@ -85,6 +85,18 @@ class DangKyKhamBenhController extends APIController
         $data = $this->danhmuctonghopservice->getListTinh();
         return $data;
     }
+    
+    public function getListHuyen(Request $request)
+    {
+        $data = $this->danhmuctonghopservice->getListHuyen($request->matinh);
+        return $data;
+    }
+    
+    public function getListXa(Request $request)
+    {
+        $data = $this->danhmuctonghopservice->getListXa($request->mahuyen,$request->matinh);
+        return $data;
+    }
     /**
      * Return the specified resource.
      *

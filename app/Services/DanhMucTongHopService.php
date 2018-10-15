@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Department;
 use App\Http\Resources\DanhMucTongHopResource;
 use App\Http\Resources\BenhVienResource;
+use App\Http\Resources\TinhResource;
+use App\Http\Resources\HanhChinhResource;
 use App\Repositories\DanhMucTongHopRepository;
 use Illuminate\Http\Request;
 use Validator;
@@ -45,8 +47,22 @@ class DanhMucTongHopService {
     
     public function getListTinh()
     {
-        return DanhMucTongHopResource::collection(
+        return HanhChinhResource::collection(
            $this->DanhMucTongHopRepository->getListTinh()
+        );
+    }
+    
+    public function getListHuyen($matinh)
+    {
+        return HanhChinhResource::collection(
+           $this->DanhMucTongHopRepository->getListHuyen($matinh)
+        );
+    }
+    
+    public function getListXa($mahuyen,$matinh)
+    {
+        return HanhChinhResource::collection(
+           $this->DanhMucTongHopRepository->getListXa($mahuyen,$matinh)
         );
     }
 }
