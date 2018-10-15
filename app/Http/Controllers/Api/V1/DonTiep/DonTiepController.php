@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
@@ -13,11 +12,6 @@ use Carbon\Carbon;
 
 class DonTiepController extends APIController
 {
-     /**
-     * __construct.
-     *
-     * @param $service
-     */
     public function __construct(SttDonTiepService $SttDonTiepService, HsbaKhoaPhongService $HsbaKhoaPhongService, HsbaService $HsbaService, BenhNhanService $BenhNhanService)
     {
         $this->SttDonTiepService = $SttDonTiepService;

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\SttDonTiep;
@@ -11,7 +10,8 @@ use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
 
-class SttDonTiepService {
+class SttDonTiepService 
+{
     public function __construct(SttDonTiepRepository $SttDonTiepRepository, BhytRepository $BhytRepository, HsbaRepository $HsbaRepository)
     {
         $this->SttDonTiepRepository = $SttDonTiepRepository;
@@ -19,7 +19,8 @@ class SttDonTiepService {
         $this->HsbaRepository = $HsbaRepository;
     }
     
-    public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id){
+    public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
+    {
         $data = $this->SttDonTiepRepository->getInfoPatientByStt($stt, $phong_id, $benh_vien_id);
         
         return new SttDonTiepResource($data);
@@ -166,7 +167,8 @@ class SttDonTiepService {
         return $result;
     }
     
-    public function getInfoPatientFromQRCode($qrCode){
+    public function getInfoPatientFromQRCode($qrCode)
+    {
         $qrCodeParts = explode('|', $qrCode);
         
         if(count($qrCodeParts) >= 10) {

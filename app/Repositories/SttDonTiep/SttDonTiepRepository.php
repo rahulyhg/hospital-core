@@ -174,7 +174,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
     {
-        $today = Carbon::today()->addDays(-3);
+        $today = Carbon::today();
         
         $dieu_kien = [
             'loai_stt'      => $stt[0],
