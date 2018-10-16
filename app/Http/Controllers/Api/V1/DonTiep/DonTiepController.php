@@ -12,25 +12,25 @@ use Carbon\Carbon;
 
 class DonTiepController extends APIController
 {
-    public function __construct(SttDonTiepService $SttDonTiepService, HsbaKhoaPhongService $HsbaKhoaPhongService, HsbaService $HsbaService, BenhNhanService $BenhNhanService)
+    public function __construct(SttDonTiepService $sttDonTiepService, HsbaKhoaPhongService $hsbaKhoaPhongService, HsbaService $hsbaService, BenhNhanService $benhNhanService)
     {
-        $this->SttDonTiepService = $SttDonTiepService;
-        $this->HsbaKhoaPhongService = $HsbaKhoaPhongService;
-        $this->HsbaService = $HsbaService;
-        $this->BenhNhanService = $BenhNhanService;
+        $this->sttDonTiepService = $sttDonTiepService;
+        $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->hsbaService = $hsbaService;
+        $this->benhNhanService = $benhNhanService;
     }
     
-    public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
+    public function getInfoPatientByStt($stt, $phongId, $benh_vien_id)
     {
-        $data = $this->SttDonTiepService->getInfoPatientByStt($stt, $phong_id, $benh_vien_id);
+        $data = $this->sttDonTiepService->getInfoPatientByStt($stt, $phongId, $benh_vien_id);
         
         return $data;
     }
     
-    public function getListPatientByKhoaPhong($type = 'HC', $phong_id = 0, Request $request)
+    public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, Request $request)
     {
-        $start_day = $request->query('start_day', Carbon::today());
-        $end_day = $request->query('end_day', Carbon::today());
+        $startDay = $request->query('start_day', Carbon::today());
+        $endDay = $request->query('end_day', Carbon::today());
         $offset = $request->query('offset', 0);
         $limit = $request->query('limit', 20);
         $keyword = $request->query('keyword', '');
@@ -44,7 +44,7 @@ class DonTiepController extends APIController
             //if($data) {
                 //$list_BN = $data;
             //} else {
-                $list_BN = $this->HsbaKhoaPhongService->getListBN_HC($start_day, $end_day, $offset, $limit, $keyword);
+                $list_BN = $this->hsbaKhoaPhongService->getListBN_HC($startDay, $endDay, $offset, $limit, $keyword);
                 //$redis->set('list_BN_HC', $list_BN);
             //}
         } else {
@@ -53,21 +53,21 @@ class DonTiepController extends APIController
             //if($data) {
                 //$list_BN = $data;
             //} else {
-                $list_BN = $this->HsbaKhoaPhongService->getListBN_PK($phong_id, $start_day, $end_day, $offset, $limit, $keyword);
+                $list_BN = $this->hsbaKhoaPhongService->getListBN_PK($phongId, $startDay, $endDay, $offset, $limit, $keyword);
             //}
         }
         
         return $list_BN;
     }
     
-    public function getHsbaByHsbaId($hsba_id, $phong_id){
-        $data = $this->HsbaService->getHsbaByHsbaId($hsba_id, $phong_id);
+    public function getHsbaByHsbaId($hsbaId, $phongId){
+        $data = $this->hsbaService->getHsbaByHsbaId($hsbaId, $phongId);
         return $data;
     }
     
     public function register(Request $request)
     {
-        $data = $this->BenhNhanService->createBenhNhan($request);
+        $data = $this->benhNhanService->createBenhNhan($request);
         return $data;
     }
 }
