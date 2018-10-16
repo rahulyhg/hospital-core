@@ -8,34 +8,34 @@ class DanhMucTongHopRepository extends BaseRepository
 
     public function getListNgheNghiep()
     {
-        $nghenghiep = DB::table('danh_muc_tong_hop')
+        $ngheNghiep = DB::table('danh_muc_tong_hop')
                 ->where('khoa','nghe_nghiep')
                 ->get();
-        return $nghenghiep;    
+        return $ngheNghiep;    
     }
     
     public function getListBenhVien()
     {
-        $benhvien = DB::table('benhvien')
+        $benhVien = DB::table('benhvien')
                 ->orderBy('benhvienid')
                 ->get();
-        return $benhvien;    
+        return $benhVien;    
     }
     
     public function getListDanToc()
     {
-        $dantoc = DB::table('danh_muc_tong_hop')
+        $danToc = DB::table('danh_muc_tong_hop')
                 ->where('khoa','dan_toc')
                 ->get();
-        return $dantoc;    
+        return $danToc;    
     }
     
     public function getListQuocTich()
     {
-        $quoctich = DB::table('danh_muc_tong_hop')
+        $quocTich = DB::table('danh_muc_tong_hop')
                 ->where('khoa','quoc_tich')
                 ->get();
-        return $quoctich;    
+        return $quocTich;    
     }
     
     public function getListTinh()
@@ -46,24 +46,24 @@ class DanhMucTongHopRepository extends BaseRepository
         return $tinh;    
     }
     
-    public function getListHuyen($matinh)
+    public function getListHuyen($maTinh)
     {
         $huyen = DB::table('hanh_chinh')
                 ->where('ma_tinh',0)
-                ->where('huyen_matinh',$matinh)
+                ->where('huyen_matinh',$maTinh)
                 ->orderBy('ten_huyen')
                 ->get();
         return $huyen;    
     }
     
-    public function getListXa($mahuyen,$matinh)
+    public function getListXa($maHuyen,$maTinh)
     {
         $xa = DB::table('hanh_chinh')
                 ->where([
                     'ma_tinh' => '0',
                     'ma_huyen' => '0',
-                    'xa_mahuyen'=>$mahuyen,
-                    'xa_matinh'=>$matinh])
+                    'xa_mahuyen'=>$maHuyen,
+                    'xa_matinh'=>$maTinh])
                 ->get();
         return $xa;    
     }

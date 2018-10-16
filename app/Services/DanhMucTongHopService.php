@@ -13,55 +13,55 @@ use Validator;
 class DanhMucTongHopService {
     public function __construct(DanhMucTongHopRepository $danhmuctonghopRepository)
     {
-        $this->DanhMucTongHopRepository = $danhmuctonghopRepository;
+        $this->danhMucTongHopRepository = $danhmuctonghopRepository;
     }
 
     public function getListNgheNghiep()
     {
         return DanhMucTongHopResource::collection(
-           $this->DanhMucTongHopRepository->getListNgheNghiep()
+           $this->danhMucTongHopRepository->getListNgheNghiep()
         );
     }
     
     public function getListBenhVien()
     {
         return BenhVienResource::collection(
-           $this->DanhMucTongHopRepository->getListBenhVien()
+           $this->danhMucTongHopRepository->getListBenhVien()
         );
     }
 
     public function getListDanToc()
     {
         return DanhMucTongHopResource::collection(
-           $this->DanhMucTongHopRepository->getListDanToc()
+           $this->danhMucTongHopRepository->getListDanToc()
         );
     }
     
     public function getListQuocTich()
     {
         return DanhMucTongHopResource::collection(
-           $this->DanhMucTongHopRepository->getListQuocTich()
+           $this->danhMucTongHopRepository->getListQuocTich()
         );
     }
     
     public function getListTinh()
     {
         return HanhChinhResource::collection(
-           $this->DanhMucTongHopRepository->getListTinh()
+           $this->danhMucTongHopRepository->getListTinh()
         );
     }
     
-    public function getListHuyen($matinh)
+    public function getListHuyen($maTinh)
     {
         return HanhChinhResource::collection(
-           $this->DanhMucTongHopRepository->getListHuyen($matinh)
+           $this->danhMucTongHopRepository->getListHuyen($maTinh)
         );
     }
     
-    public function getListXa($mahuyen,$matinh)
+    public function getListXa($maHuyen,$maTinh)
     {
         return HanhChinhResource::collection(
-           $this->DanhMucTongHopRepository->getListXa($mahuyen,$matinh)
+           $this->danhMucTongHopRepository->getListXa($maHuyen,$maTinh)
         );
     }
 }

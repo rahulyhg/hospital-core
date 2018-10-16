@@ -11,19 +11,19 @@ use Validator;
 class PhongService {
     public function __construct(PhongRepository $phongRepository)
     {
-        $this->PhongRepository = $phongRepository;
+        $this->phongRepository = $phongRepository;
     }
    
-    public function getListPatientByKhoaPhong($loaibenhanid, $departmentid, $id_benh_vien){
+    public function getListPatientByKhoaPhong($loaiBenhAn, $phongId, $idBenhVien){
         
         
         //return new DepartmentResource($data);
     }
 
-    public function getListPhong($loaiphong,$khoaid)
+    public function getListPhong($loaiPhong,$khoaId)
     {
         return PhongResource::collection(
-           $this->PhongRepository->getListPhong($loaiphong,$khoaid)
+           $this->phongRepository->getListPhong($loaiPhong,$khoaId)
         );
     }
 }

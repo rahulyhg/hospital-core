@@ -17,13 +17,13 @@ class DangKyKhamBenhController extends APIController
      */
     public function __construct(
         PhongService $phongService, 
-        DanhMucDichVuService $danhmucdichvuService,
-        DanhMucTongHopService $danhmuctonghopService
+        DanhMucDichVuService $danhMucDichVuService,
+        DanhMucTongHopService $danhMucTongHopService
         )
     {
-        $this->PhongService = $phongService;
-        $this->DanhMucDichVuService = $danhmucdichvuService;
-        $this->DanhMucTongHopService = $danhmuctonghopService;
+        $this->phongService = $phongService;
+        $this->danhMucDichVuService = $danhMucDichVuService;
+        $this->danhMucTongHopService = $danhMucTongHopService;
     }
     
     /**
@@ -43,55 +43,55 @@ class DangKyKhamBenhController extends APIController
     // get danh sach phong kham theo departmentgroupid va departmenttype
     public function getListPhong(Request $request)
     {
-        $data = $this->PhongService->getListPhong($request->loaiphong,$request->khoaid);
+        $data = $this->phongService->getListPhong($request->loaiPhong,$request->khoaId);
         return $data;
     }
     
     public function getListYeuCauKham(Request $request)
     {
-        $data = $this->DanhMucDichVuService->getListYeuCauKham($request);
+        $data = $this->danhMucDichVuService->getListYeuCauKham($request);
         return $data;
     }
     
     public function getListNgheNghiep()
     {
-        $data = $this->DanhMucTongHopService->getListNgheNghiep();
+        $data = $this->danhMucTongHopService->getListNgheNghiep();
         return $data;
     }
     
     public function getListBenhVien()
     {
-        $data = $this->DanhMucTongHopService->getListBenhVien();
+        $data = $this->danhMucTongHopService->getListBenhVien();
         return $data;
     }
     
     public function getListDanToc()
     {
-        $data = $this->DanhMucTongHopService->getListDanToc();
+        $data = $this->danhMucTongHopService->getListDanToc();
         return $data;
     }
     
     public function getListQuocTich()
     {
-        $data = $this->DanhMucTongHopService->getListQuocTich();
+        $data = $this->danhMucTongHopService->getListQuocTich();
         return $data;
     }
     
     public function getListTinh()
     {
-        $data = $this->DanhMucTongHopService->getListTinh();
+        $data = $this->danhMucTongHopService->getListTinh();
         return $data;
     }
     
     public function getListHuyen(Request $request)
     {
-        $data = $this->DanhMucTongHopService->getListHuyen($request->matinh);
+        $data = $this->danhMucTongHopService->getListHuyen($request->maTinh);
         return $data;
     }
     
     public function getListXa(Request $request)
     {
-        $data = $this->DanhMucTongHopService->getListXa($request->mahuyen,$request->matinh);
+        $data = $this->danhMucTongHopService->getListXa($request->maHuyen,$request->maTinh);
         return $data;
     }
     /**
