@@ -14,9 +14,9 @@ class BhytRepository extends BaseRepositoryV2
         return Bhyt::class;
     }
     
-    public function getInfoPatientByBhytCode($bhytcode)
+    public function getInfoPatientByBhytCode($bhytCode)
     {
-        $result = $this->model->where('bhytcode', $bhytcode)->first();
+        $result = $this->model->where('bhytcode', $bhytCode)->first();
         
         if ($result == null) {
             return ['message' => 'not found'];
@@ -25,6 +25,5 @@ class BhytRepository extends BaseRepositoryV2
             //return new HsbaResource($data);
             return $data;
         }
-        
     }
 }

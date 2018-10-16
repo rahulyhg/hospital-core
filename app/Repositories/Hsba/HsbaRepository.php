@@ -13,7 +13,7 @@ class HsbaRepository extends BaseRepositoryV2
         return Hsba::class;
     }
     
-    public function getHsbaByBenhNhanId($benh_nhan_id)
+    public function getHsbaByBenhNhanId($benhNhanId)
     {
         $column = [
             'hsba.id as hsba_id', 
@@ -28,7 +28,7 @@ class HsbaRepository extends BaseRepositoryV2
             'department.departmentname as ten_phong',
         ];
         
-        $result = $this->model->where('hsba.benh_nhan_id', $benh_nhan_id)
+        $result = $this->model->where('hsba.benh_nhan_id', $benhNhanId)
                             ->join('department', 'department.departmentid', '=', 'hsba.phong_id')
                             ->get($column)
                             ->first();
@@ -36,19 +36,19 @@ class HsbaRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getHsbaByHsbaId($hsba_id, $phong_id)
+    public function getHsbaByHsbaId($hsbaId, $phongId)
     {
-        $loai_benh_an = 24; //kham benh
+        $loaiBenhAn = 24; //kham benh
         
-        if($phong_id != 0)
+        if($phongId != 0)
             $where = [
-                ['hsba_khoa_phong.departmentid', '=', $phong_id],
-                ['hsba.id', '=', $hsba_id]
+                ['hsba_khoa_phong.departmentid', '=', $phongId],
+                ['hsba.id', '=', $hsbaId]
             ];
         else
             $where = [
-                ['hsba_khoa_phong.loai_benh_an', '=', $loai_benh_an],
-                ['hsba.id', '=', $hsba_id]
+                ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+                ['hsba.id', '=', $hsbaId]
             ];
         
         $column = [
@@ -63,7 +63,7 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.ten_benh_nhan',
             'hsba.ngay_sinh',
             'hsba.nam_sinh',
-            'hsba.gioi_tinh',
+            'hsba.gioi_tinh_id as gioi_tinh',
             'hsba.ten_nghe_nghiep',
             'hsba.ten_quoc_tich',
             'hsba.ten_dan_toc',

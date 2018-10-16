@@ -10,15 +10,15 @@ use Validator;
 
 class BhytService
 {
-    public function __construct(BhytRepository $BhytRepository)
+    public function __construct(BhytRepository $bhytRepository)
     {
-        $this->BhytRepository = $BhytRepository;
+        $this->bhytRepository = $bhytRepository;
     }
     
-    public function getTypePatientByCode($bhytcode)
+    public function getTypePatientByCode($bhytCode)
     {
-        $datapatient = $this->BhytRepository->getTypePatientByCode($bhytcode);
+        $dataPatient = $this->bhytRepository->getTypePatientByCode($bhytCode);
         
-        return new HsbaResource($datapatient);
+        return new HsbaResource($dataPatient);
     }
 }

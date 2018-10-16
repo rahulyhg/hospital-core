@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repositories\HsbaKhoaPhong;
 
 use DB;
@@ -14,14 +13,14 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return HsbaKhoaPhong::class;
     }
     
-    public function getListBN_HC($start_day, $end_day, $offset, $limit = 20, $keyword = '')
+    public function getListBN_HC($startDay, $endDay, $offset, $limit = 20, $keyword = '')
     {
-        $loai_benh_an = 24; //kham benh
-        $khoa_hien_tai = 3; //khoa kham benh
+        $loaiBenhAn = 24; //kham benh
+        $khoaHienTai = 3; //khoa kham benh
         
         $where = [
-            ['hsba_khoa_phong.loai_benh_an', '=', $loai_benh_an],
-            ['hsba_khoa_phong.khoa_hien_tai', '=', $khoa_hien_tai],
+            ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+            ['hsba_khoa_phong.khoa_hien_tai', '=', $khoaHienTai],
         ];
         
         $column = [
@@ -53,26 +52,26 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             })
             ->where($where);
         
-        if($start_day == $end_day){
-            $query = $query->whereDate('thoi_gian_vao_vien', '=', $start_day);
+        if($startDay == $endDay){
+            $query = $query->whereDate('thoi_gian_vao_vien', '=', $startDay);
         } else {
-            $query = $query->whereBetween('thoi_gian_vao_vien', [Carbon::parse($start_day)->startOfDay(), Carbon::parse($end_day)->endOfDay()]);
+            $query = $query->whereBetween('thoi_gian_vao_vien', [Carbon::parse($startDay)->startOfDay(), Carbon::parse($endDay)->endOfDay()]);
         }
         
         if($keyword != ''){
-            $query = $query->where(function($query_adv) use ($keyword) {
-                $uppercase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
-                $lowercase = mb_convert_case($keyword, MB_CASE_LOWER, "UTF-8");
-                $titlecase = mb_convert_case($keyword, MB_CASE_TITLE, "UTF-8");
+            $query = $query->where(function($queryAdv) use ($keyword) {
+                $upperCase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
+                $lowerCase = mb_convert_case($keyword, MB_CASE_LOWER, "UTF-8");
+                $titleCase = mb_convert_case($keyword, MB_CASE_TITLE, "UTF-8");
                 
-                $query_adv->where('hsba.ten_benh_nhan', 'like', '%'.$uppercase.'%')
-                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$lowercase.'%')
-                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titlecase.'%')
+                $queryAdv->where('hsba.ten_benh_nhan', 'like', '%'.$upperCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$lowerCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titleCase.'%')
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$uppercase.'%')
+                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$upperCase.'%')
                         ->orWhereRaw("cast(hsba.id as text) like '%$keyword%'")
                         ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$keyword%'")
-                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$uppercase%'");
+                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$upperCase%'");
             });
         }
         
@@ -84,13 +83,13 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function getListBN_PK($phong_id, $start_day, $end_day, $offset, $limit = 20, $keyword = '')
+    public function getListBN_PK($phongId, $startDay, $endDay, $offset, $limit = 20, $keyword = '')
     {
-        $loai_benh_an = 24; //kham benh
+        $loaiBenhAn = 24; //kham benh
         
         $where = [
-            ['hsba_khoa_phong.loai_benh_an', '=', $loai_benh_an],
-            ['hsba_khoa_phong.phong_hien_tai', '=', $phong_id],
+            ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+            ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
         ];
         
         $column = [
@@ -122,26 +121,26 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             })
             ->where($where);
         
-        if($start_day == $end_day){
-            $query = $query->whereDate('thoi_gian_vao_vien', '=', $start_day);
+        if($startDay == $endDay){
+            $query = $query->whereDate('thoi_gian_vao_vien', '=', $startDay);
         } else {
-            $query = $query->whereBetween('thoi_gian_vao_vien', [Carbon::parse($start_day)->startOfDay(), Carbon::parse($end_day)->endOfDay()]);
+            $query = $query->whereBetween('thoi_gian_vao_vien', [Carbon::parse($startDay)->startOfDay(), Carbon::parse($endDay)->endOfDay()]);
         }   
                 
         if($keyword != ''){
-            $query = $query->where(function($query_adv) use ($keyword) {
-                $uppercase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
-                $lowercase = mb_convert_case($keyword, MB_CASE_LOWER, "UTF-8");
-                $titlecase = mb_convert_case($keyword, MB_CASE_TITLE, "UTF-8");
+            $query = $query->where(function($queryAdv) use ($keyword) {
+                $upperCase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
+                $lowerCase = mb_convert_case($keyword, MB_CASE_LOWER, "UTF-8");
+                $titleCase = mb_convert_case($keyword, MB_CASE_TITLE, "UTF-8");
                 
-                $query_adv->where('hsba.ten_benh_nhan', 'like', '%'.$uppercase.'%')
-                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$lowercase.'%')
-                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titlecase.'%')
+                $queryAdv->where('hsba.ten_benh_nhan', 'like', '%'.$upperCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$lowerCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titleCase.'%')
                         ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$uppercase.'%')
+                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$upperCase.'%')
                         ->orWhereRaw("cast(hsba.id as text) like '%$keyword%'")
                         ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$keyword%'")
-                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$uppercase%'");
+                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$upperCase%'");
             });
         }
         

@@ -9,21 +9,21 @@ use Validator;
 
 class HsbaKhoaPhongService 
 {
-    public function __construct(HsbaKhoaPhongRepository $HsbaKhoaPhongRepository)
+    public function __construct(HsbaKhoaPhongRepository $hsbaKhoaPhongRepository)
     {
-        $this->HsbaKhoaPhongRepository = $HsbaKhoaPhongRepository;
+        $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
     }
     
-    public function getListBN_HC($start_day, $end_day, $offset, $limit, $keyword)
+    public function getListBN_HC($startDay, $endDay, $offset, $limit, $keyword)
     {
-        $data = $this->HsbaKhoaPhongRepository->getListBN_HC($start_day, $end_day, $offset, $limit, $keyword);
+        $data = $this->hsbaKhoaPhongRepository->getListBN_HC($startDay, $endDay, $offset, $limit, $keyword);
         
         return $data;
     }
     
-    public function getListBN_PK($phong_id, $start_day, $end_day, $offset, $limit, $keyword)
+    public function getListBN_PK($phongId, $startDay, $endDay, $offset, $limit, $keyword)
     {
-        $data = $this->HsbaKhoaPhongRepository->getListBN_PK($phong_id, $start_day, $end_day, $offset, $limit, $keyword);
+        $data = $this->hsbaKhoaPhongRepository->getListBN_PK($phongId, $startDay, $endDay, $offset, $limit, $keyword);
         
         return $data;
     }

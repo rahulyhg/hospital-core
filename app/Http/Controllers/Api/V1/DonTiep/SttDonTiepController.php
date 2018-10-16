@@ -7,9 +7,9 @@ use App\Http\Controllers\Api\V1\APIController;
 
 class SttDonTiepController extends APIController
 {
-    public function __construct(SttDonTiepService $SttDonTiepService)
+    public function __construct(SttDonTiepService $sttDonTiepService)
     {
-        $this->service = $SttDonTiepService;
+        $this->service = $sttDonTiepService;
     }
     
     public function checkCardCode(Request $request)
