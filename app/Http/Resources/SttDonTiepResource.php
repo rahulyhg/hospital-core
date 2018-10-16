@@ -1,18 +1,10 @@
 <?php
-
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
 class SttDonTiepResource extends Resource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request
-     *
-     * @return array
-     */
     public function toArray($request)
     {
         return [
@@ -27,7 +19,7 @@ class SttDonTiepResource extends Resource
             'phong_id'              => $this->phong_id,
             'benh_vien_id'          => $this->benh_vien_id,
             'quay_so'               => $this->quay_so,
-            'thong_tin_so_bo'       => $this->thong_tin_so_bo,
+            'thong_tin_so_bo'       => json_decode($this->thong_tin_so_bo),
             'in_so'                 => $this->loai_stt.sprintf('%03d',$this->so_thu_tu),
         ];
     }

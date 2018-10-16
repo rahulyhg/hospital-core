@@ -1,33 +1,30 @@
 <?php
-
 namespace App\Services;
+
 use App\Http\Resources\HsbaResource;
 use App\Http\Resources\PatientResource;
 use App\Repositories\Hsba\HsbaRepository;
 use Illuminate\Http\Request;
 use Validator;
 
-class HsbaService{
-    /**
-     * __construct.
-     *
-     * @param $HsbaRepository
-     */
-    public function __construct(HsbaRepository $HsbaRepository)
+class HsbaService
+{
+    public function __construct(HsbaRepository $hsbaRepository)
     {
-        $this->HsbaRepository = $HsbaRepository;
+        $this->hsbaRepository = $hsbaRepository;
     }
     
-    public function getHsbaByBenhNhanId($benh_nhan_id){
-        $data = $this->HsbaRepository->getHsbaByBenhNhanId($benh_nhan_id);
+    public function getHsbaByBenhNhanId($benhNhanId)
+    {
+        $data = $this->hsbaRepository->getHsbaByBenhNhanId($benhNhanId);
          
         return new HsbaResource($data);
     }
     
-    public function getHsbaByHsbaId($hsba_id, $phong_id){
-        $data = $this->HsbaRepository->getHsbaByHsbaId($hsba_id, $phong_id);
+    public function getHsbaByHsbaId($hsbaId, $phongId)
+    {
+        $data = $this->hsbaRepository->getHsbaByHsbaId($hsbaId, $phongId);
          
         return $data;
     }
-    
 }
