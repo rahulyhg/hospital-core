@@ -11,9 +11,9 @@ use Illuminate\Http\Request;
 use Validator;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhmuctonghopRepository)
+    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository)
     {
-        $this->danhMucTongHopRepository = $danhmuctonghopRepository;
+        $this->danhMucTongHopRepository = $danhMucTongHopRepository;
     }
 
     public function getListNgheNghiep()
