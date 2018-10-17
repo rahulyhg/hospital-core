@@ -21,15 +21,39 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.gioi_tinh_id as gioi_tinh',
             'hsba.ngay_sinh',
             'hsba.nam_sinh',
+            'hsba.nghe_nghiep_id',
+            'hsba.dan_toc_id',
+            'hsba.quoc_tich_id',
+            'hsba.so_nha',
+            'hsba.duong_thon',
+            'hsba.phuong_xa_id',
+            'hsba.quan_huyen_id',
+            'hsba.tinh_thanh_pho_id',
+            'hsba.noi_lam_viec',
+            'hsba.dien_thoai_benh_nhan',
+            'hsba.email_benh_nhan',
+            'hsba.dia_chi_lien_he',
+            'hsba.url_hinh_anh',
+            'hsba.loai_nguoi_than',
+            'hsba.ten_nguoi_than',
+            'hsba.dien_thoai_nguoi_than',
             'hsba.loai_benh_an',
             'hsba.trang_thai_hsba',
             'hsba.is_dang_ky_truoc',
             'hsba.phong_id',
-            'department.departmentname as ten_phong',
+            'phong.ten_phong',
+            'hsba.ms_bhyt',
+            'bhyt.macskcbbd',
+            'bhyt.bhytfromdate',
+            'bhyt.bhytutildate',
+            'bhyt.noisinhsong',
+            'bhyt.du5nam6thangluongcoban',
+            'bhyt.dtcbh_luyke6thang'
         ];
         
         $result = $this->model->where('hsba.benh_nhan_id', $benhNhanId)
-                            ->join('department', 'department.departmentid', '=', 'hsba.phong_id')
+                            ->leftJoin('phong', 'phong.id', '=', 'hsba.phong_id')
+                            ->leftJoin('bhyt', 'bhyt.bhytcode', '=', 'hsba.ms_bhyt')
                             ->get($column)
                             ->first();
         
@@ -42,7 +66,7 @@ class HsbaRepository extends BaseRepositoryV2
         
         if($phongId != 0)
             $where = [
-                ['hsba_khoa_phong.departmentid', '=', $phongId],
+                ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
                 ['hsba.id', '=', $hsbaId]
             ];
         else
@@ -58,23 +82,24 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.so_luu_tru',
             'hsba.so_vao_vien',
             'vienphi.vienphicode',
-            'departmentgroup.departmentgroupname',
-            'department.departmentname',
+            'khoa.ten_khoa',
+            'phong.ten_phong',
             'hsba.ten_benh_nhan',
             'hsba.ngay_sinh',
             'hsba.nam_sinh',
             'hsba.gioi_tinh_id as gioi_tinh',
-            'hsba.ten_nghe_nghiep',
-            'hsba.ten_quoc_tich',
-            'hsba.ten_dan_toc',
-            'hsba.noi_lam_viec',
+            'hsba.nghe_nghiep_id',
+            'hsba.dan_toc_id',
+            'hsba.quoc_tich_id',
             'hsba.so_nha',
             'hsba.duong_thon',
-            'hsba.ten_phuong_xa',
-            'hsba.ten_quan_huyen',
-            'hsba.ten_tinh_thanh_pho',
+            'hsba.phuong_xa_id',
+            'hsba.quan_huyen_id',
+            'hsba.tinh_thanh_pho_id',
+            'hsba.noi_lam_viec',
             'hsba.dien_thoai_benh_nhan',
             'hsba.email_benh_nhan',
+            'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
             'hsba.loai_nguoi_than',
             'hsba.ten_nguoi_than',
@@ -111,8 +136,8 @@ class HsbaRepository extends BaseRepositoryV2
                     $join->on('tt2.giatri', '=', 'hsba_khoa_phong.doi_tuong_benh_nhan')
                         ->where('tt2.tablename', '=', 'doituongbenhnhan');
                 })
-                ->leftJoin('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'hsba_khoa_phong.khoa_hien_tai')
-                ->leftJoin('department', 'department.departmentid', '=', 'hsba_khoa_phong.phong_hien_tai')
+                ->leftJoin('khoa', 'khoa.id', '=', 'hsba_khoa_phong.khoa_hien_tai')
+                ->leftJoin('phong', 'phong.id', '=', 'hsba_khoa_phong.phong_hien_tai')
                 ->leftJoin('bhyt', 'bhyt.bhytid', '=', 'hsba_khoa_phong.bhyt_id')
                 ->leftJoin('vienphi', 'vienphi.hosobenhanid', '=', 'hsba.id')
                 ->where($where)
