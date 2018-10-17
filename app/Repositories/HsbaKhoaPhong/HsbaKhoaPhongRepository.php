@@ -41,7 +41,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         ];
         
         $query = DB::table('hsba_khoa_phong')
-            ->join('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
+            ->leftJoin('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
             ->leftJoin('red_trangthai as tt1', function($join) {
                 $join->on('tt1.giatri', '=', 'hsba_khoa_phong.trang_thai_cls')
                     ->where('tt1.tablename', '=', 'canlamsang');
