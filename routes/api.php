@@ -42,16 +42,16 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep');
         Route::get('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');
         
-        Route::get('getInfoPatientByStt/{stt}/{phong_id}/{benh_vien_id}','DonTiep\DonTiepController@getInfoPatientByStt');
-        Route::get('getListPatientByKhoaPhong/{type}/{phong_id}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
-        Route::get('getHsbaByHsbaId/{hsba_id}/{phong_id}','DonTiep\DonTiepController@getHsbaByHsbaId');
+        Route::get('getInfoPatientByStt/{stt}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getInfoPatientByStt');
+        Route::get('getListPatientByKhoaPhong/{type}/{phongId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
+        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}','DonTiep\DonTiepController@getHsbaByHsbaId');
+        
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
         Route::post('register','DonTiep\DonTiepController@register');
 
     });
     
     Route:: group(['prefix' => 'dangkykhambenh'], function () {
-        Route::post('dangky', 'DangKyKhamBenhController@dangky');
 		Route::get('listPhong/{loaiPhong}/{khoaId}','DangKyKhamBenh\DangKyKhamBenhController@getListPhong');
     	Route::get('yeuCauKham/{servicegrouptype}','DangKyKhamBenh\DangKyKhamBenhController@getListYeuCauKham');
     	Route::get('listNgheNghiep','DangKyKhamBenh\DangKyKhamBenhController@getListNgheNghiep');

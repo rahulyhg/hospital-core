@@ -43,17 +43,17 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.phong_id',
             'phong.ten_phong',
             'hsba.ms_bhyt',
-            'bhyt.macskcbbd',
-            'bhyt.bhytfromdate',
-            'bhyt.bhytutildate',
-            'bhyt.noisinhsong',
+            'bhyt.ma_cskcbbd',
+            'bhyt.tu_ngay',
+            'bhyt.den_ngay',
+            'bhyt.ma_noi_song',
             'bhyt.du5nam6thangluongcoban',
             'bhyt.dtcbh_luyke6thang'
         ];
         
         $result = $this->model->where('hsba.benh_nhan_id', $benhNhanId)
                             ->leftJoin('phong', 'phong.id', '=', 'hsba.phong_id')
-                            ->leftJoin('bhyt', 'bhyt.bhytcode', '=', 'hsba.ms_bhyt')
+                            ->leftJoin('bhyt', 'bhyt.ms_bhyt', '=', 'hsba.ms_bhyt')
                             ->get($column)
                             ->first();
         
@@ -105,12 +105,12 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.ten_nguoi_than',
             'hsba.dien_thoai_nguoi_than',
             'hsba.ms_bhyt',
-            'bhyt.bhyt_loaiid',
-            'bhyt.bhytfromdate',
-            'bhyt.bhytutildate',
-            'bhyt.macskcbbd',
-            'bhyt.noisinhsong',
+            'bhyt.ma_cskcbbd',
+            'bhyt.tu_ngay',
+            'bhyt.den_ngay',
+            'bhyt.ma_noi_song',
             'bhyt.du5nam6thangluongcoban',
+            'bhyt.dtcbh_luyke6thang'
             'tt2.diengiai as doi_tuong_benh_nhan',
             'hsba_khoa_phong.id as hsba_khoa_phong_id',
             'hsba_khoa_phong.chan_doan_tuyen_duoi',
@@ -138,7 +138,7 @@ class HsbaRepository extends BaseRepositoryV2
                 })
                 ->leftJoin('khoa', 'khoa.id', '=', 'hsba_khoa_phong.khoa_hien_tai')
                 ->leftJoin('phong', 'phong.id', '=', 'hsba_khoa_phong.phong_hien_tai')
-                ->leftJoin('bhyt', 'bhyt.bhytid', '=', 'hsba_khoa_phong.bhyt_id')
+                ->leftJoin('bhyt', 'bhyt.id', '=', 'hsba_khoa_phong.bhyt_id')
                 ->leftJoin('vienphi', 'vienphi.hosobenhanid', '=', 'hsba.id')
                 ->where($where)
                 ->get($column);

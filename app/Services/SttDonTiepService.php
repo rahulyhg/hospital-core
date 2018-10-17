@@ -28,10 +28,10 @@ class SttDonTiepService
     
     public function getSttDonTiep(Request $request)
     {
-        $loaiStt = $request->query('loai_stt', 'C');
-        $maSoKiosk = $request->query('ma_so_kiosk', 1);
-        $phongId = $request->query('phong_id', 1);
-        $benhVienId = $request->query('benh_vien_id', 1);
+        $loaiStt = $request->query('loaiStt', 'C');
+        $maSoKiosk = $request->query('maSoKiosk', 1);
+        $phongId = $request->query('phongId', 1);
+        $benhVienId = $request->query('benhVienId', 1);
         $data = '';
         
         $stt = $this->sttDonTiepRepository->getSttDontiep($loaiStt, $maSoKiosk, $phongId, $benhVienId, $data);
@@ -69,10 +69,10 @@ class SttDonTiepService
     public function getInfoPatientByCard(Request $request)
     {
         $arr = $request->all();
-        $cardCode = $arr['card_code'];
-        $maSoKiosk = $arr['ma_so_kiosk'];
-        $phongId = $arr['phong_id'];
-        $benhVienId = $arr['benh_vien_id'];
+        $cardCode = $arr['cardCode'];
+        $maSoKiosk = $arr['maSoKiosk'];
+        $phongId = $arr['phongId'];
+        $benhVienId = $arr['benhVienId'];
         
         $length = strlen($cardCode); 
         
