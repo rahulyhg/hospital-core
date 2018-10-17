@@ -28,10 +28,10 @@ class SttDonTiepService
     
     public function getSttDonTiep(Request $request)
     {
-        $loaiStt = $request->query('loai_stt', 'C');
-        $maSoKiosk = $request->query('ma_so_kiosk', 1);
-        $phongId = $request->query('phong_id', 1);
-        $benhVienId = $request->query('benh_vien_id', 1);
+        $loaiStt = $request->query('loaiStt', 'C');
+        $maSoKiosk = $request->query('maSoKiosk', 1);
+        $phongId = $request->query('phongId', 1);
+        $benhVienId = $request->query('benhVienId', 1);
         $data = '';
         
         $stt = $this->sttDonTiepRepository->getSttDontiep($loaiStt, $maSoKiosk, $phongId, $benhVienId, $data);
@@ -66,29 +66,19 @@ class SttDonTiepService
         return SttDonTiepResource::collection($stt);
     }
     
-    public function getInfoPatientByCard(Request $request)
+    public function scanCard($cardCode)
     {
-        $arr = $request->all();
-        $cardCode = $arr['card_code'];
-        $maSoKiosk = $arr['ma_so_kiosk'];
-        $phongId = $arr['phong_id'];
-        $benhVienId = $arr['benh_vien_id'];
-        
         $length = strlen($cardCode); 
         
         $result = ['message' => '',
                     'data' => '',
-                    'benh_nhan_cu' => 0,
-                    'dang_ky_truoc' => 0,
-                    'stt' => '',
-                    'dang_phuc_vu' => '',
-                    'thoi_gian_cho' => ''];
+                    'benh_nhan_cu' => 0];
         
         if($length > 12) {  //kiem tra co phai qrcode the bhyt khong
             $info = $this->getInfoPatientFromQRCode($cardCode);
             
             if(count($info) > 9) { 
-                $bhytCode = $info['ma_so_bhyt'];
+                $bhytCode = $info['ms_bhyt'];
                 
                 $data = $this->bhytRepository->getInfoPatientByBhytCode($bhytCode);
                 
@@ -97,12 +87,10 @@ class SttDonTiepService
                 } else {
                     $result['data'] = $data;
                     $result['benh_nhan_cu'] = 1;
-                    $result['dang_ky_truoc'] = $data['is_dang_ky_truoc'];
                 }
             } else {    //khong phai qrcode the bhyt => xuat thong bao loi
                 $result ['message'] = 'error card code';
             }
-            
         } else {    //ma the benh nhan
             $benhNhanId = (int)$cardCode;
             $data = $this->hsbaRepository->getHsbaByBenhNhanId($benhNhanId);
@@ -110,12 +98,37 @@ class SttDonTiepService
             if($data){
                 $result['data'] = $data;
                 $result['benh_nhan_cu'] = 1;
-                $result['dang_ky_truoc'] = $data['is_dang_ky_truoc'];
             } else {    //khong phai ma the benh nhan => xuat thong bao loi
                 $result ['message'] = 'error card code';
             }
         }
-       
+        
+        return $result;
+    }
+    
+    public function getInfoPatientByCard(Request $request)
+    {
+        $arr = $request->all();
+        $cardCode = $arr['cardCode'];
+        $maSoKiosk = $arr['maSoKiosk'];
+        $phongId = $arr['phongId'];
+        $benhVienId = $arr['benhVienId'];
+        
+        $result = ['message' => '',
+                    'data' => '',
+                    'benh_nhan_cu' => 0,
+                    'dang_ky_truoc' => 0,
+                    'stt' => '',
+                    'dang_phuc_vu' => '',
+                    'thoi_gian_cho' => ''];
+                    
+        $scanCard = $this->scanCard($cardCode);
+        
+        $result['message'] = $scanCard['message'];
+        $result['data'] = $scanCard['data'];
+        $result['benh_nhan_cu'] = $scanCard['benh_nhan_cu'];
+        $result['dang_ky_truoc'] = array_key_exists('is_dang_ky_truoc', $scanCard['data']) ? $scanCard['data']['is_dang_ky_truoc'] : 0;
+        
         if($result ['message'] != 'error card code') {  //ma the hop le moi kiem tra de cap STT
             if($result['dang_ky_truoc'] == 1){  //dang ky truoc => cap STT uu tien
                 $loaiStt = "A";
@@ -164,7 +177,7 @@ class SttDonTiepService
         $qrCodeParts = explode('|', $qrCode);
         
         if(count($qrCodeParts) >= 10) {
-            $info['ma_so_bhyt'] = $qrCodeParts[0];
+            $info['ms_bhyt'] = $qrCodeParts[0];
             $info['ten_benh_nhan'] = hex2bin($qrCodeParts[1]);
             $info['ngay_sinh'] = $qrCodeParts[2];
             $info['gioi_tinh'] = ($qrCodeParts[3] == 1) ? 'Nam' : 'Nữ';
@@ -176,7 +189,7 @@ class SttDonTiepService
             $info['ma_quan_ly'] = $qrCodeParts[9];
             //$info['cha_me'] = hex2bin($qrCodeParts[10]);
         } else {
-            $info['ma_so_bhyt'] = $qrCodeParts[0];
+            $info['ms_bhyt'] = $qrCodeParts[0];
         }
         
         return $info;

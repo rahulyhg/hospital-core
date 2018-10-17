@@ -13,7 +13,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return HsbaKhoaPhong::class;
     }
     
-    public function getListBN_HC($startDay, $endDay, $offset, $limit = 20, $keyword = '')
+    public function getListBenhNhanHanhChanh($startDay, $endDay, $offset, $limit = 20, $keyword = '')
     {
         $loaiBenhAn = 24; //kham benh
         $khoaHienTai = 3; //khoa kham benh
@@ -41,7 +41,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         ];
         
         $query = DB::table('hsba_khoa_phong')
-            ->join('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
+            ->leftJoin('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
             ->leftJoin('red_trangthai as tt1', function($join) {
                 $join->on('tt1.giatri', '=', 'hsba_khoa_phong.trang_thai_cls')
                     ->where('tt1.tablename', '=', 'canlamsang');
@@ -83,7 +83,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function getListBN_PK($phongId, $startDay, $endDay, $offset, $limit = 20, $keyword = '')
+    public function getListBenhNhanPhongKham($phongId, $startDay, $endDay, $offset, $limit = 20, $keyword = '')
     {
         $loaiBenhAn = 24; //kham benh
         

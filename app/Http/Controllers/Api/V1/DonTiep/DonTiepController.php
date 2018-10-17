@@ -20,17 +20,17 @@ class DonTiepController extends APIController
         $this->benhNhanService = $benhNhanService;
     }
     
-    public function getInfoPatientByStt($stt, $phongId, $benh_vien_id)
+    public function getInfoPatientByStt($stt, $phongId, $benhVienId)
     {
-        $data = $this->sttDonTiepService->getInfoPatientByStt($stt, $phongId, $benh_vien_id);
+        $data = $this->sttDonTiepService->getInfoPatientByStt($stt, $phongId, $benhVienId);
         
         return $data;
     }
     
     public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, Request $request)
     {
-        $startDay = $request->query('start_day', Carbon::today());
-        $endDay = $request->query('end_day', Carbon::today());
+        $startDay = $request->query('startDay', Carbon::today());
+        $endDay = $request->query('endDay', Carbon::today());
         $offset = $request->query('offset', 0);
         $limit = $request->query('limit', 20);
         $keyword = $request->query('keyword', '');
@@ -42,22 +42,22 @@ class DonTiepController extends APIController
             //$data = $redis->get('list_BN_HC');
             
             //if($data) {
-                //$list_BN = $data;
+                //$listBenhNhan = $data;
             //} else {
-                $list_BN = $this->hsbaKhoaPhongService->getListBN_HC($startDay, $endDay, $offset, $limit, $keyword);
-                //$redis->set('list_BN_HC', $list_BN);
+                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanHanhChanh($startDay, $endDay, $offset, $limit, $keyword);
+                //$redis->set('list_BN_HC', $listBenhNhan);
             //}
         } else {
             //$data = $redis->get('list_BN_PK');
             
             //if($data) {
-                //$list_BN = $data;
+                //$listBenhNhan = $data;
             //} else {
-                $list_BN = $this->hsbaKhoaPhongService->getListBN_PK($phongId, $startDay, $endDay, $offset, $limit, $keyword);
+                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanPhongKham($phongId, $startDay, $endDay, $offset, $limit, $keyword);
             //}
         }
         
-        return $list_BN;
+        return $listBenhNhan;
     }
     
     public function getHsbaByHsbaId($hsbaId, $phongId){
