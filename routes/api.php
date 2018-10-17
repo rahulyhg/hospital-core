@@ -52,13 +52,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route:: group(['prefix' => 'dangkykhambenh'], function () {
         Route::post('dangky', 'DangKyKhamBenhController@dangky');
-		Route::get('listphong/{departmenttype}/{departmentgroupid}','DangKyKhamBenh\DangKyKhamBenhController@getListPhong');
-    	Route::get('yeucaukham/{servicegrouptype}','DangKyKhamBenh\DangKyKhamBenhController@getListYeuCauKham');
-    	Route::get('listnghenghiep','DangKyKhamBenh\DangKyKhamBenhController@getListNgheNghiep');
-    	Route::get('listbenhvien','DangKyKhamBenh\DangKyKhamBenhController@getListBenhVien');
-    	Route::get('listdantoc','DangKyKhamBenh\DangKyKhamBenhController@getListDanToc');
-    	Route::get('listquoctich','DangKyKhamBenh\DangKyKhamBenhController@getListQuocTich');
-    	Route::get('listtinh','DangKyKhamBenh\DangKyKhamBenhController@getListTinh');
+		Route::get('listPhong/{loaiPhong}/{khoaId}','DangKyKhamBenh\DangKyKhamBenhController@getListPhong');
+    	Route::get('yeuCauKham/{servicegrouptype}','DangKyKhamBenh\DangKyKhamBenhController@getListYeuCauKham');
+    	Route::get('listNgheNghiep','DangKyKhamBenh\DangKyKhamBenhController@getListNgheNghiep');
+    	Route::get('listBenhVien','DangKyKhamBenh\DangKyKhamBenhController@getListBenhVien');
+    	Route::get('listDanToc','DangKyKhamBenh\DangKyKhamBenhController@getListDanToc');
+    	Route::get('listQuocTich','DangKyKhamBenh\DangKyKhamBenhController@getListQuocTich');
+    	Route::get('listTinh','DangKyKhamBenh\DangKyKhamBenhController@getListTinh');
+    	Route::get('listHuyen/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getListHuyen');
+    	Route::get('listXa/{maHuyen}/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getListXa');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

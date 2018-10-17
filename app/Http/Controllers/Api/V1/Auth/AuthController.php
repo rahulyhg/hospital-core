@@ -16,7 +16,7 @@ class AuthController extends Controller
     public function __construct(AuthService $service)
     {
         
-        $this->authservice = $service;
+        $this->authService = $service;
     }
     public function register(RegisterFormRequest $request)
     {
@@ -47,7 +47,7 @@ class AuthController extends Controller
                 'msg' => 'Invalid Credentials.'
             ], 400);
         }
-        $roles = $this->authservice->getUserRolesByEmail($request->email);
+        $roles = $this->authService->getUserRolesByEmail($request->email);
         $extraPayload = array(
             'roles' => $roles
         );
