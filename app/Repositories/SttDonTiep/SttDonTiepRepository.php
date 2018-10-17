@@ -110,7 +110,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
             
             $thoiGianCho = ($arrTime[0] != '00' ? $arrTime[0] . ' giờ ' . $arrTime[1] . ' phút' : $arrTime[1] . ' phút');
         } else {
-            $thoiGianCho = '00 phút';
+            $thoiGianCho = '01 phút';
         }
         
         return $thoiGianCho;
@@ -118,11 +118,11 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function goiSttDonTiep($request)
     {
-        $loaiStt = $request->query('loai_stt', 'C');
-        $phongId = $request->query('phong_id', 1);
-        $benhVienId = $request->query('benh_vien_id', 1);
-        $quaySo = $request->query('quay_so', 1);
-        $authUsersId = $request->query('auth_users_id', 1);
+        $loaiStt = $request->query('loaiStt', 'C');
+        $phongId = $request->query('phongId', 1);
+        $benhVienId = $request->query('benhVienId', 1);
+        $quaySo = $request->query('quaySo', 1);
+        $authUsersId = $request->query('authUsersId', 1);
         $today = Carbon::today();
         
         $where = [
@@ -154,8 +154,8 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function loadSttDonTiep($request)
     {
-        $phongId = $request->query('phong_id', 1);
-        $benhVienId = $request->query('benh_vien_id', 1);
+        $phongId = $request->query('phongId', 1);
+        $benhVienId = $request->query('benhVienId', 1);
         $today = Carbon::today();
         
         $where = [
