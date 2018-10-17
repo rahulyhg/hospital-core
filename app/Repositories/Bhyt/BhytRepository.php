@@ -16,12 +16,12 @@ class BhytRepository extends BaseRepositoryV2
     
     public function getInfoPatientByBhytCode($bhytCode)
     {
-        $result = $this->model->where('bhytcode', $bhytCode)->first();
+        $result = $this->model->where('ms_bhyt', $bhytCode)->first();
         
         if ($result == null) {
             return ['message' => 'not found'];
         } else {
-            $data = Hsba::findOrFail($result['hosobenhanid']);
+            $data = Hsba::findOrFail($result['hsba_id']);
             //return new HsbaResource($data);
             return $data;
         }

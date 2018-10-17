@@ -37,7 +37,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 
     
     Route:: group(['prefix' => 'dontiep'], function () {
-        Route::post('checkCardCode','DonTiep\SttDonTiepController@checkCardCode');
+        Route::post('getInfoPatientByCard','DonTiep\SttDonTiepController@getInfoPatientByCard');
+        Route::post('scanCard','DonTiep\SttDonTiepController@scanCard');
         Route::get('getSttDonTiep','DonTiep\SttDonTiepController@getSttDonTiep');
         Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep');
         Route::get('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');

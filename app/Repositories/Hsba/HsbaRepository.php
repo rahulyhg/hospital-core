@@ -110,7 +110,7 @@ class HsbaRepository extends BaseRepositoryV2
             'bhyt.den_ngay',
             'bhyt.ma_noi_song',
             'bhyt.du5nam6thangluongcoban',
-            'bhyt.dtcbh_luyke6thang'
+            'bhyt.dtcbh_luyke6thang',
             'tt2.diengiai as doi_tuong_benh_nhan',
             'hsba_khoa_phong.id as hsba_khoa_phong_id',
             'hsba_khoa_phong.chan_doan_tuyen_duoi',

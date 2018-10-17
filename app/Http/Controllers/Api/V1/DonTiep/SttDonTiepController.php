@@ -12,9 +12,16 @@ class SttDonTiepController extends APIController
         $this->service = $sttDonTiepService;
     }
     
-    public function checkCardCode(Request $request)
+    public function getInfoPatientByCard(Request $request)
     {
         $data = $this->service->getInfoPatientByCard($request);
+        
+        return $data;
+    }
+    
+    public function scanCard(Request $request)
+    {
+        $data = $this->service->scanCard($request->cardCode);
         
         return $data;
     }
