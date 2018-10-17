@@ -11,6 +11,7 @@ class SttDonTiepResource extends Resource
             'id'                    => $this->id,
             'loai_stt'              => $this->loai_stt,
             'so_thu_tu'             => $this->so_thu_tu,
+            'in_so'                 => $this->loai_stt.sprintf('%03d',$this->so_thu_tu),
             'trang_thai'            => $this->trang_thai,
             'thoi_gian_phat'        => $this->thoi_gian_phat,
             'thoi_gian_goi'         => $this->thoi_gian_goi,
@@ -19,8 +20,8 @@ class SttDonTiepResource extends Resource
             'phong_id'              => $this->phong_id,
             'benh_vien_id'          => $this->benh_vien_id,
             'quay_so'               => $this->quay_so,
+            'auth_users_id'         => $this->auth_users_id,
             'thong_tin_so_bo'       => json_decode($this->thong_tin_so_bo),
-            'in_so'                 => $this->loai_stt.sprintf('%03d',$this->so_thu_tu),
         ];
     }
 }

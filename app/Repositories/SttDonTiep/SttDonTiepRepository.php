@@ -47,6 +47,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
                         'benh_vien_id' => $benhVienId,
                         'thong_tin_so_bo' => $data ? json_encode($data) : null,
                         'quay_so' => null,
+                        'auth_users_id' => null
                     ];
                     
         $this->model->create($attributes);
@@ -121,6 +122,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
         $phongId = $request->query('phong_id', 1);
         $benhVienId = $request->query('benh_vien_id', 1);
         $quaySo = $request->query('quay_so', 1);
+        $authUsersId = $request->query('auth_users_id', 1);
         $today = Carbon::today();
         
         $where = [
@@ -140,6 +142,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
         $attributes = ['trang_thai' => 2,
                         'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
                         'quay_so' => $quaySo,
+                        'auth_users_id' => $authUsersId
                     ];
         
         $this->model->where('id', '=', $id)->update($attributes);

@@ -56,7 +56,7 @@ class SttDonTiepService
     {
         $data = $this->sttDonTiepRepository->goiSttDonTiep($request);
         
-        return $data;
+        return new SttDonTiepResource($data);
     }
     
     public function loadSttDonTiep(Request $request)
