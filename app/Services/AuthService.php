@@ -16,16 +16,17 @@ class AuthService {
         AuthUsersGroupsRepository $authUsersGroupsRepository,
         AuthGroupsHasRolesRepository $authGroupsHasRolesRepository )
     {
-        $this->AuthUsersRepository = $authUsersRepository;
-        $this->AuthUsersGroupsRepository = $authUsersGroupsRepository;
-        $this->AuthGroupsHasRolesRepository = $authGroupsHasRolesRepository;
+        $this->authUsersRepository = $authUsersRepository;
+        $this->authUsersGroupsRepository = $authUsersGroupsRepository;
+        $this->authGroupsHasRolesRepository = $authGroupsHasRolesRepository;
     }
 
     public function getUserRolesByEmail($email)
     {
-        $id = $this->AuthUsersRepository->getIdbyEmail($email);
-        $idgroup = $this->AuthUsersGroupsRepository->getIdGroupbyId($id);
-        $roles = $this->AuthGroupsHasRolesRepository->getRolesbyIdGroup($idgroup);
+        $id = $this->authUsersRepository->getIdbyEmail($email);
+        $idGroup = $this->authUsersGroupsRepository->getIdGroupbyId($id->id);
+        $roles = $this->authGroupsHasRolesRepository->getRolesbyIdGroup($idGroup);
+        $arr = [$id->username,$roles];
         return $roles;
     }
 }

@@ -7,9 +7,9 @@ use App\Models\Auth\AuthGroupsHasRoles;
 class AuthGroupsHasRolesRepository extends BaseRepository
 {
 
-     public function getRolesbyIdGroup($idgroup)
+     public function getRolesbyIdGroup($idGroup)
     {
-        $dataSet =  DB::table('auth_groups_has_roles')->whereIn('group_id',$idgroup)->get();
+        $dataSet =  DB::table('auth_groups_has_roles')->whereIn('group_id',$idGroup)->get();
         if($dataSet)
         {
             $result= array();
