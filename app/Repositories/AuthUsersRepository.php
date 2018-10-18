@@ -12,7 +12,7 @@ class AuthUsersRepository extends BaseRepository
                 ->where('email',$email)
                 ->first();
         if($data)
-            return $data->id;    
+            return $data;
     }
     
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repositories\SttDonTiep;
 
 use DB;
@@ -14,14 +13,14 @@ class SttDonTiepRepository extends BaseRepositoryV2
         return SttDonTiep::class;
     }
     
-    public function getSttDonTiep($loai_stt, $ma_so_kiosk, $phong_id, $benh_vien_id)
+    public function getSttDonTiep($loaiStt, $maSoKiosk, $phongId, $benhVienId, $data)
     {
         $today = Carbon::today();
         
         $where = [
-            ['loai_stt', '=', $loai_stt],
-            ['phong_id', '=', $phong_id],
-            ['benh_vien_id', '=', $benh_vien_id]
+            ['loai_stt', '=', $loaiStt],
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId]
         ];
         
         $result = $this->model->where($where)
@@ -29,47 +28,108 @@ class SttDonTiepRepository extends BaseRepositoryV2
                             ->orderBy('id', 'desc')
                             ->first();
                             
-        $stt_current = $result['so_thu_tu'];
+        $sttCurrent = $result['so_thu_tu'];
         
-        if($stt_current == ''){
-            $so_thu_tu = 1;
+        if($sttCurrent == ''){
+            $soThuTu = 1;
         } else {
-            $so_thu_tu = $stt_current + 1;
+            $soThuTu = $sttCurrent + 1;
         }
         
-        $attributes = ['loai_stt' => $loai_stt,
-                        'so_thu_tu' => $so_thu_tu,
+        $attributes = ['loai_stt' => $loaiStt,
+                        'so_thu_tu' => $soThuTu,
                         'trang_thai' => 1,
                         'thoi_gian_phat' => Carbon::now()->toDateTimeString(),
                         'thoi_gian_goi' => null,
                         'thoi_gian_ket_thuc' => null,
-                        'ma_so_kiosk' => $ma_so_kiosk,
-                        'phong_id' => $phong_id,
-                        'benh_vien_id' => $benh_vien_id,
-                        'thong_tin_so_bo' => null,
+                        'ma_so_kiosk' => $maSoKiosk,
+                        'phong_id' => $phongId,
+                        'benh_vien_id' => $benhVienId,
+                        'thong_tin_so_bo' => $data ? json_encode($data) : null,
                         'quay_so' => null,
+                        'auth_users_id' => null
                     ];
                     
         $this->model->create($attributes);
         
-        $stt = $loai_stt . sprintf('%03d', $so_thu_tu);
+        $stt = $soThuTu;
         
         return $stt;
     }
     
-    public function goiSttDonTiep($request)
+    public function getSttDangPhucVu($loaiStt, $phongId, $benhVienId) 
     {
-        $loai_stt = $request->query('loai_stt', 'C');
-        $phong_id = $request->query('phong_id', 1);
-        $benh_vien_id = $request->query('benh_vien_id', 1);
-        $quay_so = $request->query('quay_so', 1);
         $today = Carbon::today();
         
         $where = [
-            ['loai_stt', '=', $loai_stt],
+            ['loai_stt', '=', $loaiStt],
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId]
+        ];
+        
+        $result = $this->model->where($where)
+                            ->whereBetween('thoi_gian_goi', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->orderBy('id', 'desc')
+                            ->first();
+        
+        if($result)                    
+            $sttDangPhucVu = $result['so_thu_tu'];
+        else
+            $sttDangPhucVu = '';
+        
+        return $sttDangPhucVu;
+    }
+    
+    public function calcTime($sttDangPhucVu, $loaiStt, $phongId, $benhVienId)
+    {
+        $today = Carbon::today();
+        
+        $where = [
+            ['loai_stt', '=', $loaiStt],
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId],
             ['trang_thai', '=', 1],
-            ['phong_id', '=', $phong_id],
-            ['benh_vien_id', '=', $benh_vien_id]
+            ['so_thu_tu', '>', $sttDangPhucVu]
+        ];
+        
+        $result = $this->model->where($where)
+                            ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->get();
+        
+        if($result) {
+            $seconds = 0;
+            foreach($result as $item) {
+                if($item['thong_tin_so_bo'])
+                    $seconds += 30;
+                else
+                    $seconds += 180;
+            }
+            
+            $time = gmdate('H:i', $seconds);
+            $arrTime = explode(':', $time);
+            
+            $thoiGianCho = ($arrTime[0] != '00' ? $arrTime[0] . ' giờ ' . $arrTime[1] . ' phút' : $arrTime[1] . ' phút');
+        } else {
+            $thoiGianCho = '01 phút';
+        }
+        
+        return $thoiGianCho;
+    }
+    
+    public function goiSttDonTiep($request)
+    {
+        $loaiStt = $request->query('loaiStt', 'C');
+        $phongId = $request->query('phongId', 1);
+        $benhVienId = $request->query('benhVienId', 1);
+        $quaySo = $request->query('quaySo', 1);
+        $authUsersId = $request->query('authUsersId', 1);
+        $today = Carbon::today();
+        
+        $where = [
+            ['loai_stt', '=', $loaiStt],
+            ['trang_thai', '=', 1],
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId]
         ];
         
         $result = $this->model->where($where)
@@ -81,24 +141,27 @@ class SttDonTiepRepository extends BaseRepositoryV2
                             
         $attributes = ['trang_thai' => 2,
                         'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
-                        'quay_so' => $quay_so,
+                        'quay_so' => $quaySo,
+                        'auth_users_id' => $authUsersId
                     ];
         
         $this->model->where('id', '=', $id)->update($attributes);
         
-        return $result;
+        $data = $this->model->findOrFail($id);
+        
+        return $data;
     }
-
+    
     public function loadSttDonTiep($request)
     {
-        $phong_id = $request->query('phong_id', 1);
-        $benh_vien_id = $request->query('benh_vien_id', 1);
+        $phongId = $request->query('phongId', 1);
+        $benhVienId = $request->query('benhVienId', 1);
         $today = Carbon::today();
         
         $where = [
             ['trang_thai', '=', 2],
-            ['phong_id', '=', $phong_id],
-            ['benh_vien_id', '=', $benh_vien_id]
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId]
         ];
         
         $result = $this->model->where($where)
@@ -111,15 +174,15 @@ class SttDonTiepRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
+    public function getInfoPatientByStt($stt, $phongId, $benhVienId)
     {
         $today = Carbon::today();
         
         $dieu_kien = [
             'loai_stt'      => $stt[0],
             'so_thu_tu'     => (int)substr($stt, 1, 4),
-            'phong_id'      => $phong_id,
-            'benh_vien_id'  => $benh_vien_id
+            'phong_id'      => $phongId,
+            'benh_vien_id'  => $benhVienId
         ];
         
         $data = DB::table('stt_don_tiep')
@@ -130,6 +193,5 @@ class SttDonTiepRepository extends BaseRepositoryV2
                 
         return $data;   
     }
-    
     
 }

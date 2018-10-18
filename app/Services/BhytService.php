@@ -1,38 +1,24 @@
 <?php
-
 namespace App\Services;
-use App\Http\Resources\HosobenhanResource;
+
+use App\Http\Resources\HsbaResource;
 use App\Http\Resources\PatientResource;
 use App\Http\Resources\BhytResource;
-//use App\Repositories\Patient\PatientRepositoryInterface;
 use App\Repositories\Bhyt\BhytRepository;
 use Illuminate\Http\Request;
 use Validator;
-class BhytService{
-    /**
-     * __construct.
-     *
-     * @param $BhytRepository
-     */
-    public function __construct(BhytRepository $BhytRepository)
+
+class BhytService
+{
+    public function __construct(BhytRepository $bhytRepository)
     {
-        $this->BhytRepository = $BhytRepository;
+        $this->bhytRepository = $bhytRepository;
     }
-    public function getTypePatientByCode($bhytcode)
+    
+    public function getTypePatientByCode($bhytCode)
     {
-        $datapatient = $this->BhytRepository->getTypePatientByCode($bhytcode);
-        //return new BhytResource($datapatient);
-        //$x = array(
-        //        'patientid' => $datapatient['patientid'],
-        //        'hosobenhanid' => $datapatient['hosobenhanid'],
-        //);
+        $dataPatient = $this->bhytRepository->getTypePatientByCode($bhytCode);
         
-        return new HosobenhanResource($datapatient);
-        
-         
-         //$datapatientobj = new BhytResource($datapatient);
-         //foreach($datapatientobj as $obj) {
-             // $patientid = $obj['patientid'];
-   
+        return new HsbaResource($dataPatient);
     }
 }

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Api\V1\DangKyKhamBenh;
 
 use Illuminate\Http\Request;
-use App\Services\DepartmentService;
+use App\Services\PhongService;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
-use App\Services\BenhVienService;
 use App\Http\Controllers\API\V1\APIController;
 
 class DangKyKhamBenhController extends APIController
@@ -17,16 +16,14 @@ class DangKyKhamBenhController extends APIController
      * @param DangKyKhamBenhService $service
      */
     public function __construct(
-        DepartmentService $departmentservice, 
-        DanhMucDichVuService $danhmucdichvuservice,
-        DanhMucTongHopService $danhmuctonghopservice,
-        BenhVienService $benhvienservice
+        PhongService $phongService, 
+        DanhMucDichVuService $danhMucDichVuService,
+        DanhMucTongHopService $danhMucTongHopService
         )
     {
-        $this->departmentservice = $departmentservice;
-        $this->danhmucdichvuservice = $danhmucdichvuservice;
-        $this->danhmuctonghopservice = $danhmuctonghopservice;
-        $this->benhvienservice = $benhvienservice;
+        $this->phongService = $phongService;
+        $this->danhMucDichVuService = $danhMucDichVuService;
+        $this->danhMucTongHopService = $danhMucTongHopService;
     }
     
     /**
@@ -43,46 +40,58 @@ class DangKyKhamBenhController extends APIController
     //     return $data;
     // }
     
-    // get danh sach phong kham theo departmentgroupid va departmenttypy
+    // get danh sach phong kham theo departmentgroupid va departmenttype
     public function getListPhong(Request $request)
     {
-        $data = $this->departmentservice->getListDepartment($request);
+        $data = $this->phongService->getListPhong($request->loaiPhong,$request->khoaId);
         return $data;
     }
     
     public function getListYeuCauKham(Request $request)
     {
-        $data = $this->danhmucdichvuservice->getListYeuCauKham($request);
+        $data = $this->danhMucDichVuService->getListYeuCauKham($request);
         return $data;
     }
     
     public function getListNgheNghiep()
     {
-        $data = $this->danhmuctonghopservice->getListNgheNghiep();
+        $data = $this->danhMucTongHopService->getListNgheNghiep();
         return $data;
     }
     
     public function getListBenhVien()
     {
-        $data = $this->danhmuctonghopservice->getListBenhVien();
+        $data = $this->danhMucTongHopService->getListBenhVien();
         return $data;
     }
     
     public function getListDanToc()
     {
-        $data = $this->danhmuctonghopservice->getListDanToc();
+        $data = $this->danhMucTongHopService->getListDanToc();
         return $data;
     }
     
     public function getListQuocTich()
     {
-        $data = $this->danhmuctonghopservice->getListQuocTich();
+        $data = $this->danhMucTongHopService->getListQuocTich();
         return $data;
     }
     
     public function getListTinh()
     {
-        $data = $this->danhmuctonghopservice->getListTinh();
+        $data = $this->danhMucTongHopService->getListTinh();
+        return $data;
+    }
+    
+    public function getListHuyen(Request $request)
+    {
+        $data = $this->danhMucTongHopService->getListHuyen($request->maTinh);
+        return $data;
+    }
+    
+    public function getListXa(Request $request)
+    {
+        $data = $this->danhMucTongHopService->getListXa($request->maHuyen,$request->maTinh);
         return $data;
     }
     /**

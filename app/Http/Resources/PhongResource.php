@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class DanhMucTongHopResource extends Resource
+class PhongResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,12 @@ class DanhMucTongHopResource extends Resource
     public function toArray($request)
     {
         return [
-            'id'            => $this->id,
-            'khoa'          => $this->khoa,
-            'gia_tri'       => $this->gia_tri,
-            'dien_giai'     => $this->dien_giai
+            'id'      => $this->id,
+            'ma_phong'    => $this->ma_phong,
+            'ten_phong'    => $this->ten_phong,
+            'khoa_id' => $this->khoa_id,
+            'loai_phong'    => $this->loai_phong
+          
         ];
     }
 }

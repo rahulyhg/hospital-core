@@ -13,42 +13,66 @@ class HsbaRepository extends BaseRepositoryV2
         return Hsba::class;
     }
     
-    public function getHsbaByBenhNhanId($benh_nhan_id)
+    public function getHsbaByBenhNhanId($benhNhanId)
     {
         $column = [
             'hsba.id as hsba_id', 
             'hsba.ten_benh_nhan',
-            'hsba.gioi_tinh',
+            'hsba.gioi_tinh_id as gioi_tinh',
             'hsba.ngay_sinh',
             'hsba.nam_sinh',
+            'hsba.nghe_nghiep_id',
+            'hsba.dan_toc_id',
+            'hsba.quoc_tich_id',
+            'hsba.so_nha',
+            'hsba.duong_thon',
+            'hsba.phuong_xa_id',
+            'hsba.quan_huyen_id',
+            'hsba.tinh_thanh_pho_id',
+            'hsba.noi_lam_viec',
+            'hsba.dien_thoai_benh_nhan',
+            'hsba.email_benh_nhan',
+            'hsba.dia_chi_lien_he',
+            'hsba.url_hinh_anh',
+            'hsba.loai_nguoi_than',
+            'hsba.ten_nguoi_than',
+            'hsba.dien_thoai_nguoi_than',
             'hsba.loai_benh_an',
             'hsba.trang_thai_hsba',
             'hsba.is_dang_ky_truoc',
             'hsba.phong_id',
-            'department.departmentname as ten_phong',
+            'phong.ten_phong',
+            'hsba.ms_bhyt',
+            'bhyt.ma_cskcbbd',
+            'bhyt.tu_ngay',
+            'bhyt.den_ngay',
+            'bhyt.ma_noi_song',
+            'bhyt.du5nam6thangluongcoban',
+            'bhyt.dtcbh_luyke6thang'
         ];
         
-        $result = $this->model->where('hsba.benh_nhan_id', $benh_nhan_id)
-                            ->join('department', 'department.departmentid', '=', 'hsba.phong_id')
+        $result = $this->model->where('hsba.benh_nhan_id', $benhNhanId)
+                            ->leftJoin('phong', 'phong.id', '=', 'hsba.phong_id')
+                            ->leftJoin('bhyt', 'bhyt.ms_bhyt', '=', 'hsba.ms_bhyt')
                             ->get($column)
                             ->first();
         
         return $result;
     }
     
-    public function getHsbaByHsbaId($hsba_id, $phong_id)
+    public function getHsbaByHsbaId($hsbaId, $phongId)
     {
-        $loai_benh_an = 24; //kham benh
+        $loaiBenhAn = 24; //kham benh
         
-        if($phong_id != 0)
+        if($phongId != 0)
             $where = [
-                ['hsba_khoa_phong.departmentid', '=', $phong_id],
-                ['hsba.id', '=', $hsba_id]
+                ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
+                ['hsba.id', '=', $hsbaId]
             ];
         else
             $where = [
-                ['hsba_khoa_phong.loai_benh_an', '=', $loai_benh_an],
-                ['hsba.id', '=', $hsba_id]
+                ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+                ['hsba.id', '=', $hsbaId]
             ];
         
         $column = [
@@ -58,34 +82,35 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.so_luu_tru',
             'hsba.so_vao_vien',
             'vienphi.vienphicode',
-            'departmentgroup.departmentgroupname',
-            'department.departmentname',
+            'khoa.ten_khoa',
+            'phong.ten_phong',
             'hsba.ten_benh_nhan',
             'hsba.ngay_sinh',
             'hsba.nam_sinh',
-            'hsba.gioi_tinh',
-            'hsba.ten_nghe_nghiep',
-            'hsba.ten_quoc_tich',
-            'hsba.ten_dan_toc',
-            'hsba.noi_lam_viec',
+            'hsba.gioi_tinh_id as gioi_tinh',
+            'hsba.nghe_nghiep_id',
+            'hsba.dan_toc_id',
+            'hsba.quoc_tich_id',
             'hsba.so_nha',
             'hsba.duong_thon',
-            'hsba.ten_phuong_xa',
-            'hsba.ten_quan_huyen',
-            'hsba.ten_tinh_thanh_pho',
+            'hsba.phuong_xa_id',
+            'hsba.quan_huyen_id',
+            'hsba.tinh_thanh_pho_id',
+            'hsba.noi_lam_viec',
             'hsba.dien_thoai_benh_nhan',
             'hsba.email_benh_nhan',
+            'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
             'hsba.loai_nguoi_than',
             'hsba.ten_nguoi_than',
             'hsba.dien_thoai_nguoi_than',
             'hsba.ms_bhyt',
-            'bhyt.bhyt_loaiid',
-            'bhyt.bhytfromdate',
-            'bhyt.bhytutildate',
-            'bhyt.macskcbbd',
-            'bhyt.noisinhsong',
+            'bhyt.ma_cskcbbd',
+            'bhyt.tu_ngay',
+            'bhyt.den_ngay',
+            'bhyt.ma_noi_song',
             'bhyt.du5nam6thangluongcoban',
+            'bhyt.dtcbh_luyke6thang',
             'tt2.diengiai as doi_tuong_benh_nhan',
             'hsba_khoa_phong.id as hsba_khoa_phong_id',
             'hsba_khoa_phong.chan_doan_tuyen_duoi',
@@ -102,19 +127,19 @@ class HsbaRepository extends BaseRepositoryV2
         ];
         
         $data = DB::table('hsba')
-                ->join('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
-                ->join('red_trangthai as tt1', function($join) {
+                ->leftJoin('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
+                ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'hsba_khoa_phong.loai_benh_an')
                         ->where('tt1.tablename', '=', 'loaibenhanid');
                 })
-                ->join('red_trangthai as tt2', function($join) {
+                ->leftJoin('red_trangthai as tt2', function($join) {
                     $join->on('tt2.giatri', '=', 'hsba_khoa_phong.doi_tuong_benh_nhan')
                         ->where('tt2.tablename', '=', 'doituongbenhnhan');
                 })
-                ->join('departmentgroup', 'departmentgroup.departmentgroupid', '=', 'hsba_khoa_phong.khoa_hien_tai')
-                ->join('department', 'department.departmentid', '=', 'hsba_khoa_phong.phong_hien_tai')
-                ->join('bhyt', 'bhyt.bhytid', '=', 'hsba_khoa_phong.bhyt_id')
-                ->join('vienphi', 'vienphi.hosobenhanid', '=', 'hsba.id')
+                ->leftJoin('khoa', 'khoa.id', '=', 'hsba_khoa_phong.khoa_hien_tai')
+                ->leftJoin('phong', 'phong.id', '=', 'hsba_khoa_phong.phong_hien_tai')
+                ->leftJoin('bhyt', 'bhyt.id', '=', 'hsba_khoa_phong.bhyt_id')
+                ->leftJoin('vienphi', 'vienphi.hosobenhanid', '=', 'hsba.id')
                 ->where($where)
                 ->get($column);
           
