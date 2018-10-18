@@ -9,5 +9,9 @@ class Bhyt extends Model
     //
     protected $table='bhyt';
     
-    protected $primaryKey='bhytid';
+    protected $primaryKey='id';
+    
+    public $timestamps = false;
+    
+    protected $guarded = ['id'];
 }

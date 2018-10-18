@@ -27,4 +27,21 @@ class BhytRepository extends BaseRepositoryV2
         }
         
     }
+    
+    public function createDataBHYT(array $input)
+    {
+        $id = Bhyt::create($input)->id;
+        return $id;
+    }
+    
+    public function checkMaSoBhyt($ms_bhyt)
+    {
+        $column = [
+            'benh_nhan_id', 
+        ];
+        $result = $this->model->where('bhyt.ms_bhyt', $ms_bhyt)
+                            ->get($column)
+                            ->first(); 
+        return $result;
+    }
 }

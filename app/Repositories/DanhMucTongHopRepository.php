@@ -46,7 +46,7 @@ class DanhMucTongHopRepository extends BaseRepository
         return $tinh;    
     }
     
-    public function getTen_DanhMucTongHopByKhoa_GiaTri($khoa, $gia_tri)
+    public function getTenDanhMucTongHopByKhoaGiaTri($khoa, $gia_tri)
     {
         $where = [
                 ['danh_muc_tong_hop.khoa', '=', $khoa],
@@ -63,7 +63,7 @@ class DanhMucTongHopRepository extends BaseRepository
         return collect($array)->first();  
     }
     
-    public function getData_Tinh($value)
+    public function getDataTinh($value)
     {
         $where = [
                 ['hanh_chinh.ma_tinh', '=', $value]
@@ -74,7 +74,7 @@ class DanhMucTongHopRepository extends BaseRepository
         $array = json_decode($data, true);
         return collect($array)->first(); 
     }
-    public function getData_Huyen($huyen_matinh, $ma_huyen)
+    public function getDataHuyen($huyen_matinh, $ma_huyen)
     {
         $where = [
                 ['hanh_chinh.huyen_matinh', '=', $huyen_matinh],
@@ -86,7 +86,7 @@ class DanhMucTongHopRepository extends BaseRepository
         $array = json_decode($data, true);
         return collect($array)->first(); 
     }
-    public function getData_Xa($xa_matinh, $xa_mahuyen, $ma_xa)
+    public function getDataXa($xa_matinh, $xa_mahuyen, $ma_xa)
     {
         $where = [
                 ['hanh_chinh.xa_matinh', '=', $xa_matinh],

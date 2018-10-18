@@ -75,8 +75,8 @@ class DonTiepController extends APIController
     public function register(DangKyKhamBenhFormRequest $request)
     //public function register(Request $request)
     {   
-        try {
-            
+        try 
+        {
             $id = $this->BenhNhanService->createBenhNhan($request);
             return $id;
             
