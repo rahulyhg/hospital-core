@@ -18,4 +18,16 @@ class BenhNhanRepository extends BaseRepositoryV2
          $id = BenhNhan::create($input)->id;
          return $id;
     }
+    
+    public function checkMaSoBenhNhan($benh_nhan_id)
+    {
+        $column = [
+            'id as benh_nhan_id', 
+        ];
+        $result = $this->model->where('benh_nhan.id', $benh_nhan_id)
+                            ->get($column)
+                            ->first(); 
+        return $result;
+    }
+    
 }
