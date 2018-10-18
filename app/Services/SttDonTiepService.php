@@ -66,13 +66,19 @@ class SttDonTiepService
         return SttDonTiepResource::collection($stt);
     }
     
+    public function finishSttDonTiep($sttId)
+    {
+        $this->sttDonTiepRepository->finishSttDonTiep($sttId);
+    }
+    
     public function scanCard($cardCode)
     {
         $length = strlen($cardCode); 
         
         $result = ['message' => '',
                     'data' => '',
-                    'benh_nhan_cu' => 0];
+                    'benh_nhan_cu' => 0,
+                    'dang_ky_truoc' => 0];
         
         if($length > 12) {  //kiem tra co phai qrcode the bhyt khong
             $info = $this->getInfoPatientFromQRCode($cardCode);
@@ -87,6 +93,7 @@ class SttDonTiepService
                 } else {
                     $result['data'] = $data;
                     $result['benh_nhan_cu'] = 1;
+                    $result['dang_ky_truoc'] = $data['is_dang_ky_truoc'];
                 }
             } else {    //khong phai qrcode the bhyt => xuat thong bao loi
                 $result ['message'] = 'error card code';
@@ -98,6 +105,7 @@ class SttDonTiepService
             if($data){
                 $result['data'] = $data;
                 $result['benh_nhan_cu'] = 1;
+                $result['dang_ky_truoc'] = $data['is_dang_ky_truoc'];
             } else {    //khong phai ma the benh nhan => xuat thong bao loi
                 $result ['message'] = 'error card code';
             }
@@ -106,7 +114,7 @@ class SttDonTiepService
         return $result;
     }
     
-    public function getInfoPatientByCard(Request $request)
+    public function makeSttDonTiepWhenScanCard(Request $request)
     {
         $arr = $request->all();
         $cardCode = $arr['cardCode'];
@@ -127,7 +135,7 @@ class SttDonTiepService
         $result['message'] = $scanCard['message'];
         $result['data'] = $scanCard['data'];
         $result['benh_nhan_cu'] = $scanCard['benh_nhan_cu'];
-        $result['dang_ky_truoc'] = array_key_exists('is_dang_ky_truoc', $scanCard['data']) ? $scanCard['data']['is_dang_ky_truoc'] : 0;
+        $result['dang_ky_truoc'] = $scanCard['dang_ky_truoc'];
         
         if($result ['message'] != 'error card code') {  //ma the hop le moi kiem tra de cap STT
             if($result['dang_ky_truoc'] == 1){  //dang ky truoc => cap STT uu tien

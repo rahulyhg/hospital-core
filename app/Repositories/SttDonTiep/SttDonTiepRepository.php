@@ -159,7 +159,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
         $today = Carbon::today();
         
         $where = [
-            ['trang_thai', '=', 2],
+            ['trang_thai', '>=', 2],
             ['phong_id', '=', $phongId],
             ['benh_vien_id', '=', $benhVienId]
         ];
@@ -174,11 +174,22 @@ class SttDonTiepRepository extends BaseRepositoryV2
         return $result;
     }
     
+    public function finishSttDonTiep($sttId)
+    {
+        $today = Carbon::today();
+        
+        $attributes = ['trang_thai' => 3,
+                        'thoi_gian_ket_thuc' => Carbon::now()->toDateTimeString()
+                    ];
+                    
+        $this->model->where('id', '=', $sttId)->update($attributes);
+    }
+    
     public function getInfoPatientByStt($stt, $phongId, $benhVienId)
     {
         $today = Carbon::today();
         
-        $dieu_kien = [
+        $where = [
             'loai_stt'      => $stt[0],
             'so_thu_tu'     => (int)substr($stt, 1, 4),
             'phong_id'      => $phongId,
@@ -186,7 +197,7 @@ class SttDonTiepRepository extends BaseRepositoryV2
         ];
         
         $data = DB::table('stt_don_tiep')
-                ->where($dieu_kien)
+                ->where($where)
                 ->whereDate('thoi_gian_phat', '=', $today)
                 ->orderBy('id', 'desc')
                 ->first();
