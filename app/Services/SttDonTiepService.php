@@ -71,6 +71,13 @@ class SttDonTiepService
         $this->sttDonTiepRepository->finishSttDonTiep($sttId);
     }
     
+    public function countSttDonTiep(Request $request)
+    {
+        $data = $this->sttDonTiepRepository->countSttDonTiep($request);
+        
+        return $data;
+    }
+    
     public function scanCard($cardCode)
     {
         $length = strlen($cardCode); 

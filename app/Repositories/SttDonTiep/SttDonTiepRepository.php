@@ -185,6 +185,32 @@ class SttDonTiepRepository extends BaseRepositoryV2
         $this->model->where('id', '=', $sttId)->update($attributes);
     }
     
+    public function countSttDonTiep($request)
+    {
+        $phongId = $request->query('phongId', 1);
+        $benhVienId = $request->query('benhVienId', 1);
+        $today = Carbon::today();
+        
+        $data = ['A' => 0,
+                'B' => 0,
+                'C' => 0
+        ];
+        
+        $result = $this->model->select('loai_stt', DB::raw('count(loai_stt) as total'))
+                            ->where('trang_thai', '=', 1)
+                            ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->groupBy('loai_stt')
+                            ->get();
+                 
+        if($result) {
+            foreach($result as $item) {
+                $data[$item->loai_stt] = $item->total;
+            }
+        }
+                            
+        return $data;
+    }
+    
     public function getInfoPatientByStt($stt, $phongId, $benhVienId)
     {
         $today = Carbon::today();

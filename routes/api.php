@@ -43,6 +43,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep');
         Route::get('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');
         Route::get('finishSttDonTiep/{sttId}','DonTiep\SttDonTiepController@finishSttDonTiep');
+        Route::get('countSttDonTiep','DonTiep\SttDonTiepController@countSttDonTiep');
         
         Route::get('getInfoPatientByStt/{stt}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getInfoPatientByStt');
         Route::get('getListPatientByKhoaPhong/{type}/{phongId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');

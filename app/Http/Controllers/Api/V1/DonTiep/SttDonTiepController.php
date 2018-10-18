@@ -51,4 +51,11 @@ class SttDonTiepController extends APIController
     {
         $this->service->finishSttDonTiep($sttId);
     }
+    
+    public function countSttDonTiep(Request $request)
+    {
+        $data = $this->service->countSttDonTiep($request);
+        
+        return $data;
+    }
 }
