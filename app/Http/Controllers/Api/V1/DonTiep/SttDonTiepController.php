@@ -12,9 +12,9 @@ class SttDonTiepController extends APIController
         $this->service = $sttDonTiepService;
     }
     
-    public function getInfoPatientByCard(Request $request)
+    public function makeSttDonTiepWhenScanCard(Request $request)
     {
-        $data = $this->service->getInfoPatientByCard($request);
+        $data = $this->service->makeSttDonTiepWhenScanCard($request);
         
         return $data;
     }
@@ -43,6 +43,18 @@ class SttDonTiepController extends APIController
     public function loadSttDonTiep(Request $request)
     {
         $data = $this->service->loadSttDonTiep($request);
+        
+        return $data;
+    }
+    
+    public function finishSttDonTiep($sttId)
+    {
+        $this->service->finishSttDonTiep($sttId);
+    }
+    
+    public function countSttDonTiep(Request $request)
+    {
+        $data = $this->service->countSttDonTiep($request);
         
         return $data;
     }

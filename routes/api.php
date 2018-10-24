@@ -37,11 +37,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 
     
     Route:: group(['prefix' => 'dontiep'], function () {
-        Route::post('getInfoPatientByCard','DonTiep\SttDonTiepController@getInfoPatientByCard');
+        Route::post('makeSttDonTiepWhenScanCard','DonTiep\SttDonTiepController@makeSttDonTiepWhenScanCard');
         Route::post('scanCard','DonTiep\SttDonTiepController@scanCard');
         Route::get('getSttDonTiep','DonTiep\SttDonTiepController@getSttDonTiep');
         Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep');
         Route::get('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');
+        Route::get('finishSttDonTiep/{sttId}','DonTiep\SttDonTiepController@finishSttDonTiep');
+        Route::get('countSttDonTiep','DonTiep\SttDonTiepController@countSttDonTiep');
         
         Route::get('getInfoPatientByStt/{stt}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getInfoPatientByStt');
         Route::get('getListPatientByKhoaPhong/{type}/{phongId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
