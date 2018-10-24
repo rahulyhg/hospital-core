@@ -81,7 +81,7 @@ class HsbaRepository extends BaseRepositoryV2
             'tt1.diengiai as loai_benh_an',
             'hsba.so_luu_tru',
             'hsba.so_vao_vien',
-            'vienphi.vienphicode',
+            //'vienphi.vienphicode',
             'khoa.ten_khoa',
             'phong.ten_phong',
             'hsba.ten_benh_nhan',
@@ -139,7 +139,7 @@ class HsbaRepository extends BaseRepositoryV2
                 ->leftJoin('khoa', 'khoa.id', '=', 'hsba_khoa_phong.khoa_hien_tai')
                 ->leftJoin('phong', 'phong.id', '=', 'hsba_khoa_phong.phong_hien_tai')
                 ->leftJoin('bhyt', 'bhyt.id', '=', 'hsba_khoa_phong.bhyt_id')
-                ->leftJoin('vienphi', 'vienphi.hosobenhanid', '=', 'hsba.id')
+                ->leftJoin('vien_phi', 'vien_phi.hsba_id', '=', 'hsba.id')
                 ->where($where)
                 ->get($column);
           
