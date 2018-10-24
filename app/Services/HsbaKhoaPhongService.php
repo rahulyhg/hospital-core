@@ -14,16 +14,16 @@ class HsbaKhoaPhongService
         $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
     }
     
-    public function getListBenhNhanHanhChanh($startDay, $endDay, $offset, $limit, $keyword)
+    public function getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword)
     {
-        $data = $this->hsbaKhoaPhongRepository->getListBenhNhanHanhChanh($startDay, $endDay, $offset, $limit, $keyword);
+        $data = $this->hsbaKhoaPhongRepository->getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword);
         
         return $data;
     }
     
-    public function getListBenhNhanPhongKham($phongId, $startDay, $endDay, $offset, $limit, $keyword)
+    public function getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword)
     {
-        $data = $this->hsbaKhoaPhongRepository->getListBenhNhanPhongKham($phongId, $startDay, $endDay, $offset, $limit, $keyword);
+        $data = $this->hsbaKhoaPhongRepository->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
         
         return $data;
     }

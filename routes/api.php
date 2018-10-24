@@ -46,7 +46,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('countSttDonTiep','DonTiep\SttDonTiepController@countSttDonTiep');
         
         Route::get('getInfoPatientByStt/{stt}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getInfoPatientByStt');
-        Route::get('getListPatientByKhoaPhong/{type}/{phongId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
+        Route::get('getListPatientByKhoaPhong/{type}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
         Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}','DonTiep\DonTiepController@getHsbaByHsbaId');
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');

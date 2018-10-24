@@ -28,12 +28,12 @@ class DonTiepController extends APIController
         return $data;
     }
     
-    public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, Request $request)
+    public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, $benhVienId, Request $request)
     {
         $startDay = $request->query('startDay', Carbon::today());
         $endDay = $request->query('endDay', Carbon::today());
-        $offset = $request->query('offset', 0);
         $limit = $request->query('limit', 20);
+        $page = $request->query('page', 1);
         $keyword = $request->query('keyword', '');
         
         //$redis = Redis::connection();
@@ -45,7 +45,7 @@ class DonTiepController extends APIController
             //if($data) {
                 //$listBenhNhan = $data;
             //} else {
-                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanHanhChanh($startDay, $endDay, $offset, $limit, $keyword);
+                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword);
                 //$redis->set('list_BN_HC', $listBenhNhan);
             //}
         } else {
@@ -54,7 +54,7 @@ class DonTiepController extends APIController
             //if($data) {
                 //$listBenhNhan = $data;
             //} else {
-                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanPhongKham($phongId, $startDay, $endDay, $offset, $limit, $keyword);
+                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
             //}
         }
         
