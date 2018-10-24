@@ -48,8 +48,11 @@ class AuthController extends Controller
             ], 400);
         }
         $roles = $this->authService->getUserRolesByEmail($request->email);
+        $userName = $this->authService->getUserNameByEmail($request->email);
         $extraPayload = array(
-            'roles' => $roles
+            'roles' => $roles,
+            'userName' => $userName->fullname,
+            'userId'   => $userName->id
         );
         return response([
             'status' => 'success',

@@ -15,4 +15,13 @@ class AuthUsersRepository extends BaseRepository
             return $data;
     }
     
+    public function getUserNameByEmail($email)
+    {
+        $data = DB::table('auth_users')
+                ->where('email',$email)
+                ->first();
+        if($data)
+            return $data;
+    }
+    
 }
