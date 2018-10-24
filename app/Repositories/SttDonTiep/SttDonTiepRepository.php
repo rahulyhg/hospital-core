@@ -118,11 +118,11 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function goiSttDonTiep($request)
     {
-        $loaiStt = $request->query('loaiStt', 'C');
-        $phongId = $request->query('phongId', 1);
-        $benhVienId = $request->query('benhVienId', 1);
-        $quaySo = $request->query('quaySo', 1);
-        $authUsersId = $request->query('authUsersId', 1);
+        $loaiStt = $request->query('loaiStt');
+        $phongId = $request->query('phongId');
+        $benhVienId = $request->query('benhVienId');
+        $quaySo = $request->query('quaySo');
+        $authUsersId = $request->query('authUsersId');
         $today = Carbon::today();
         
         $where = [
@@ -154,8 +154,8 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function loadSttDonTiep($request)
     {
-        $phongId = $request->query('phongId', 1);
-        $benhVienId = $request->query('benhVienId', 1);
+        $phongId = $request->query('phongId');
+        $benhVienId = $request->query('benhVienId');
         $today = Carbon::today();
         
         $where = [
@@ -187,8 +187,8 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function countSttDonTiep($request)
     {
-        $phongId = $request->query('phongId', 1);
-        $benhVienId = $request->query('benhVienId', 1);
+        $phongId = $request->query('phongId');
+        $benhVienId = $request->query('benhVienId');
         $today = Carbon::today();
         
         $data = ['A' => 0,

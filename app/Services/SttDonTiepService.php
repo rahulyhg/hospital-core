@@ -28,10 +28,10 @@ class SttDonTiepService
     
     public function getSttDonTiep(Request $request)
     {
-        $loaiStt = $request->query('loaiStt', 'C');
-        $maSoKiosk = $request->query('maSoKiosk', 1);
-        $phongId = $request->query('phongId', 1);
-        $benhVienId = $request->query('benhVienId', 1);
+        $loaiStt = $request->query('loaiStt');
+        $maSoKiosk = $request->query('maSoKiosk');
+        $phongId = $request->query('phongId');
+        $benhVienId = $request->query('benhVienId');
         $data = '';
         
         $stt = $this->sttDonTiepRepository->getSttDontiep($loaiStt, $maSoKiosk, $phongId, $benhVienId, $data);
@@ -123,11 +123,10 @@ class SttDonTiepService
     
     public function makeSttDonTiepWhenScanCard(Request $request)
     {
-        $arr = $request->all();
-        $cardCode = $arr['cardCode'];
-        $maSoKiosk = $arr['maSoKiosk'];
-        $phongId = $arr['phongId'];
-        $benhVienId = $arr['benhVienId'];
+        $cardCode = $request['cardCode'];
+        $maSoKiosk = $request['maSoKiosk'];
+        $phongId = $request['phongId'];
+        $benhVienId = $request['benhVienId'];
         
         $result = ['message' => '',
                     'data' => '',
