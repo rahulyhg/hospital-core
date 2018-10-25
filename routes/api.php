@@ -58,12 +58,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('listPhong/{loaiPhong}/{khoaId}','DangKyKhamBenh\DangKyKhamBenhController@getListPhong');
     	Route::get('yeuCauKham/{servicegrouptype}','DangKyKhamBenh\DangKyKhamBenhController@getListYeuCauKham');
     	Route::get('listNgheNghiep','DangKyKhamBenh\DangKyKhamBenhController@getListNgheNghiep');
-    	Route::get('listBenhVien','DangKyKhamBenh\DangKyKhamBenhController@getListBenhVien');
+    	Route::get('danhMucBenhVien','DangKyKhamBenh\DangKyKhamBenhController@danhMucBenhVien');
     	Route::get('listDanToc','DangKyKhamBenh\DangKyKhamBenhController@getListDanToc');
     	Route::get('listQuocTich','DangKyKhamBenh\DangKyKhamBenhController@getListQuocTich');
     	Route::get('listTinh','DangKyKhamBenh\DangKyKhamBenhController@getListTinh');
     	Route::get('listHuyen/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getListHuyen');
     	Route::get('listXa/{maHuyen}/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getListXa');
+    	Route::get('benhVien','DangKyKhamBenh\DangKyKhamBenhController@benhVien');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

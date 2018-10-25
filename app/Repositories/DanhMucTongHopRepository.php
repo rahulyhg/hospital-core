@@ -14,14 +14,6 @@ class DanhMucTongHopRepository extends BaseRepository
         return $ngheNghiep;    
     }
     
-    public function getListBenhVien()
-    {
-        $benhVien = DB::table('benhvien')
-                ->orderBy('benhvienid')
-                ->get();
-        return $benhVien;    
-    }
-    
     public function getListDanToc()
     {
         $danToc = DB::table('danh_muc_tong_hop')

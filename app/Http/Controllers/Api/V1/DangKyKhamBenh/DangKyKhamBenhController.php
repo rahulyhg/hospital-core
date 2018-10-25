@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Services\PhongService;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
+use App\Services\DanhMucBenhVienService;
+use App\Services\BenhVienService;
 use App\Http\Controllers\API\V1\APIController;
 
 class DangKyKhamBenhController extends APIController
@@ -18,12 +20,16 @@ class DangKyKhamBenhController extends APIController
     public function __construct(
         PhongService $phongService, 
         DanhMucDichVuService $danhMucDichVuService,
-        DanhMucTongHopService $danhMucTongHopService
+        DanhMucTongHopService $danhMucTongHopService,
+        DanhMucBenhVienService $danhMucBenhVienService,
+        BenhVienService $benhVienService
         )
     {
         $this->phongService = $phongService;
         $this->danhMucDichVuService = $danhMucDichVuService;
         $this->danhMucTongHopService = $danhMucTongHopService;
+        $this->danhMucBenhVienService = $danhMucBenhVienService;
+        $this->benhVienService = $benhVienService;
     }
     
     /**
@@ -59,9 +65,9 @@ class DangKyKhamBenhController extends APIController
         return $data;
     }
     
-    public function getListBenhVien()
+    public function danhMucBenhVien()
     {
-        $data = $this->danhMucTongHopService->getListBenhVien();
+        $data = $this->danhMucBenhVienService->getDanhMucBenhVien();
         return $data;
     }
     
@@ -92,6 +98,12 @@ class DangKyKhamBenhController extends APIController
     public function getListXa(Request $request)
     {
         $data = $this->danhMucTongHopService->getListXa($request->maHuyen,$request->maTinh);
+        return $data;
+    }
+    
+    public function benhVien()
+    {
+        $data = $this->benhVienService->listBenhVien();
         return $data;
     }
     /**

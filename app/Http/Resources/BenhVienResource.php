@@ -15,21 +15,10 @@ class BenhVienResource extends Resource
     public function toArray($request)
     {
         return [
-            'benhvienid'      => $this->benhvienid,
-            'benhvienkcbbd'    => $this->benhvienkcbbd,
-            'benhviencode'    => $this->benhviencode,
-            'benhvienname'    => $this->benhvienname,
-            'benhvienaddress'    => $this->benhvienaddress,
-            'benhvienhang'    => $this->benhvienhang,
-            'benhvienloai'    => $this->benhvienloai,
-            'benhvientuyen'    => $this->benhvientuyen,
-            'ghichu'    => $this->ghichu,
-            'matinh'    => $this->matinh,
-            'mahuyen'    => $this->mahuyen,
-            'maxa'    => $this->maxa,
-            'version'    => $this->version,
-            'sync_flag'    => $this->sync_flag,
-            'update_flag'    => $this->update_flag
+            'id'      => $this->id,
+            'ma'    => $this->ma,
+            'ten'    => $this->ten,
+            'dia_chi'    => $this->dia_chi
         ];
     }
 }
