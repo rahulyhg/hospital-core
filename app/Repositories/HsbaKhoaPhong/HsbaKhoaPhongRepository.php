@@ -17,7 +17,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     {
         $loaiBenhAn = 24; //kham benh
         $khoaHienTai = 3; //khoa kham benh
-        $offset = ($page - 1) * 20;
+        $offset = ($page - 1) * $limit;
         
         $where = [
             ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
@@ -103,7 +103,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     public function getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '')
     {
         $loaiBenhAn = 24; //kham benh
-        $offset = ($page - 1) * 20;
+        $offset = ($page - 1) * $limit;
         
         $where = [
             ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
