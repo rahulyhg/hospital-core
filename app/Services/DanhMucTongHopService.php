@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Department;
 use App\Http\Resources\DanhMucTongHopResource;
-use App\Http\Resources\BenhVienResource;
 use App\Http\Resources\HanhChinhResource;
 use App\Repositories\DanhMucTongHopRepository;
 use Illuminate\Http\Request;
@@ -20,13 +19,6 @@ class DanhMucTongHopService {
     {
         return DanhMucTongHopResource::collection(
            $this->danhMucTongHopRepository->getListNgheNghiep()
-        );
-    }
-    
-    public function getListBenhVien()
-    {
-        return BenhVienResource::collection(
-           $this->danhMucTongHopRepository->getListBenhVien()
         );
     }
 
