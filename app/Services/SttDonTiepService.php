@@ -9,6 +9,7 @@ use App\Repositories\Hsba\HsbaRepository;
 use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
+use App\User;
 
 class SttDonTiepService 
 {
@@ -17,13 +18,6 @@ class SttDonTiepService
         $this->sttDonTiepRepository = $sttDonTiepRepository;
         $this->bhytRepository = $bhytRepository;
         $this->hsbaRepository = $hsbaRepository;
-    }
-    
-    public function getInfoPatientByStt($stt, $phongId, $benhVienId)
-    {
-        $data = $this->sttDonTiepRepository->getInfoPatientByStt($stt, $phongId, $benhVienId);
-        
-        return new SttDonTiepResource($data);
     }
     
     public function getSttDonTiep(Request $request)
@@ -56,7 +50,10 @@ class SttDonTiepService
     {
         $data = $this->sttDonTiepRepository->goiSttDonTiep($request);
         
-        return new SttDonTiepResource($data);
+        if($data !== null)
+            return new SttDonTiepResource($data);
+        else
+            return $data;
     }
     
     public function loadSttDonTiep(Request $request)
@@ -220,4 +217,13 @@ class SttDonTiepService
         return $loaiStt;
     }
 
+    public function checkExistUser($authUsersId)
+    {
+        $user = User::findOrFail($authUsersId);
+        
+        if($user)
+            return true;
+        else
+            return false;
+    }
 }

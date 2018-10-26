@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\DangKyKhamBenhFormRequest;
+use App\Http\Requests\UpdateHsbaFormRequest;
 use App\Services\SttDonTiepService;
 use App\Services\HsbaKhoaPhongService;
 use App\Services\HsbaService;
@@ -21,13 +22,6 @@ class DonTiepController extends APIController
         $this->benhNhanService = $benhNhanService;
     }
     
-    public function getInfoPatientByStt($stt, $phongId, $benhVienId)
-    {
-        $data = $this->sttDonTiepService->getInfoPatientByStt($stt, $phongId, $benhVienId);
-        
-        return $data;
-    }
-    
     public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, $benhVienId, Request $request)
     {
         $startDay = $request->query('startDay', Carbon::today());
@@ -37,6 +31,11 @@ class DonTiepController extends APIController
         $keyword = $request->query('keyword', '');
         
         //$redis = Redis::connection();
+        
+        if(!in_array($type, ['HC', 'PK']) || $phongId === null || $benhVienId === null){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
         
         if($type == "HC"){
             
@@ -58,16 +57,34 @@ class DonTiepController extends APIController
             //}
         }
         
-        return $listBenhNhan;
+        return $this->respond($listBenhNhan);
     }
     
-    public function getHsbaByHsbaId($hsbaId, $phongId){
-        $data = $this->hsbaService->getHsbaByHsbaId($hsbaId, $phongId);
-        return $data;
+    public function getHsbaByHsbaId($hsbaId, $phongId) 
+    {
+        if(is_numeric($hsbaId) && is_numeric($phongId)) {
+            $data = $this->hsbaService->getHsbaByHsbaId($hsbaId, $phongId);
+            return $this->respond($data);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+    }
+    
+    public function updateHsba($hsbaId, UpdateHsbaFormRequest $request)
+    {
+        try {
+            if(is_numeric($hsbaId)) {
+                $this->hsbaService->updateHsba($hsbaId, $request);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
     }
   
     public function register(DangKyKhamBenhFormRequest $request)
-    //public function register(Request $request)
     {   
         try 
         {

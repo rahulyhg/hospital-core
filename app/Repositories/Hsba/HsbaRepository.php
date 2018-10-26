@@ -153,4 +153,10 @@ class HsbaRepository extends BaseRepositoryV2
         $id = Hsba::create($input)->id;
         return $id;
     }
+    
+    public function updateHsba($hsbaId, $request)
+    {
+        $hsba = Hsba::findOrFail($hsbaId);
+		$hsba->update($request->all());
+    }
 }

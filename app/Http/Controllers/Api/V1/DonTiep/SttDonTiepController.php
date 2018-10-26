@@ -81,7 +81,7 @@ class SttDonTiepController extends APIController
         $data = $this->service->goiSttDonTiep($request);
         
         //ko co du lieu stt
-        if($data === '')
+        if($data === null)
             $this->setStatusCode(404);
         
         return $this->respond($data);
