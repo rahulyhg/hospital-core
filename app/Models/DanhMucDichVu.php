@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Bhyt extends Model
+class DanhMucDichVu extends Model
 {
     //
-    protected $table='bhyt';
+    protected $table='danh_muc_dich_vu';
     
     protected $primaryKey='id';
     

@@ -14,20 +14,21 @@ class BhytRepository extends BaseRepositoryV2
         return Bhyt::class;
     }
     
-    public function getInfoPatientByBhytCode($bhytCode)
+    public function getInfoPatientByBhytCode($bhytcode)
     {
-        $result = $this->model->where('ms_bhyt', $bhytCode)->first();
+        $result = $this->model->where('bhytcode', $bhytcode)->first();
         
         if ($result == null) {
             return ['message' => 'not found'];
         } else {
-            $data = Hsba::findOrFail($result['hsba_id']);
+            $data = Hsba::findOrFail($result['hosobenhanid']);
             //return new HsbaResource($data);
             return $data;
         }
+        
     }
     
-    public function createDataBHYT(array $input)
+    public function createDataBhyt(array $input)
     {
         $id = Bhyt::create($input)->id;
         return $id;

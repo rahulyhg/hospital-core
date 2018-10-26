@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
@@ -13,25 +14,30 @@ use Carbon\Carbon;
 
 class DonTiepController extends APIController
 {
-    public function __construct(SttDonTiepService $sttDonTiepService, HsbaKhoaPhongService $hsbaKhoaPhongService, HsbaService $hsbaService, BenhNhanService $benhNhanService)
+     /**
+     * __construct.
+     *
+     * @param $service
+     */
+    public function __construct(SttDonTiepService $SttDonTiepService, HsbaKhoaPhongService $HsbaKhoaPhongService, HsbaService $HsbaService, BenhNhanService $BenhNhanService)
     {
-        $this->sttDonTiepService = $sttDonTiepService;
-        $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
-        $this->hsbaService = $hsbaService;
-        $this->benhNhanService = $benhNhanService;
+        $this->SttDonTiepService = $SttDonTiepService;
+        $this->HsbaKhoaPhongService = $HsbaKhoaPhongService;
+        $this->HsbaService = $HsbaService;
+        $this->BenhNhanService = $BenhNhanService;
     }
     
-    public function getInfoPatientByStt($stt, $phongId, $benhVienId)
+    public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
     {
-        $data = $this->sttDonTiepService->getInfoPatientByStt($stt, $phongId, $benhVienId);
+        $data = $this->SttDonTiepService->getInfoPatientByStt($stt, $phong_id, $benh_vien_id);
         
         return $data;
     }
     
-    public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, Request $request)
+    public function getListPatientByKhoaPhong($type = 'HC', $phong_id = 0, Request $request)
     {
-        $startDay = $request->query('startDay', Carbon::today());
-        $endDay = $request->query('endDay', Carbon::today());
+        $start_day = $request->query('start_day', Carbon::today());
+        $end_day = $request->query('end_day', Carbon::today());
         $offset = $request->query('offset', 0);
         $limit = $request->query('limit', 20);
         $keyword = $request->query('keyword', '');
@@ -43,29 +49,29 @@ class DonTiepController extends APIController
             //$data = $redis->get('list_BN_HC');
             
             //if($data) {
-                //$listBenhNhan = $data;
+                //$list_BN = $data;
             //} else {
-                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanHanhChanh($startDay, $endDay, $offset, $limit, $keyword);
-                //$redis->set('list_BN_HC', $listBenhNhan);
+                $list_BN = $this->HsbaKhoaPhongService->getListBN_HC($start_day, $end_day, $offset, $limit, $keyword);
+                //$redis->set('list_BN_HC', $list_BN);
             //}
         } else {
             //$data = $redis->get('list_BN_PK');
             
             //if($data) {
-                //$listBenhNhan = $data;
+                //$list_BN = $data;
             //} else {
-                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanPhongKham($phongId, $startDay, $endDay, $offset, $limit, $keyword);
+                $list_BN = $this->HsbaKhoaPhongService->getListBN_PK($phong_id, $start_day, $end_day, $offset, $limit, $keyword);
             //}
         }
         
-        return $listBenhNhan;
+        return $list_BN;
     }
     
-    public function getHsbaByHsbaId($hsbaId, $phongId){
-        $data = $this->hsbaService->getHsbaByHsbaId($hsbaId, $phongId);
+    public function getHsbaByHsbaId($hsba_id, $phong_id){
+        $data = $this->HsbaService->getHsbaByHsbaId($hsba_id, $phong_id);
         return $data;
     }
-  
+   
     public function register(DangKyKhamBenhFormRequest $request)
     //public function register(Request $request)
     {   
@@ -83,6 +89,6 @@ class DonTiepController extends APIController
             //return $this->respondInternalError($ex->getMessage());
             return $ex;
         }
-
+        
     }
 }

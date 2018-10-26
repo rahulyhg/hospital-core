@@ -8,40 +8,40 @@ class DanhMucTongHopRepository extends BaseRepository
 
     public function getListNgheNghiep()
     {
-        $ngheNghiep = DB::table('danh_muc_tong_hop')
+        $nghenghiep = DB::table('danh_muc_tong_hop')
                 ->where('khoa','nghe_nghiep')
                 ->get();
-        return $ngheNghiep;    
+        return $nghenghiep;    
     }
     
     public function getListBenhVien()
     {
-        $benhVien = DB::table('benhvien')
+        $benhvien = DB::table('benhvien')
                 ->orderBy('benhvienid')
                 ->get();
-        return $benhVien;    
+        return $benhvien;    
     }
     
     public function getListDanToc()
     {
-        $danToc = DB::table('danh_muc_tong_hop')
+        $dantoc = DB::table('danh_muc_tong_hop')
                 ->where('khoa','dan_toc')
                 ->get();
-        return $danToc;    
+        return $dantoc;    
     }
     
     public function getListQuocTich()
     {
-        $quocTich = DB::table('danh_muc_tong_hop')
+        $quoctich = DB::table('danh_muc_tong_hop')
                 ->where('khoa','quoc_tich')
                 ->get();
-        return $quocTich;    
+        return $quoctich;    
     }
     
     public function getListTinh()
     {
-        $tinh = DB::table('hanh_chinh')
-                ->where('ma_tinh','<>',0)
+        $tinh = DB::table('danh_muc_tong_hop')
+                ->where('khoa','tinh')
                 ->get();
         return $tinh;    
     }
@@ -98,26 +98,5 @@ class DanhMucTongHopRepository extends BaseRepository
                 ->get();
         $array = json_decode($data, true);
         return collect($array)->first();  
-    }
-    public function getListHuyen($maTinh)
-    {
-        $huyen = DB::table('hanh_chinh')
-                ->where('ma_tinh',0)
-                ->where('huyen_matinh',$maTinh)
-                ->orderBy('ten_huyen')
-                ->get();
-        return $huyen;    
-    }
-    
-    public function getListXa($maHuyen,$maTinh)
-    {
-        $xa = DB::table('hanh_chinh')
-                ->where([
-                    'ma_tinh' => '0',
-                    'ma_huyen' => '0',
-                    'xa_mahuyen'=>$maHuyen,
-                    'xa_matinh'=>$maTinh])
-                ->get();
-        return $xa;    
     }
 }
