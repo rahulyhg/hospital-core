@@ -136,18 +136,22 @@ class SttDonTiepRepository extends BaseRepositoryV2
                             ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
                             ->orderBy('id', 'asc')
                             ->first();
-        
-        $id = $result['id'];
                             
-        $attributes = ['trang_thai' => 2,
-                        'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
-                        'quay_so' => $quaySo,
-                        'auth_users_id' => $authUsersId
-                    ];
-        
-        $this->model->where('id', '=', $id)->update($attributes);
-        
-        $data = $this->model->findOrFail($id);
+        if($result) {
+            $id = $result['id'];
+                            
+            $attributes = ['trang_thai' => 2,
+                            'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
+                            'quay_so' => $quaySo,
+                            'auth_users_id' => $authUsersId
+                        ];
+            
+            $this->model->where('id', '=', $id)->update($attributes);
+            
+            $data = $this->model->findOrFail($id);
+        } else {
+            $data = null;
+        }
         
         return $data;
     }
