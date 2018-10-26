@@ -8,17 +8,28 @@ use App\Repositories\BenhNhan\BenhNhanRepository;
 use App\Repositories\Hsba\HsbaRepository;
 use App\Repositories\HsbaKhoaPhong\HsbaKhoaPhongRepository; 
 use App\Repositories\Bhyt\BhytRepository; 
+use App\Repositories\VienPhi\VienPhiRepository; 
 use App\Repositories\DanhMucTongHopRepository;
+use App\Repositories\DieuTri\DieuTriRepository;
+use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
+use App\Repositories\DanhMucDichVu\DanhMucDichVuRepository;
+use App\Repositories\YLenh\YLenhRepository;
+
 use Validator;
 
 class BenhNhanService{
-    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository)
+    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository)
     {
         $this->BenhNhanRepository = $benhNhanRepository;
         $this->HsbaRepository = $hsbaRepository;
         $this->HsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
         $this->DanhMucTongHopRepository = $danhMucTongHopRepository;
         $this->BhytRepository = $bhytRepository;
+        $this->VienPhiRepository = $vienPhiRepository;
+        $this->DieuTriRepository = $dieuTriRepository;
+        $this->PhieuYLenhRepository = $phieuYLenhRepository;
+        $this->DanhMucDichVuRepository = $danhMucDichVuRepository;
+        $this->YLenhRepository = $yLenhRepository;
     }
     
     public function createBenhNhan(Request $request)
@@ -48,31 +59,24 @@ class BenhNhanService{
                                                 , 'ms_bhyt'
                                         );
         $hsbaKpParams = $request -> only ('auth_users_id', 'doi_tuong_benh_nhan', 'yeu_cau_kham_id', 'chan_doan_tuyen_duoi', 'chan_doan_tuyen_duoi_code'
-                                     //,'bhyt_id', vienphiid chưa xử lý BHYT, vien phi
                                         );
         $bhytParams = $request -> only ('ma_cskcbbd', 'tu_ngay', 'den_ngay', 'ma_noi_song', 'du5nam6thangluongcoban', 'dtcbh_luyke6thang'
                                         );
         $bhytParams['image_url'] = $request->only('image_url_bhyt')['image_url_bhyt'];     
+        $dieuTriParams = $request ->only ('cd_icd10_code', 'cd_icd10_text');
         
-        $result = DB::transaction(function () use ($benhNhanParams, $hsbaParams,$hsbaKpParams, $dataNgheNghiep, $dataDanToc, $dataQuocTich, $dataTinh, $dataHuyen, $dataXa, $bhytParams ) {
+        $result = DB::transaction(function () use ($scan, $benhNhanParams, $hsbaParams,$hsbaKpParams, $dataNgheNghiep, $dataDanToc, $dataQuocTich, $dataTinh, $dataHuyen, $dataXa, $bhytParams ) {
             try {
                
-                //lưu bhyt : thì xét có bhyt hay ko: 
-                //1.nếu có lưu bhyt để lấy id lưu vào khoa phòng, 
-                //2.nếu ko có insert bn bình thường 
-                //lưu ý cập nhật ms_bhyt ở hsba
                 // if(strlen($scan['scan']) == 12)//thẻ bn
                 //     $idBenhNhan = $this->BenhNhanRepository->checkMaSoBenhNhan(trim($scan['scan']));
-                // if(strlen($scan['scan']) == 15)//thẻ bhyt
-                //     $idBenhNhan = $this->BhytRepository->checkMaSoBhyt(trim($scan['scan']));
-                $id_bhyt = null;
+                $idBhyt = null;
+                if(strlen($scan['scan']) == 15)//thẻ bhyt
+                     $idBenhNhan = $this->BhytRepository->checkMaSoBhyt(trim($scan['scan']));
+                //nếu tìm thấy thẻ bhyt -> bn đã tồn tại
+                //xét điều kiện lưu bhyt
                 if($hsbaParams['ms_bhyt'] != null && $bhytParams['tu_ngay'] != null && $bhytParams['den_ngay'] != null)
-                {
-                    $id_bhyt = $this->BhytRepository->createDataBHYT($bhytParams);
-                     
-                }
-                
-               
+                    $idBhyt = $this->BhytRepository->createDataBhyt($bhytParams);
                 //set params benh_nhan
                 $benhNhanParams['nghe_nghiep_id'] = $dataNgheNghiep['gia_tri'];
                 $benhNhanParams['dan_toc_id'] = $dataDanToc['gia_tri'];
@@ -81,11 +85,11 @@ class BenhNhanService{
                 $benhNhanParams['quan_huyen_id'] = $dataHuyen['ma_huyen'];
                 $benhNhanParams['phuong_xa_id'] = $dataXa['ma_xa'];
                 $benhNhanParams['nam_sinh'] =  str_limit($benhNhanParams['ngay_sinh'], 4,'');
-                $idBenhNhan = null;
                 if($idBenhNhan == null)//insert tbl benh_nhan
                      $idBenhNhan = $this->BenhNhanRepository->createDataBenhNhan($benhNhanParams);
                 else 
                     $idBenhNhan = $idBenhNhan['benh_nhan_id'];
+               
                 //set params hsba 
                 $hsbaParams['loai_benh_an'] = 24;
                 $hsbaParams['hinh_thuc_vao_vien'] = 2;
@@ -109,9 +113,18 @@ class BenhNhanService{
                 $hsbaParams['nam_sinh'] =  str_limit($benhNhanParams['ngay_sinh'], 4,'');
                  //insert hsba
                 $idHsba = $this->HsbaRepository->createDataHsba($hsbaParams);
-                
-                
-                
+                //set params vien_phi
+                $vienPhiParams['loai_vien_phi'] = $hsbaKpParams['doi_tuong_benh_nhan'] == 1 ? 4 : 1;
+                $vienPhiParams['trang_thai'] = 0;
+                $vienPhiParams['khoa_id'] = $hsbaParams['khoa_id'];
+                $vienPhiParams['phong_id'] = $hsbaParams['phong_id'];
+                $vienPhiParams['doi_tuong_benh_nhan'] = $hsbaKpParams['doi_tuong_benh_nhan'];
+                $vienPhiParams['bhyt_id'] = $idBhyt;
+                $vienPhiParams['benh_nhan_id'] = $idBenhNhan;
+                $vienPhiParams['hsba_id'] = $idHsba;
+                $vienPhiParams['trang_thai_thanh_toan_bh'] = 0;
+                //insert vien_phi
+                $idVienPhi = $this->VienPhiRepository->createDataVienPhi($vienPhiParams);
                 //set params hsba_khoa_phong
                 $hsbaKpParams['khoa_hien_tai'] = $hsbaParams['khoa_id'];
                 $hsbaKpParams['phong_hien_tai'] = $hsbaParams['phong_id'];;
@@ -120,9 +133,55 @@ class BenhNhanService{
                 $hsbaKpParams['loai_benh_an'] = 24;
                 $hsbaKpParams['benh_nhan_id'] = $idBenhNhan;
                 $hsbaKpParams['hinh_thuc_vao_vien_id'] = 2;
-                 //insert hsba_khoa_phong
+                $hsbaKpParams['vien_phi_id'] = $idVienPhi;
+                $hsbaKpParams['bhyt_id'] = $idBhyt;
+                //insert hsba_khoa_phong
                 $idHsbaKp = $this->HsbaKhoaPhongRepository->createDataHsbaKhoaPhong($hsbaKpParams);
-                return $idHsba;
+                //set params dieu_tri
+                $dieuTriParams['hsba_khoa_phong_id'] = $idHsbaKp;
+                $dieuTriParams['hsba_id'] = $hsbaParams['khoa_id'];
+                $dieuTriParams['khoa_id'] = $hsbaParams['khoa_id'];
+                $dieuTriParams['phong_id'] = $hsbaParams['phong_id'];
+                $dieuTriParams['auth_users_id'] = $hsbaParams['auth_users_id'];
+                $dieuTriParams['benh_nhan_id'] = $idBenhNhan;
+                $dieuTriParams['ten_benh_nhan'] = $benhNhanParams['ho_va_ten'];
+                $dieuTriParams['nam_sinh'] = str_limit($benhNhanParams['ngay_sinh'], 4,'');
+                //insert dieu_tri
+                $idDieuTri = $this->DieuTriRepository->createDataDieuTri($dieuTriParams);
+                //set params phieu_y_lenh
+                $phieuYLenhParams['benh_nhan_id'] = $idBenhNhan;
+                $phieuYLenhParams['vien_phi_id'] = $idVienPhi;
+                $phieuYLenhParams['hsba_id'] = $idHsba;
+                $phieuYLenhParams['dieu_tri_id'] = $idDieuTri;
+                $phieuYLenhParams['khoa_id'] = $hsbaParams['khoa_id'];
+                $phieuYLenhParams['phong_id'] = $hsbaParams['phong_id'];
+                $phieuYLenhParams['auth_users_id'] = $hsbaParams['auth_users_id'];
+                $phieuYLenhParams['loai_phieu_y_lenh'] = 2;
+                $phieuYLenhParams['trang_thai'] = 0;
+                $idPhieuYLenh = $this->PhieuYLenhRepository->createDataPhieuYLenh($phieuYLenhParams);
+                //set params y_lenh
+                $yLenhParams['vien_phi_id'] = $idVienPhi;
+                $yLenhParams['phieu_y_lenh_id'] = $idPhieuYLenh;
+                $yLenhParams['doi_tuong_benh_nhan'] = $hsbaKpParams['doi_tuong_benh_nhan'];
+                $yLenhParams['khoa_id'] = $hsbaParams['khoa_id'];
+                $yLenhParams['phong_id'] = $hsbaParams['phong_id'];
+                
+                $yeuCauKham = $this->DanhMucDichVuRepository->getDataDanhMucDichVuById($hsbaKpParams['yeu_cau_kham_id']);
+                $yLenhParams['ma'] = $yeuCauKham['ma'];
+                $yLenhParams['ten'] = $yeuCauKham['ten'];
+                $yLenhParams['ten_nhan_dan'] = $yeuCauKham['ten_nhan_dan'];
+                $yLenhParams['ten_bhyt'] = $yeuCauKham['ten_bhyt'];
+                $yLenhParams['ten_nuoc_ngoai'] = $yeuCauKham['ten_nuoc_ngoai'];
+                $yLenhParams['trang_thai'] = 0;
+                $yLenhParams['gia'] = (double)$yeuCauKham['gia'];
+                $yLenhParams['gia_nhan_dan'] = (double)$yeuCauKham['gia_nhan_dan'];
+                $yLenhParams['gia_bhyt'] = (double)$yeuCauKham['gia_bhyt'];
+                $yLenhParams['gia_nuoc_ngoai'] = (double)$yeuCauKham['gia_nuoc_ngoai'];;
+                
+                $idYLenh = $this->YLenhRepository->createDataYLenh($yLenhParams);
+                return $idYLenh;
+                
+                
             } catch (\Exception $ex) {
                  throw $ex;
             }

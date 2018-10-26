@@ -27,7 +27,7 @@ class BhytRepository extends BaseRepositoryV2
         }
     }
     
-    public function createDataBHYT(array $input)
+    public function createDataBhyt(array $input)
     {
         $id = Bhyt::create($input)->id;
         return $id;
