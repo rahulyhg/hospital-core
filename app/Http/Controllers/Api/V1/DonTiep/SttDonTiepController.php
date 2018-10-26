@@ -14,48 +14,120 @@ class SttDonTiepController extends APIController
     
     public function makeSttDonTiepWhenScanCard(Request $request)
     {
-        $data = $this->service->makeSttDonTiepWhenScanCard($request);
-        
-        return $data;
+        if($request['cardCode'] !== null && $this->checkExistParam($request['phongId'], $request['benhVienId']) && $request['maSoKiosk'] !== null) {
+            $data = $this->service->makeSttDonTiepWhenScanCard($request);
+            return $this->respond($data);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
     }
     
     public function scanCard(Request $request)
     {
-        $data = $this->service->scanCard($request->cardCode);
-        
-        return $data;
+        if($request['cardCode'] !== null) {
+            $data = $this->service->scanCard($request['cardCode']);
+            return $this->respond($data);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
     }
     
     public function getSttDonTiep(Request $request)
     {
-        $data = $this->service->getSttDonTiep($request);
+        //sai tham so $request['loaiStt']
+        if(!in_array($request['loaiStt'], ['A', 'B', 'C'])){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
         
-        return $data;
+        if($this->checkExistParam($request['phongId'], $request['benhVienId']) && $request['maSoKiosk'] !== null) {
+            $data = $this->service->getSttDonTiep($request);
+            return $this->respond($data);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
     }
     
     public function goiSttDonTiep(Request $request)
     {
+        $loaiStt = $request->query('loaiStt');
+        $phongId = $request->query('phongId');
+        $benhVienId = $request->query('benhVienId');
+        $quaySo = $request->query('quaySo');
+        $authUsersId = $request->query('authUsersId');
+        
+        //sai tham so $loaiStt
+        if(!in_array($loaiStt, ['A', 'B', 'C'])){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+        
+        //khong co tham so $phongId, $benhVienId, $quaySo
+        if($phongId === null || $benhVienId === null || $quaySo === null){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+        
+        //khong ton tai $authUsersId
+        $bool = $this->service->checkExistUser($authUsersId);
+        if(!$bool){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+        
         $data = $this->service->goiSttDonTiep($request);
         
-        return $data;
+        //ko co du lieu stt
+        if($data === null)
+            $this->setStatusCode(404);
+        
+        return $this->respond($data);
     }
     
     public function loadSttDonTiep(Request $request)
     {
-        $data = $this->service->loadSttDonTiep($request);
+        if($this->checkExistParam($request['phongId'], $request['benhVienId'])) {
+            $data = $this->service->loadSttDonTiep($request);
+        } else {
+            $data = null;
+            $this->setStatusCode(400);
+        }
         
-        return $data;
+        return $this->respond($data);
     }
     
     public function finishSttDonTiep($sttId)
     {
-        $this->service->finishSttDonTiep($sttId);
+        if(is_numeric($sttId)) {
+            $this->service->finishSttDonTiep($sttId);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
     }
     
     public function countSttDonTiep(Request $request)
     {
-        $data = $this->service->countSttDonTiep($request);
+        if($this->checkExistParam($request['phongId'], $request['benhVienId'])) {
+            $data = $this->service->countSttDonTiep($request);
+        } else {
+            $data = null;
+            $this->setStatusCode(400);
+        }
         
-        return $data;
+        return $this->respond($data);
+    }
+    
+    public function checkExistParam($phongId, $benhVienId)
+    {
+        if($phongId === null || $benhVienId === null)
+            return false;
+        else
+            return true;
     }
 }

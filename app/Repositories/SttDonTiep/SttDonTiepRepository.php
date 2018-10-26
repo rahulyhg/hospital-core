@@ -118,11 +118,11 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function goiSttDonTiep($request)
     {
-        $loaiStt = $request->query('loaiStt', 'C');
-        $phongId = $request->query('phongId', 1);
-        $benhVienId = $request->query('benhVienId', 1);
-        $quaySo = $request->query('quaySo', 1);
-        $authUsersId = $request->query('authUsersId', 1);
+        $loaiStt = $request->query('loaiStt');
+        $phongId = $request->query('phongId');
+        $benhVienId = $request->query('benhVienId');
+        $quaySo = $request->query('quaySo');
+        $authUsersId = $request->query('authUsersId');
         $today = Carbon::today();
         
         $where = [
@@ -136,26 +136,30 @@ class SttDonTiepRepository extends BaseRepositoryV2
                             ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
                             ->orderBy('id', 'asc')
                             ->first();
-        
-        $id = $result['id'];
                             
-        $attributes = ['trang_thai' => 2,
-                        'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
-                        'quay_so' => $quaySo,
-                        'auth_users_id' => $authUsersId
-                    ];
-        
-        $this->model->where('id', '=', $id)->update($attributes);
-        
-        $data = $this->model->findOrFail($id);
+        if($result) {
+            $id = $result['id'];
+                            
+            $attributes = ['trang_thai' => 2,
+                            'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
+                            'quay_so' => $quaySo,
+                            'auth_users_id' => $authUsersId
+                        ];
+            
+            $this->model->where('id', '=', $id)->update($attributes);
+            
+            $data = $this->model->findOrFail($id);
+        } else {
+            $data = null;
+        }
         
         return $data;
     }
     
     public function loadSttDonTiep($request)
     {
-        $phongId = $request->query('phongId', 1);
-        $benhVienId = $request->query('benhVienId', 1);
+        $phongId = $request->query('phongId');
+        $benhVienId = $request->query('benhVienId');
         $today = Carbon::today();
         
         $where = [
@@ -187,8 +191,8 @@ class SttDonTiepRepository extends BaseRepositoryV2
     
     public function countSttDonTiep($request)
     {
-        $phongId = $request->query('phongId', 1);
-        $benhVienId = $request->query('benhVienId', 1);
+        $phongId = $request->query('phongId');
+        $benhVienId = $request->query('benhVienId');
         $today = Carbon::today();
         
         $data = ['A' => 0,
@@ -209,26 +213,6 @@ class SttDonTiepRepository extends BaseRepositoryV2
         }
                             
         return $data;
-    }
-    
-    public function getInfoPatientByStt($stt, $phongId, $benhVienId)
-    {
-        $today = Carbon::today();
-        
-        $where = [
-            'loai_stt'      => $stt[0],
-            'so_thu_tu'     => (int)substr($stt, 1, 4),
-            'phong_id'      => $phongId,
-            'benh_vien_id'  => $benhVienId
-        ];
-        
-        $data = DB::table('stt_don_tiep')
-                ->where($where)
-                ->whereDate('thoi_gian_phat', '=', $today)
-                ->orderBy('id', 'desc')
-                ->first();
-                
-        return $data;   
     }
     
 }

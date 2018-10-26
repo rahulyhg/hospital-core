@@ -13,14 +13,16 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return HsbaKhoaPhong::class;
     }
     
-    public function getListBenhNhanHanhChanh($startDay, $endDay, $offset, $limit = 20, $keyword = '')
+    public function getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '')
     {
         $loaiBenhAn = 24; //kham benh
         $khoaHienTai = 3; //khoa kham benh
+        $offset = ($page - 1) * $limit;
         
         $where = [
             ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
             ['hsba_khoa_phong.khoa_hien_tai', '=', $khoaHienTai],
+            ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
         ];
         
         $column = [
@@ -75,21 +77,38 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             });
         }
         
-        $data = $query->orderBy('thoi_gian_vao_vien', 'asc')
+        $totalRecord = $query->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->orderBy('thoi_gian_vao_vien', 'asc')
                         ->offset($offset)
                         ->limit($limit)
                         ->get($column);
-                        
-        return $data;
+        } else {
+            $totalPage = 0;
+            $data = null;
+            $page = 0;
+        }
+        
+        $result = [
+            'data'      => $data,
+            'page'      => $page,
+            'totalPage' => $totalPage
+        ];
+        
+        return $result;
     }
     
-    public function getListBenhNhanPhongKham($phongId, $startDay, $endDay, $offset, $limit = 20, $keyword = '')
+    public function getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '')
     {
         $loaiBenhAn = 24; //kham benh
+        $offset = ($page - 1) * $limit;
         
         $where = [
             ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
             ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
+            ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
         ];
         
         $column = [
@@ -144,12 +163,27 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             });
         }
         
-        $data = $query->orderBy('thoi_gian_vao_vien', 'asc')
+        $totalRecord = $query->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->orderBy('thoi_gian_vao_vien', 'asc')
                         ->offset($offset)
                         ->limit($limit)
                         ->get($column);
+        } else {
+            $totalPage = 0;
+            $data = null;
+            $page = 0;
+        }
         
-        return $data;
+        $result = [
+            'data'      => $data,
+            'page'      => $page,
+            'totalPage' => $totalPage
+        ];
+        
+        return $result;
     }
     
     public function createDataHsbaKhoaPhong(array $input)

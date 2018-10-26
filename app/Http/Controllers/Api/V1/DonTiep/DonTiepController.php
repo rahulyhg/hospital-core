@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\DangKyKhamBenhFormRequest;
+use App\Http\Requests\UpdateHsbaFormRequest;
 use App\Services\SttDonTiepService;
 use App\Services\HsbaKhoaPhongService;
 use App\Services\HsbaService;
@@ -14,66 +14,77 @@ use Carbon\Carbon;
 
 class DonTiepController extends APIController
 {
-     /**
-     * __construct.
-     *
-     * @param $service
-     */
-    public function __construct(SttDonTiepService $SttDonTiepService, HsbaKhoaPhongService $HsbaKhoaPhongService, HsbaService $HsbaService, BenhNhanService $BenhNhanService)
+    public function __construct(SttDonTiepService $sttDonTiepService, HsbaKhoaPhongService $hsbaKhoaPhongService, HsbaService $hsbaService, BenhNhanService $benhNhanService)
     {
-        $this->SttDonTiepService = $SttDonTiepService;
-        $this->HsbaKhoaPhongService = $HsbaKhoaPhongService;
-        $this->HsbaService = $HsbaService;
-        $this->BenhNhanService = $BenhNhanService;
+        $this->sttDonTiepService = $sttDonTiepService;
+        $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->hsbaService = $hsbaService;
+        $this->benhNhanService = $benhNhanService;
     }
     
-    public function getInfoPatientByStt($stt, $phong_id, $benh_vien_id)
+    public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, $benhVienId, Request $request)
     {
-        $data = $this->SttDonTiepService->getInfoPatientByStt($stt, $phong_id, $benh_vien_id);
-        
-        return $data;
-    }
-    
-    public function getListPatientByKhoaPhong($type = 'HC', $phong_id = 0, Request $request)
-    {
-        $start_day = $request->query('start_day', Carbon::today());
-        $end_day = $request->query('end_day', Carbon::today());
-        $offset = $request->query('offset', 0);
+        $startDay = $request->query('startDay', Carbon::today());
+        $endDay = $request->query('endDay', Carbon::today());
         $limit = $request->query('limit', 20);
+        $page = $request->query('page', 1);
         $keyword = $request->query('keyword', '');
         
         //$redis = Redis::connection();
+        
+        if(!in_array($type, ['HC', 'PK']) || $phongId === null || $benhVienId === null){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
         
         if($type == "HC"){
             
             //$data = $redis->get('list_BN_HC');
             
             //if($data) {
-                //$list_BN = $data;
+                //$listBenhNhan = $data;
             //} else {
-                $list_BN = $this->HsbaKhoaPhongService->getListBN_HC($start_day, $end_day, $offset, $limit, $keyword);
-                //$redis->set('list_BN_HC', $list_BN);
+                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword);
+                //$redis->set('list_BN_HC', $listBenhNhan);
             //}
         } else {
             //$data = $redis->get('list_BN_PK');
             
             //if($data) {
-                //$list_BN = $data;
+                //$listBenhNhan = $data;
             //} else {
-                $list_BN = $this->HsbaKhoaPhongService->getListBN_PK($phong_id, $start_day, $end_day, $offset, $limit, $keyword);
+                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
             //}
         }
         
-        return $list_BN;
+        return $this->respond($listBenhNhan);
     }
     
-    public function getHsbaByHsbaId($hsba_id, $phong_id){
-        $data = $this->HsbaService->getHsbaByHsbaId($hsba_id, $phong_id);
-        return $data;
+    public function getHsbaByHsbaId($hsbaId, $phongId) 
+    {
+        if(is_numeric($hsbaId) && is_numeric($phongId)) {
+            $data = $this->hsbaService->getHsbaByHsbaId($hsbaId, $phongId);
+            return $this->respond($data);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
     }
-   
+    
+    public function updateHsba($hsbaId, UpdateHsbaFormRequest $request)
+    {
+        try {
+            if(is_numeric($hsbaId)) {
+                $this->hsbaService->updateHsba($hsbaId, $request);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+  
     public function register(DangKyKhamBenhFormRequest $request)
-    //public function register(Request $request)
     {   
         try 
         {
@@ -89,6 +100,6 @@ class DonTiepController extends APIController
             //return $this->respondInternalError($ex->getMessage());
             return $ex;
         }
-        
+
     }
 }

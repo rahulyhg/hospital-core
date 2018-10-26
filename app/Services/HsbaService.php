@@ -27,4 +27,9 @@ class HsbaService
          
         return $data;
     }
+    
+    public function updateHsba($hsbaId, Request $request)
+    {
+        $this->hsbaRepository->updateHsba($hsbaId, $request);
+    }
 }

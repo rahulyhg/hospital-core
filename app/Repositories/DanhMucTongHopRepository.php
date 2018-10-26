@@ -8,34 +8,34 @@ class DanhMucTongHopRepository extends BaseRepository
 
     public function getListNgheNghiep()
     {
-        $nghenghiep = DB::table('danh_muc_tong_hop')
+        $ngheNghiep = DB::table('danh_muc_tong_hop')
                 ->where('khoa','nghe_nghiep')
                 ->get();
-        return $nghenghiep;    
+        return $ngheNghiep;    
     }
     
     public function getListBenhVien()
     {
-        $benhvien = DB::table('benhvien')
-                ->orderBy('benhvienid')
+        $benhVien = DB::table('danh_muc_benh_vien')
+                ->orderBy('id')
                 ->get();
-        return $benhvien;    
+        return $benhVien;    
     }
     
     public function getListDanToc()
     {
-        $dantoc = DB::table('danh_muc_tong_hop')
+        $danToc = DB::table('danh_muc_tong_hop')
                 ->where('khoa','dan_toc')
                 ->get();
-        return $dantoc;    
+        return $danToc;    
     }
     
     public function getListQuocTich()
     {
-        $quoctich = DB::table('danh_muc_tong_hop')
+        $quocTich = DB::table('danh_muc_tong_hop')
                 ->where('khoa','quoc_tich')
                 ->get();
-        return $quoctich;    
+        return $quocTich;    
     }
     
     public function getListTinh()
@@ -60,6 +60,7 @@ class DanhMucTongHopRepository extends BaseRepository
                 ->where($where)
                 ->get($column);
         $array = json_decode($data, true);
+      
         return collect($array)->first();  
     }
     
@@ -72,8 +73,10 @@ class DanhMucTongHopRepository extends BaseRepository
                 ->where($where)
                 ->get();
         $array = json_decode($data, true);
+      
         return collect($array)->first(); 
     }
+  
     public function getDataHuyen($huyen_matinh, $ma_huyen)
     {
         $where = [
@@ -84,6 +87,7 @@ class DanhMucTongHopRepository extends BaseRepository
                 ->where($where)
                 ->get();
         $array = json_decode($data, true);
+      
         return collect($array)->first(); 
     }
     public function getDataXa($xa_matinh, $xa_mahuyen, $ma_xa)
@@ -97,6 +101,7 @@ class DanhMucTongHopRepository extends BaseRepository
                 ->where($where)
                 ->get();
         $array = json_decode($data, true);
+      
         return collect($array)->first();  
     }
 }
