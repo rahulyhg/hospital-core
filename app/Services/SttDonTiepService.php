@@ -19,13 +19,6 @@ class SttDonTiepService
         $this->hsbaRepository = $hsbaRepository;
     }
     
-    public function getInfoPatientByStt($stt, $phongId, $benhVienId)
-    {
-        $data = $this->sttDonTiepRepository->getInfoPatientByStt($stt, $phongId, $benhVienId);
-        
-        return new SttDonTiepResource($data);
-    }
-    
     public function getSttDonTiep(Request $request)
     {
         $loaiStt = $request->query('loaiStt');
