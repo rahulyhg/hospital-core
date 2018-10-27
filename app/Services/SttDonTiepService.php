@@ -159,8 +159,8 @@ class SttDonTiepService
                         }
                     }
                 } else {    //khong phai benh nhan cu nhung co the bhyt => cap STT theo do tuoi luon
-                    $arr = explode('/', $result['data']['ngay_sinh']);
-                    $age = Carbon::now()->year - $arr[2];
+                    $arr = explode('-', $result['data']['ngay_sinh']);
+                    $age = Carbon::now()->year - $arr[0];
                     
                     $loaiStt = $this->getLoaiSttByAge($age);
                 }
@@ -191,7 +191,12 @@ class SttDonTiepService
             $info['ms_bhyt'] = $qrCodeParts[0];
             $info['ho_va_ten'] = hex2bin($qrCodeParts[1]);
             $info['ten_benh_nhan'] = hex2bin($qrCodeParts[1]);
-            $info['ngay_sinh'] = $qrCodeParts[2];
+            if($qrCodeParts[2]){
+                $ngaySinh = \DateTime::createFromFormat('d/m/Y', $qrCodeParts[2]);
+                $info['ngay_sinh'] = $ngaySinh->format('Y-m-d');
+            } else {
+                $info['ngay_sinh'] = $qrCodeParts[2];
+            }
             $info['gioi_tinh'] = ($qrCodeParts[3] == 1) ? 'Nam' : 'Nữ';
             $info['dia_chi'] = hex2bin($qrCodeParts[4]);
             $info['ma_benh_vien'] = $qrCodeParts[5];
