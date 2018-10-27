@@ -195,9 +195,24 @@ class SttDonTiepService
             $info['gioi_tinh'] = ($qrCodeParts[3] == 1) ? 'Nam' : 'Nữ';
             $info['dia_chi'] = hex2bin($qrCodeParts[4]);
             $info['ma_benh_vien'] = $qrCodeParts[5];
-            $info['tu_ngay'] = $qrCodeParts[6];
-            $info['den_ngay'] = $qrCodeParts[7];
-            $info['ngay_cap'] = $qrCodeParts[8];
+            if($qrCodeParts[6]){
+                $tuNgay = \DateTime::createFromFormat('d/m/Y', $qrCodeParts[6]);
+                $info['tu_ngay'] = $tuNgay->format('Y-m-d');
+            } else {
+                $info['tu_ngay'] = $qrCodeParts[6];
+            }
+            if($qrCodeParts[7]){
+                $denNgay = \DateTime::createFromFormat('d/m/Y', $qrCodeParts[7]);
+                $info['den_ngay'] = $denNgay->format('Y-m-d');
+            } else {
+                $info['den_ngay'] = $qrCodeParts[7];
+            }
+            if($qrCodeParts[8]){
+                $ngayCap = \DateTime::createFromFormat('d/m/Y', $qrCodeParts[8]);
+                $info['ngay_cap'] = $ngayCap->format('Y-m-d');
+            } else {
+                $info['ngay_cap'] = $qrCodeParts[8];
+            }
             $info['ma_quan_ly'] = $qrCodeParts[9];
             //$info['cha_me'] = hex2bin($qrCodeParts[10]);
         } else {
