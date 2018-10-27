@@ -50,9 +50,9 @@ class SttDonTiepService
     {
         $data = $this->sttDonTiepRepository->goiSttDonTiep($request);
         
-        if($data !== null)
+        if($data !== null) 
             return new SttDonTiepResource($data);
-        else
+        else 
             return $data;
     }
     
@@ -189,6 +189,7 @@ class SttDonTiepService
         
         if(count($qrCodeParts) >= 10) {
             $info['ms_bhyt'] = $qrCodeParts[0];
+            $info['ho_va_ten'] = hex2bin($qrCodeParts[1]);
             $info['ten_benh_nhan'] = hex2bin($qrCodeParts[1]);
             $info['ngay_sinh'] = $qrCodeParts[2];
             $info['gioi_tinh'] = ($qrCodeParts[3] == 1) ? 'Nam' : 'Nữ';

@@ -16,7 +16,8 @@ class HsbaRepository extends BaseRepositoryV2
     public function getHsbaByBenhNhanId($benhNhanId)
     {
         $column = [
-            'hsba.id as hsba_id', 
+            'hsba.id as hsba_id',
+            'hsba.ten_benh_nhan as ho_va_ten',
             'hsba.ten_benh_nhan',
             'hsba.gioi_tinh_id as gioi_tinh',
             'hsba.ngay_sinh',
