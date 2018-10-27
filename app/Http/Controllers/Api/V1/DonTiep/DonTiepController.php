@@ -88,8 +88,9 @@ class DonTiepController extends APIController
     {   
         try 
         {
-            $id = $this->BenhNhanService->createBenhNhan($request);
-            return $id;
+            $id = $this->benhNhanService->createBenhNhan($request);
+            $this->setStatusCode(201);
+            return $this->respond([]);
             
             // return $this->respondCreatedWithData(
             //     [
@@ -97,7 +98,7 @@ class DonTiepController extends APIController
             //     ]
             // );
         } catch (\Exception $ex) {
-            //return $this->respondInternalError($ex->getMessage());
+            return $this->respondInternalError($ex->getMessage());
             return $ex;
         }
 
