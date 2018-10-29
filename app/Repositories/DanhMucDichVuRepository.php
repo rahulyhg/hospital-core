@@ -9,8 +9,8 @@ class DanhMucDichVuRepository extends BaseRepository
     public function getDataYeuCauKham($request)
     {
         $data = DB::table('danh_muc_dich_vu')
-                ->where('servicegrouptype',$request->servicegrouptype)
-                ->orderBy('servicepricename')
+                ->where('loai_nhom',$request->loai_nhom)
+                ->orderBy('ten')
                 ->get();
         return $data;    
     }
