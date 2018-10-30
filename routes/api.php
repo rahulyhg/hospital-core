@@ -67,6 +67,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('benhVien','DangKyKhamBenh\DangKyKhamBenhController@benhVien');
     });
     
+    Route::group(['prefix' => 'danhmuc'], function () {
+		Route::get('getListDanhMucDichVu','DanhMuc\DanhMucController@getListDanhMucDichVu');
+    	
+    });
+    
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');

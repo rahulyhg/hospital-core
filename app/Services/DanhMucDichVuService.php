@@ -6,7 +6,8 @@ use App\Http\Resources\DanhMucDichVuResource;
 use App\Repositories\DanhMucDichVuRepository;
 use Illuminate\Http\Request;
 
-class DanhMucDichVuService{
+class DanhMucDichVuService
+{
     public function __construct(DanhMucDichVuRepository $repository)
     {
         $this->repository = $repository;        
@@ -19,6 +20,13 @@ class DanhMucDichVuService{
         return DanhMucDichVuResource::collection(
            $this->repository->getDataYeuCauKham($request)
         );
+    }
+    
+    public function getListDanhMucDichVu($limit, $page)
+    {
+        $data = $this->repository->getListDanhMucDichVu($limit, $page);
+        
+        return $data;
     }
 
 }
