@@ -60,17 +60,35 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
             'thoi_gian_cap_nhat'
         ];
         
-        $data = DB::table('danh_muc_dich_vu')
+        $query = DB::table('danh_muc_dich_vu')
             ->leftJoin('danh_muc_tong_hop as dmth', function($join) {
                 $join->on(DB::raw('cast(dmth.gia_tri as integer)'), '=', 'danh_muc_dich_vu.loai_nhom')
                     ->where('dmth.khoa', '=', 'loai_nhom_dich_vu');
             })
-            ->leftJoin('auth_users', 'auth_users.id', '=', 'danh_muc_dich_vu.nguoi_cap_nhat_id')
-            ->offset($offset)
-            ->limit($limit)
-            ->get($column);
-         
-        return $data;
+            ->leftJoin('auth_users', 'auth_users.id', '=', 'danh_muc_dich_vu.nguoi_cap_nhat_id');
+            
+        $totalRecord = $query->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->offset($offset)
+                        ->limit($limit)
+                        ->get($column);
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+            
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
     }
     
 }

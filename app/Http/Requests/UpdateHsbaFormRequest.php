@@ -31,7 +31,13 @@ class UpdateHsbaFormRequest extends ApiFormRequest
             'email_benh_nhan'       => 'email',
             'dien_thoai_benh_nhan'  => 'string',
             'dia_chi_lien_he'       => 'string',
-            'noi_lam_viec'          => 'string'
+            'noi_lam_viec'          => 'string',
+            'loai_vien_phi'         => 'int',
+            'doi_tuong_benh_nhan'   => 'int',
+            'ms_bhyt'               => 'string',
+            'ma_cskcbbd'            => 'string',
+            'tu_ngay'               => 'date_format:Y-m-d',
+            'den_ngay'              => 'date_format:Y-m-d'
         ];
     }
 }

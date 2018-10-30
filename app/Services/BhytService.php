@@ -21,4 +21,9 @@ class BhytService
         
         return new HsbaResource($dataPatient);
     }
+    
+    public function updateBhyt($hsbaId, Request $request)
+    {
+        $this->bhytRepository->updateBhyt($hsbaId, $request);
+    }
 }

@@ -8,18 +8,20 @@ use App\Services\SttDonTiepService;
 use App\Services\HsbaKhoaPhongService;
 use App\Services\HsbaService;
 use App\Services\BenhNhanService;
+use App\Services\BhytService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 //use Illuminate\Support\Facades\Redis;
 
 class DonTiepController extends APIController
 {
-    public function __construct(SttDonTiepService $sttDonTiepService, HsbaKhoaPhongService $hsbaKhoaPhongService, HsbaService $hsbaService, BenhNhanService $benhNhanService)
+    public function __construct(SttDonTiepService $sttDonTiepService, HsbaKhoaPhongService $hsbaKhoaPhongService, HsbaService $hsbaService, BenhNhanService $benhNhanService, BhytService $bhytService)
     {
         $this->sttDonTiepService = $sttDonTiepService;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
         $this->hsbaService = $hsbaService;
         $this->benhNhanService = $benhNhanService;
+        $this->bhytService = $bhytService;
     }
     
     public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, $benhVienId, Request $request)
@@ -71,11 +73,13 @@ class DonTiepController extends APIController
         }
     }
     
-    public function updateHsba($hsbaId, UpdateHsbaFormRequest $request)
+    public function updateInfoPatient($hsbaId, UpdateHsbaFormRequest $request)
     {
         try {
             if(is_numeric($hsbaId)) {
                 $this->hsbaService->updateHsba($hsbaId, $request);
+                $this->hsbaKhoaPhongService->updateHsbaKhoaPhong($hsbaId, $request);
+                // $this->bhytService->updateBhyt($hsbaId, $request);
             } else {
                 $this->setStatusCode(400);
             }
