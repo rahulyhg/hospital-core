@@ -76,6 +76,7 @@ class BenhNhanService{
                 // if(strlen($scan['scan']) == 12)//thẻ bn
                 //     $idBenhNhan = $this->BenhNhanRepository->checkMaSoBenhNhan(trim($scan['scan']));
                 $idBhyt = null;
+                $idBenhNhan = null;
                 if(strlen($scan['scan']) == 15)//thẻ bhyt
                      $idBenhNhan = $this->bhytRepository->checkMaSoBhyt(trim($scan['scan']));
                 //nếu tìm thấy thẻ bhyt -> bn đã tồn tại
