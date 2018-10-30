@@ -24,6 +24,7 @@ class DangKyKhamBenhFormRequest extends ApiFormRequest
     public function rules()
     {
         return [
+            'benh_vien_id' => 'required|string',
             'ho_va_ten' => 'required|string',
             'ngay_sinh' => 'required|date_format:Y-m-d',
             'gioi_tinh_id' => 'required',
