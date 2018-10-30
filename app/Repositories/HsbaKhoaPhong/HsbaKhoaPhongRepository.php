@@ -87,14 +87,16 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         ->get($column);
         } else {
             $totalPage = 0;
-            $data = null;
+            $data = [];
             $page = 0;
+            $totalRecord = 0;
         }
         
         $result = [
-            'data'      => $data,
-            'page'      => $page,
-            'totalPage' => $totalPage
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
         ];
         
         return $result;
@@ -173,14 +175,16 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         ->get($column);
         } else {
             $totalPage = 0;
-            $data = null;
+            $data = [];
             $page = 0;
+            $totalRecord = 0;
         }
         
         $result = [
-            'data'      => $data,
-            'page'      => $page,
-            'totalPage' => $totalPage
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
         ];
         
         return $result;
