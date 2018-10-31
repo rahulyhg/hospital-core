@@ -22,22 +22,22 @@ class UpdateHsbaFormRequest extends ApiFormRequest
     public function rules()
     {
         return [
-            'ho_va_ten'             => 'string',
-            'ngay_sinh'             => 'date_format:Y-m-d',
-            'gioi_tinh_id'          => 'int',
-            'nghe_nghiep_id'        => 'int',
-            'dan_toc_id'            => 'int',
-            'quoc_tich_id'          => 'int',
-            'email_benh_nhan'       => 'email',
-            'dien_thoai_benh_nhan'  => 'string',
-            'dia_chi_lien_he'       => 'string',
-            'noi_lam_viec'          => 'string',
-            'loai_vien_phi'         => 'int',
-            'doi_tuong_benh_nhan'   => 'int',
-            'ms_bhyt'               => 'string',
-            'ma_cskcbbd'            => 'string',
-            'tu_ngay'               => 'date_format:Y-m-d',
-            'den_ngay'              => 'date_format:Y-m-d'
+            'ho_va_ten'             => 'required|string',
+            'ngay_sinh'             => 'required|date_format:Y-m-d',
+            'gioi_tinh_id'          => 'required|int',
+            'nghe_nghiep_id'        => 'required|int',
+            'dan_toc_id'            => 'required|int',
+            'quoc_tich_id'          => 'required|int',
+            'email_benh_nhan'       => 'nullable|email',
+            'dien_thoai_benh_nhan'  => 'nullable|string',
+            'dia_chi_lien_he'       => 'nullable|string',
+            'noi_lam_viec'          => 'nullable|string',
+            'loai_vien_phi'         => 'nullable|int',
+            'doi_tuong_benh_nhan'   => 'nullable|int',
+            'ms_bhyt'               => 'nullable|string',
+            'ma_cskcbbd'            => 'nullable|string',
+            'tu_ngay'               => 'nullable|date_format:Y-m-d',
+            'den_ngay'              => 'nullable|date_format:Y-m-d'
         ];
     }
 }

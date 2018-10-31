@@ -69,7 +69,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'danhmuc'], function () {
 		Route::get('getListDanhMucDichVu','DanhMuc\DanhMucController@getListDanhMucDichVu');
-    	
+		Route::get('getDmdvById/{dmdvId}','DanhMuc\DanhMucController@getDmdvById');
+    	Route::post('createDanhMucDichVu','DanhMuc\DanhMucController@createDanhMucDichVu');
+    	Route::post('updateDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@updateDanhMucDichVu');
+    	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

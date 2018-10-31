@@ -22,12 +22,6 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         return $data;    
     }
     
-    public function createDataDanhMucDichVu(array $input)
-    {
-        $id = DanhMucDichVu::create($input)->id;
-        return $id;
-    }
-    
     public function getDataDanhMucDichVuById($input)
     {
         $result = $this->model->where('danh_muc_dich_vu.id', $input)->first(); 
@@ -71,7 +65,8 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
             
-            $data = $query->offset($offset)
+            $data = $query->orderBy('id', 'desc')
+                        ->offset($offset)
                         ->limit($limit)
                         ->get($column);
         } else {
@@ -91,4 +86,20 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         return $result;
     }
     
+    public function createDanhMucDichVu($request)
+    {
+        $id = DanhMucDichVu::create($request->all())->id;
+        return $id;
+    }
+    
+    public function updateDanhMucDichVu($dmdvId, $request)
+    {
+        $dmdv = DanhMucDichVu::findOrFail($dmdvId);
+		$dmdv->update($request->all());
+    }
+    
+    public function deleteDanhMucDichVu($dmdvId)
+    {
+        DanhMucDichVu::destroy($dmdvId);
+    }
 }
