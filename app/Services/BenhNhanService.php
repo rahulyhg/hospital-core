@@ -34,6 +34,10 @@ class BenhNhanService{
     
     public function createBenhNhan(Request $request)
     {
+        //1. Kiểm tra thông tin bảo hiểm
+        //2. Nếu có bảo hiểm thì bệnh nhân này đã tồn tại không tạo mới thông tin bệnh nhân
+        //3. Nếu ko tìm thấy bảo hiểm tạo mới thông tin bệnh nhân
+        //4. Tạo Hsba, hsba_khoa_phong, vien_phi, dieu_tri, phieu_y_lenh, y_lenh
         //kiểm tra thông tin scan
         $scan = $request->only('scan');
         //return $idBenhNhan;
@@ -56,9 +60,10 @@ class BenhNhanService{
                                                 , 'so_nha', 'duong_thon', 'noi_lam_viec'
                                                 , 'loai_nguoi_than', 'ten_nguoi_than', 'dien_thoai_nguoi_than'
                                                 , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
-                                                , 'ms_bhyt'
+                                                , 'ms_bhyt', 'benh_vien_id'
                                         );
         $hsbaKpParams = $request -> only ('auth_users_id', 'doi_tuong_benh_nhan', 'yeu_cau_kham_id', 'chan_doan_tuyen_duoi', 'chan_doan_tuyen_duoi_code'
+                                            ,'benh_vien_id'
                                         );
         $bhytParams = $request -> only ('ma_cskcbbd', 'tu_ngay', 'den_ngay', 'ma_noi_song', 'du5nam6thangluongcoban', 'dtcbh_luyke6thang'
                                         );
@@ -71,6 +76,7 @@ class BenhNhanService{
                 // if(strlen($scan['scan']) == 12)//thẻ bn
                 //     $idBenhNhan = $this->BenhNhanRepository->checkMaSoBenhNhan(trim($scan['scan']));
                 $idBhyt = null;
+                $idBenhNhan = null;
                 if(strlen($scan['scan']) == 15)//thẻ bhyt
                      $idBenhNhan = $this->bhytRepository->checkMaSoBhyt(trim($scan['scan']));
                 //nếu tìm thấy thẻ bhyt -> bn đã tồn tại
@@ -165,7 +171,6 @@ class BenhNhanService{
                 $yLenhParams['doi_tuong_benh_nhan'] = $hsbaKpParams['doi_tuong_benh_nhan'];
                 $yLenhParams['khoa_id'] = $hsbaParams['khoa_id'];
                 $yLenhParams['phong_id'] = $hsbaParams['phong_id'];
-                
                 $yeuCauKham = $this->danhMucDichVuRepository->getDataDanhMucDichVuById($hsbaKpParams['yeu_cau_kham_id']);
                 $yLenhParams['ma'] = $yeuCauKham['ma'];
                 $yLenhParams['ten'] = $yeuCauKham['ten'];
@@ -176,9 +181,9 @@ class BenhNhanService{
                 $yLenhParams['gia'] = (double)$yeuCauKham['gia'];
                 $yLenhParams['gia_nhan_dan'] = (double)$yeuCauKham['gia_nhan_dan'];
                 $yLenhParams['gia_bhyt'] = (double)$yeuCauKham['gia_bhyt'];
-                $yLenhParams['gia_nuoc_ngoai'] = (double)$yeuCauKham['gia_nuoc_ngoai'];;
-                
+                $yLenhParams['gia_nuoc_ngoai'] = (double)$yeuCauKham['gia_nuoc_ngoai'];
                 $idYLenh = $this->yLenhRepository->createDataYLenh($yLenhParams);
+                //sothutuphongkham
                 return $idYLenh;
                 
                 
@@ -208,5 +213,27 @@ class BenhNhanService{
       //$str = str_replace(” “, “-”, str_replace(“&*#39;”,”",$str));
       return $str;
     }
-   
+    
+    
+    public function createChuyenPhong(Request $request)
+    {
+        //1. tìm khoa hiện tại của bệnh nhân
+        //2. có phòng chuyển tới tìm khoa của phòng nay
+        //3. so sánh khoa hiện tại và khoa chuyển tới
+        //4. nếu khoa bằng nhau chính là chuyển phòng
+        //5. nếu khoa khác nhau chính là chuyển khoa
+        //6. TH chuyển phòng tạo thêm dữ liệu ở số thứ tự phòng khám
+        //7. TH chuyển khoa tạo dữ liệu mới ở hsba khoa phòng
+        $benhNhanParams = $request->only('benh_nhan_id');
+        $result = DB::transaction(function () use ( $benhNhanParams) {
+            try {
+                
+            }
+            catch (\Exception $ex) {
+                 throw $ex;
+            }
+        });
+        
+        return $result;
+    }
 }
