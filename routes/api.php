@@ -47,7 +47,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         
         Route::get('getListPatientByKhoaPhong/{type}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
         Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}','DonTiep\DonTiepController@getHsbaByHsbaId');
-        Route::post('updateHsba/{hsbaId}','DonTiep\DonTiepController@updateHsba');
+        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient');
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
         Route::post('register','DonTiep\DonTiepController@register');
@@ -65,6 +65,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('listHuyen/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getListHuyen');
     	Route::get('listXa/{maHuyen}/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getListXa');
     	Route::get('benhVien','DangKyKhamBenh\DangKyKhamBenhController@benhVien');
+    });
+    
+    Route::group(['prefix' => 'danhmuc'], function () {
+		Route::get('getListDanhMucDichVu','DanhMuc\DanhMucController@getListDanhMucDichVu');
+		Route::get('getDmdvById/{dmdvId}','DanhMuc\DanhMucController@getDmdvById');
+    	Route::post('createDanhMucDichVu','DanhMuc\DanhMucController@createDanhMucDichVu');
+    	Route::post('updateDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@updateDanhMucDichVu');
+    	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

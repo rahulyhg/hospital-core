@@ -5,6 +5,7 @@ use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\SttDonTiep;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 class SttDonTiepRepository extends BaseRepositoryV2
 {
@@ -149,6 +150,9 @@ class SttDonTiepRepository extends BaseRepositoryV2
             $this->model->where('id', '=', $id)->update($attributes);
             
             $data = $this->model->findOrFail($id);
+            
+            $redis = Redis::connection();
+            $redis->hmset('sttDonTiep', 'lastCall_'.$phongId.'_'.$benhVienId, Carbon::now()->toDateTimeString());
         } else {
             $data = null;
         }

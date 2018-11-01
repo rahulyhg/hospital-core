@@ -12,7 +12,7 @@ use App\Repositories\VienPhi\VienPhiRepository;
 use App\Repositories\DanhMucTongHopRepository;
 use App\Repositories\DieuTri\DieuTriRepository;
 use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
-use App\Repositories\DanhMucDichVu\DanhMucDichVuRepository;
+use App\Repositories\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 
 use Validator;
