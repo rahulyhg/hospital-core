@@ -28,5 +28,28 @@ class DanhMucDichVuService
         
         return $data;
     }
+    
+    public function getDmdvById($dmdvId)
+    {
+        $data = $this->repository->getDataDanhMucDichVuById($dmdvId);
+        
+        return $data;
+    }
 
+    public function createDanhMucDichVu(Request $request)
+    {
+        $id = $this->repository->createDanhMucDichVu($request);
+        
+        return $id;
+    }
+    
+    public function updateDanhMucDichVu($dmdvId, Request $request)
+    {
+        $this->repository->updateDanhMucDichVu($dmdvId, $request);
+    }
+    
+    public function deleteDanhMucDichVu($dmdvId)
+    {
+        $this->repository->deleteDanhMucDichVu($dmdvId);
+    }
 }

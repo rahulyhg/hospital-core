@@ -22,12 +22,6 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         return $data;    
     }
     
-    public function createDataDanhMucDichVu(array $input)
-    {
-        $id = DanhMucDichVu::create($input)->id;
-        return $id;
-    }
-    
     public function getDataDanhMucDichVuById($input)
     {
         $result = $this->model->where('danh_muc_dich_vu.id', $input)->first(); 
@@ -60,17 +54,52 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
             'thoi_gian_cap_nhat'
         ];
         
-        $data = DB::table('danh_muc_dich_vu')
+        $query = DB::table('danh_muc_dich_vu')
             ->leftJoin('danh_muc_tong_hop as dmth', function($join) {
                 $join->on(DB::raw('cast(dmth.gia_tri as integer)'), '=', 'danh_muc_dich_vu.loai_nhom')
                     ->where('dmth.khoa', '=', 'loai_nhom_dich_vu');
             })
-            ->leftJoin('auth_users', 'auth_users.id', '=', 'danh_muc_dich_vu.nguoi_cap_nhat_id')
-            ->offset($offset)
-            ->limit($limit)
-            ->get($column);
-         
-        return $data;
+            ->leftJoin('auth_users', 'auth_users.id', '=', 'danh_muc_dich_vu.nguoi_cap_nhat_id');
+            
+        $totalRecord = $query->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->orderBy('id', 'desc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get($column);
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+            
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
     }
     
+    public function createDanhMucDichVu($request)
+    {
+        $id = DanhMucDichVu::create($request->all())->id;
+        return $id;
+    }
+    
+    public function updateDanhMucDichVu($dmdvId, $request)
+    {
+        $dmdv = DanhMucDichVu::findOrFail($dmdvId);
+		$dmdv->update($request->all());
+    }
+    
+    public function deleteDanhMucDichVu($dmdvId)
+    {
+        DanhMucDichVu::destroy($dmdvId);
+    }
 }

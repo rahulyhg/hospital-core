@@ -195,5 +195,11 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
          $id = HsbaKhoaPhong::create($input)->id;
          return $id;
     }
+    
+    public function updateHsbaKhoaPhong($hsbaId, $request)
+    {
+        $hsbaKhoaPhong = HsbaKhoaPhong::where('hsba_id', '=', $hsbaId);
+		$hsbaKhoaPhong->update($request->all());
+    }
 
 }

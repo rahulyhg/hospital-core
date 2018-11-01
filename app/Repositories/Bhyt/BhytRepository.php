@@ -43,4 +43,10 @@ class BhytRepository extends BaseRepositoryV2
                             ->first(); 
         return $result;
     }
+    
+    public function updateBhyt($hsbaId, $request)
+    {
+        $bhyt = Bhyt::where('hsba_id', '=', $hsbaId);
+		$bhyt->update($request->all());
+    }
 }

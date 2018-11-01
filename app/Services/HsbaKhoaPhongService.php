@@ -27,4 +27,9 @@ class HsbaKhoaPhongService
         
         return $data;
     }
+    
+    public function updateHsbaKhoaPhong($hsbaId, Request $request)
+    {
+        $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($hsbaId, $request);
+    }
 }
