@@ -3,13 +3,15 @@ namespace App\Http\Controllers\Api\V1\DonTiep;
 
 use Illuminate\Http\Request;
 use App\Services\SttDonTiepService;
+use App\Services\AuthService;
 use App\Http\Controllers\Api\V1\APIController;
 
 class SttDonTiepController extends APIController
 {
-    public function __construct(SttDonTiepService $sttDonTiepService)
+    public function __construct(SttDonTiepService $sttDonTiepService, AuthService $authService)
     {
         $this->service = $sttDonTiepService;
+        $this->authService = $authService;
     }
     
     public function makeSttDonTiepWhenScanCard(Request $request)
@@ -72,7 +74,7 @@ class SttDonTiepController extends APIController
         }
         
         //khong ton tai $authUsersId
-        $bool = $this->service->checkExistUser($authUsersId);
+        $bool = $this->authService->getUserById($authUsersId);
         if(!$bool){
             $this->setStatusCode(400);
             return $this->respond([]);
