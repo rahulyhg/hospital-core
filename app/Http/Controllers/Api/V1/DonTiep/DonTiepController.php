@@ -78,7 +78,7 @@ class DonTiepController extends APIController
         try {
             if(is_numeric($hsbaId)) {
                 $this->hsbaService->updateHsba($hsbaId, $request);
-                $this->hsbaKhoaPhongService->updateHsbaKhoaPhong($hsbaId, $request);
+                //$this->hsbaKhoaPhongService->updateHsbaKhoaPhong($hsbaId, $request);
                 // $this->bhytService->updateBhyt($hsbaId, $request);
             } else {
                 $this->setStatusCode(400);

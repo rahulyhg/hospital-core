@@ -11,10 +11,13 @@ class PhongRepository extends BaseRepository
         $phong = DB::table('phong')
                 ->where([
                     'loai_phong'=>$loaiPhong,
-                    'khoa_id'=>$khoaId])
-                ->orderBy('ten_phong')
-                ->get();
+                    'khoa_id'=>$khoaId,
+                    'loai_benh_an'=>24,
+                    'trang_thai'=>1
+                    ])
+                ->orderBy('ten_nhom')
+                ->distinct()
+                ->get(['ten_nhom','ma_nhom']);
         return $phong;    
     }
-    
 }

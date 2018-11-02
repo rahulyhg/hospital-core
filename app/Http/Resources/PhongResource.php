@@ -15,12 +15,8 @@ class PhongResource extends Resource
     public function toArray($request)
     {
         return [
-            'id'      => $this->id,
-            'ma_phong'    => $this->ma_phong,
-            'ten_phong'    => $this->ten_phong,
-            'khoa_id' => $this->khoa_id,
-            'loai_phong'    => $this->loai_phong
-          
+            'ma_nhom'    => $this->ma_nhom,
+            'ten_nhom'      => $this->ten_nhom
         ];
     }
 }
