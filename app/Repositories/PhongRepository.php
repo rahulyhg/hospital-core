@@ -26,4 +26,24 @@ class PhongRepository extends BaseRepositoryV2
                 ->get(['ten_nhom','ma_nhom']);
         return $phong;    
     }
+    
+    public function getDataById($id)
+    {
+        $phong = DB::table('phong')
+                ->where(['id'=>$id])
+                ->get()
+                ->first();
+        return $phong;
+    }
+    
+    public function getPhongHanhChinhByKhoaID($khoaId)
+    {
+        $phong = DB::table('phong')
+                ->where(['khoa_id'=>$khoaId, 'loai_phong'=> 1, 'trang_thai'=>1])
+                ->get()
+                ->first();
+        return $phong;
+        
+    }
+    
 }
