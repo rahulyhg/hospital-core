@@ -24,4 +24,15 @@ class AuthUsersRepository extends BaseRepository
             return $data;
     }
     
+    public function getUserById($authUsersId)
+    {
+        $data = DB::table('auth_users')
+                ->where('id', $authUsersId)
+                ->first();
+        if($data)
+            return true;
+        else
+            return false;
+    }
+    
 }

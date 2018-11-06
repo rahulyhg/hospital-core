@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $khoa_id
  * @property int $so_phong
- * @property string $ma_phong
+ * @property string $ma_nhom
  * @property string $ten_phong
  * @property int $loai_phong
  * @property int $loai_benh_an
  * @property int $trang_thai_hoat_dong
+ * @property string $ten_nhom
  */
 class Phong extends Model
 {

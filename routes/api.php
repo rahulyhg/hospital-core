@@ -45,7 +45,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('finishSttDonTiep/{sttId}','DonTiep\SttDonTiepController@finishSttDonTiep');
         Route::get('countSttDonTiep','DonTiep\SttDonTiepController@countSttDonTiep');
         
-        Route::get('getListPatientByKhoaPhong/{type}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
+        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
         Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}','DonTiep\DonTiepController@getHsbaByHsbaId');
         Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient');
         
@@ -65,6 +65,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('listHuyen/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getListHuyen');
     	Route::get('listXa/{maHuyen}/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getListXa');
     	Route::get('benhVien','DangKyKhamBenh\DangKyKhamBenhController@benhVien');
+    });
+    
+    Route::group(['prefix' => 'phongkham'], function () {
+		
+		
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {

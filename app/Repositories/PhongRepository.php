@@ -1,12 +1,18 @@
 <?php
 namespace App\Repositories;
+
 use DB;
-use App\Repositories\BaseRepository;
+use App\Models\Phong;
+use App\Repositories\BaseRepositoryV2;
 
-class PhongRepository extends BaseRepository
+class PhongRepository extends BaseRepositoryV2
 {
-
-     public function getListPhong($loaiPhong,$khoaId)
+    public function getModel()
+    {
+        return Phong::class;
+    }
+    
+    public function getListPhong($loaiPhong,$khoaId)
     {
         $phong = DB::table('phong')
                 ->where([
@@ -16,5 +22,7 @@ class PhongRepository extends BaseRepository
                 ->get();
         return $phong;    
     }
+    
+    
     
 }
