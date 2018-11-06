@@ -19,12 +19,12 @@ class SttPhongKhamService
     
     public function getSttPhongKham(array $params)
     {
-        $phongKham = $this->sttPhongKhamRepository->countSttPhongKham($params['loai_stt'], $params['ma_nhom'], $params['khoa_id']);
+        $phongKham = $this->sttPhongKhamRepository->countSttPhongKham($params['loai_stt'], $params['ma_nhom'], $params['khoa_id'], $params['benh_vien_id']);
         
         if($phongKham) {
             $params['phong_id'] = $phongKham->id;
             $params['ten_phong'] = $phongKham->ten_phong;
-            
+            $params['so_phong'] = $phongKham->so_phong;
             $stt = $this->sttPhongKhamRepository->createSttPhongKham($params);
             
             if($stt) {
