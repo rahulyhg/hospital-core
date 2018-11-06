@@ -13,12 +13,6 @@ class PhongService {
     {
         $this->phongRepository = $phongRepository;
     }
-   
-    public function getListPatientByKhoaPhong($loaiBenhAn, $phongId, $idBenhVien){
-        
-        
-        //return new DepartmentResource($data);
-    }
 
     public function getListPhong($loaiPhong,$khoaId)
     {
@@ -26,4 +20,5 @@ class PhongService {
            $this->phongRepository->getListPhong($loaiPhong,$khoaId)
         );
     }
+    
 }

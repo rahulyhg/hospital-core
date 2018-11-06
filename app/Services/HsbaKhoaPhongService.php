@@ -14,22 +14,22 @@ class HsbaKhoaPhongService
         $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
     }
     
-    public function getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword)
+    public function getListBenhNhan($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword, $status)
     {
-        $data = $this->hsbaKhoaPhongRepository->getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword);
+        $data = $this->hsbaKhoaPhongRepository->getListBenhNhan($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword, $status);
         
         return $data;
     }
     
-    public function getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword)
-    {
-        $data = $this->hsbaKhoaPhongRepository->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
+    // public function getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword)
+    // {
+    //     $data = $this->hsbaKhoaPhongRepository->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
         
-        return $data;
-    }
+    //     return $data;
+    // }
     
-    public function updateHsbaKhoaPhong($hsbaId, Request $request)
+    public function updateHsbaKhoaPhong($hsbaKhoaPhongId, array $params)
     {
-        $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($hsbaId, $request);
+        $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($hsbaKhoaPhongId, $params);
     }
 }

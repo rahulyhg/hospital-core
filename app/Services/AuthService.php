@@ -34,4 +34,10 @@ class AuthService {
         $userName = $this->authUsersRepository->getUserNameByEmail($email);
         return $userName;
     }
+    
+    public function getUserById($authUsersId)
+    {
+        $bool = $this->authUsersRepository->getUserById($authUsersId);
+        return $bool;
+    }
 }
