@@ -237,14 +237,5 @@ class SttDonTiepService
         
         return $loaiStt;
     }
-
-    public function checkExistUser($authUsersId)
-    {
-        $user = User::findOrFail($authUsersId);
-        
-        if($user)
-            return true;
-        else
-            return false;
-    }
+    
 }

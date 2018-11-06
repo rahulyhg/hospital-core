@@ -9,55 +9,66 @@ use App\Services\HsbaKhoaPhongService;
 use App\Services\HsbaService;
 use App\Services\BenhNhanService;
 use App\Services\BhytService;
+use App\Services\PhongService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 //use Illuminate\Support\Facades\Redis;
 
 class DonTiepController extends APIController
 {
-    public function __construct(SttDonTiepService $sttDonTiepService, HsbaKhoaPhongService $hsbaKhoaPhongService, HsbaService $hsbaService, BenhNhanService $benhNhanService, BhytService $bhytService)
+    public function __construct(
+        SttDonTiepService $sttDonTiepService, 
+        HsbaKhoaPhongService $hsbaKhoaPhongService, 
+        HsbaService $hsbaService, 
+        BenhNhanService $benhNhanService, 
+        BhytService $bhytService,
+        PhongService $phongService
+    )
     {
         $this->sttDonTiepService = $sttDonTiepService;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
         $this->hsbaService = $hsbaService;
         $this->benhNhanService = $benhNhanService;
         $this->bhytService = $bhytService;
+        $this->phongService = $phongService;
     }
     
-    public function getListPatientByKhoaPhong($type = 'HC', $phongId = 0, $benhVienId, Request $request)
+    public function getListPatientByKhoaPhong($phongId = 0, $benhVienId, Request $request)
     {
         $startDay = $request->query('startDay', Carbon::today());
         $endDay = $request->query('endDay', Carbon::today());
         $limit = $request->query('limit', 20);
         $page = $request->query('page', 1);
         $keyword = $request->query('keyword', '');
+        $status = $request->query('status', 0);
         
         //$redis = Redis::connection();
         
-        if(!in_array($type, ['HC', 'PK']) || $phongId === null || $benhVienId === null){
+        if($phongId === null || $benhVienId === null){
             $this->setStatusCode(400);
             return $this->respond([]);
         }
         
-        if($type == "HC"){
-            
+        $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhan($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword, $status);
+        
+        //if($type == "HC"){
             //$data = $redis->get('list_BN_HC');
             
             //if($data) {
                 //$listBenhNhan = $data;
             //} else {
-                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword);
+                //$listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword);
                 //$redis->set('list_BN_HC', $listBenhNhan);
             //}
-        } else {
+        //} else {
             //$data = $redis->get('list_BN_PK');
             
             //if($data) {
                 //$listBenhNhan = $data;
             //} else {
-                $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
+                //$listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
             //}
-        }
+        //}
         
         return $this->respond($listBenhNhan);
     }
@@ -78,13 +89,11 @@ class DonTiepController extends APIController
         try {
             if(is_numeric($hsbaId)) {
                 $this->hsbaService->updateHsba($hsbaId, $request);
-                $this->hsbaKhoaPhongService->updateHsbaKhoaPhong($hsbaId, $request);
-                // $this->bhytService->updateBhyt($hsbaId, $request);
             } else {
                 $this->setStatusCode(400);
             }
         } catch (\Exception $ex) {
-            return $ex;
+            return $this->respondInternalError($ex->getMessage());
         }
     }
   
@@ -93,18 +102,13 @@ class DonTiepController extends APIController
         try 
         {
             $id = $this->benhNhanService->createBenhNhan($request);
+            
+            $listPhong = $this->phongService->getListPhongByMaNhom($request->ma_nhom, $request->khoa_id);
+            
             $this->setStatusCode(201);
             return $this->respond([]);
-            
-            // return $this->respondCreatedWithData(
-            //     [
-            //         'id'=>$id
-            //     ]
-            // );
         } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
-            return $ex;
         }
-
     }
 }
