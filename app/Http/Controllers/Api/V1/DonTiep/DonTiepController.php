@@ -99,16 +99,26 @@ class DonTiepController extends APIController
   
     public function register(DangKyKhamBenhFormRequest $request)
     {   
+        //try 
+        //{
+            $dataPrint = $this->benhNhanService->createBenhNhan($request);
+            $this->setStatusCode(201);
+            return $this->respond($dataPrint);
+        //} catch (\Exception $ex) {
+            //return $this->respondInternalError($ex->getMessage());
+        //}
+    }
+    
+    public function chuyenKhoaPhong(Request $request)
+    {   
         try 
         {
-            $id = $this->benhNhanService->createBenhNhan($request);
-            
-            $listPhong = $this->phongService->getListPhongByMaNhom($request->ma_nhom, $request->khoa_id);
-            
-            $this->setStatusCode(201);
-            return $this->respond([]);
+            $id = $this->benhNhanService->createChuyenPhong($request);
+            return $id;
         } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
+            return $ex;
         }
+
     }
 }
