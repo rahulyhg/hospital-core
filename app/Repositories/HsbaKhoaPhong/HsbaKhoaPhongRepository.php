@@ -130,5 +130,15 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $hsbaKhoaPhong = HsbaKhoaPhong::findOrFail($hsbaKhoaPhongId);
 		$hsbaKhoaPhong->update($params);
     }
+    
+    public function getHsbaKhoaPhongById($hsba_kp_id)
+    {
+        $where = [
+            ['hsba_khoa_phong.id', '=', $hsba_kp_id],
+        ];
+        $result = $this->model->where($where)
+                            ->first();
+        return $result;
+    }
 
 }
