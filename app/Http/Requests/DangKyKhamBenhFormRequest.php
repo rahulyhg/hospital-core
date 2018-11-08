@@ -34,7 +34,7 @@ class DangKyKhamBenhFormRequest extends ApiFormRequest
             'phuong_xa_id' => 'nullable',
             'phong_id' => 'required',//|string|regex:/^[a-zA-Z]+$/u',
             'khoa_id' => 'required',
-            'email_benh_nhan' => 'email'
+            'email_benh_nhan' => 'nullable|email'
             //nếu có bh check bh so vs ngày hiện tại
         ];
     }
