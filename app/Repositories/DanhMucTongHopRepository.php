@@ -34,6 +34,7 @@ class DanhMucTongHopRepository extends BaseRepository
     {
         $quocTich = DB::table('danh_muc_tong_hop')
                 ->where('khoa','quoc_tich')
+                ->orderBy('gia_tri')
                 ->get();
         return $quocTich;    
     }
