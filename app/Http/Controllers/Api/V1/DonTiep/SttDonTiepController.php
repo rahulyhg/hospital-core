@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\V1\APIController;
 
 class SttDonTiepController extends APIController
 {
+    const LOAI_STT = ['A', 'B', 'C'];
+    
     public function __construct(SttDonTiepService $sttDonTiepService, AuthService $authService)
     {
         $this->service = $sttDonTiepService;
@@ -16,8 +18,13 @@ class SttDonTiepController extends APIController
     
     public function makeSttDonTiepWhenScanCard(Request $request)
     {
-        if($request['cardCode'] !== null && $this->checkExistParam($request['phongId'], $request['benhVienId']) && $request['maSoKiosk'] !== null) {
-            $data = $this->service->makeSttDonTiepWhenScanCard($request);
+        $isCardCode = $request['cardCode'] ? true : false;
+        $isExistParam = $this->checkExistParam($request['phongId'], $request['benhVienId']);
+        $isMaSoKiosk = $request['maSoKiosk'] ? true : false;
+        $input = $request->all();
+        
+        if($isCardCode && $isExistParam && $isMaSoKiosk) {
+            $data = $this->service->makeSttDonTiepWhenScanCard($input);
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);
@@ -27,7 +34,9 @@ class SttDonTiepController extends APIController
     
     public function scanCard(Request $request)
     {
-        if($request['cardCode'] !== null) {
+        $isCardCode = $request['cardCode'] ? true : false;
+        
+        if($isCardCode) {
             $data = $this->service->scanCard($request['cardCode']);
             return $this->respond($data);
         } else {
@@ -38,14 +47,21 @@ class SttDonTiepController extends APIController
     
     public function getSttDonTiep(Request $request)
     {
-        //sai tham so $request['loaiStt']
-        if(!in_array($request['loaiStt'], ['A', 'B', 'C'])){
+        $input = $request->all();
+        $isValidLoaiStt = in_array($input['loaiStt'], self::LOAI_STT);
+        
+        //sai tham so $loaiStt
+        if(!$isValidLoaiStt){
             $this->setStatusCode(400);
             return $this->respond([]);
         }
         
-        if($this->checkExistParam($request['phongId'], $request['benhVienId']) && $request['maSoKiosk'] !== null) {
-            $data = $this->service->getSttDonTiep($request);
+        $isExistParam = $this->checkExistParam($input['phongId'], $input['benhVienId']);
+        $isMaSoKiosk = (isset($input['maSoKiosk']) && $input['maSoKiosk'] > 0 ) ? true : false;
+        
+        //co tham so $phongId, $benhVienId, $maSoKiosk
+        if($isExistParam && $isMaSoKiosk) {
+            $data = $this->service->getSttDonTiep($input);
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);
@@ -55,20 +71,20 @@ class SttDonTiepController extends APIController
     
     public function goiSttDonTiep(Request $request)
     {
-        $loaiStt = $request->query('loaiStt');
-        $phongId = $request->query('phongId');
-        $benhVienId = $request->query('benhVienId');
-        $quaySo = $request->query('quaySo');
-        $authUsersId = $request->query('authUsersId');
+        $input = $request->all();
+        $isValidLoaiStt = in_array($input['loaiStt'], self::LOAI_STT);
+        $isExistParam = $this->checkExistParam($input['phongId'], $input['benhVienId']);
+        $isQuaySo = (isset($input['quaySo']) && $input['quaySo'] > 0 ) ? true : false;
+        $authUsersId = $input['authUsersId'];
         
         //sai tham so $loaiStt
-        if(!in_array($loaiStt, ['A', 'B', 'C'])){
+        if(!$isValidLoaiStt){
             $this->setStatusCode(400);
             return $this->respond([]);
         }
         
         //khong co tham so $phongId, $benhVienId, $quaySo
-        if($phongId === null || $benhVienId === null || $quaySo === null){
+        if(!$isExistParam || !$isQuaySo) {
             $this->setStatusCode(400);
             return $this->respond([]);
         }
@@ -80,7 +96,7 @@ class SttDonTiepController extends APIController
             return $this->respond([]);
         }
         
-        $data = $this->service->goiSttDonTiep($request);
+        $data = $this->service->goiSttDonTiep($input);
         
         //ko co du lieu stt
         if($data === null)
@@ -91,8 +107,11 @@ class SttDonTiepController extends APIController
     
     public function loadSttDonTiep(Request $request)
     {
-        if($this->checkExistParam($request['phongId'], $request['benhVienId'])) {
-            $data = $this->service->loadSttDonTiep($request);
+        $isExistParam = $this->checkExistParam($request['phongId'], $request['benhVienId']);
+        $input = $request->all();
+        
+        if($isExistParam) {
+            $data = $this->service->loadSttDonTiep($input);
         } else {
             $data = null;
             $this->setStatusCode(400);
@@ -115,8 +134,11 @@ class SttDonTiepController extends APIController
     
     public function countSttDonTiep(Request $request)
     {
-        if($this->checkExistParam($request['phongId'], $request['benhVienId'])) {
-            $data = $this->service->countSttDonTiep($request);
+        $isExistParam = $this->checkExistParam($request['phongId'], $request['benhVienId']);
+        $input = $request->all();
+        
+        if($isExistParam) {
+            $data = $this->service->countSttDonTiep($input);
         } else {
             $data = null;
             $this->setStatusCode(400);

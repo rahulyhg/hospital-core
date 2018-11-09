@@ -4,7 +4,6 @@ namespace App\Services;
 use App\Http\Resources\HsbaResource;
 use App\Http\Resources\PatientResource;
 use App\Repositories\Hsba\HsbaRepository;
-use Illuminate\Http\Request;
 use Validator;
 
 class HsbaService
@@ -28,8 +27,8 @@ class HsbaService
         return $data;
     }
     
-    public function updateHsba($hsbaId, Request $request)
+    public function updateHsba($hsbaId, array $input)
     {
-        $this->hsbaRepository->updateHsba($hsbaId, $request);
+        $this->hsbaRepository->updateHsba($hsbaId, $input);
     }
 }

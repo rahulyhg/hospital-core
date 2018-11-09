@@ -102,6 +102,10 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         ->offset($offset)
                         ->limit($limit)
                         ->get($column);
+                        
+            $data->each(function ($item, $key) {
+                $item->hsba_id = sprintf('%012d', $item->hsba_id);
+            });
         } else {
             $totalPage = 0;
             $data = [];

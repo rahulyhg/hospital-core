@@ -24,7 +24,9 @@ class DanhMucController extends APIController
     
     public function getDmdvById($dmdvId)
     {
-        if(is_numeric($dmdvId)) {
+        $isNumericId = is_numeric($dmdvId);
+        
+        if($isNumericId) {
             $data = $this->dmdvService->getDmdvById($dmdvId);
         } else {
             $this->setStatusCode(400);
@@ -36,7 +38,9 @@ class DanhMucController extends APIController
     
     public function createDanhMucDichVu(DanhMucDichVuFormRequest $request)
     {
-        $id = $this->dmdvService->createDanhMucDichVu($request);
+        $input = $request->all();
+        
+        $id = $this->dmdvService->createDanhMucDichVu($input);
         if($id) {
             $this->setStatusCode(201);
         } else {
@@ -49,8 +53,11 @@ class DanhMucController extends APIController
     public function updateDanhMucDichVu($dmdvId, DanhMucDichVuFormRequest $request)
     {
         try {
-            if(is_numeric($dmdvId)) {
-                $this->dmdvService->updateDanhMucDichVu($dmdvId, $request);
+            $isNumericId = is_numeric($dmdvId);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $this->dmdvService->updateDanhMucDichVu($dmdvId, $input);
             } else {
                 $this->setStatusCode(400);
             }
@@ -61,7 +68,9 @@ class DanhMucController extends APIController
     
     public function deleteDanhMucDichVu($dmdvId)
     {
-        if(is_numeric($dmdvId)) {
+        $isNumericId = is_numeric($dmdvId);
+        
+        if($isNumericId) {
             $this->dmdvService->deleteDanhMucDichVu($dmdvId);
             $this->setStatusCode(204);
         } else {

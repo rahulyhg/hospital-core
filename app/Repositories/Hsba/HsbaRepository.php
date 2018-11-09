@@ -30,6 +30,9 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.phuong_xa_id',
             'hsba.quan_huyen_id',
             'hsba.tinh_thanh_pho_id',
+            'hsba.ten_phuong_xa',
+            'hsba.ten_quan_huyen',
+            'hsba.ten_tinh_thanh_pho',
             'hsba.noi_lam_viec',
             'hsba.dien_thoai_benh_nhan',
             'hsba.email_benh_nhan',
@@ -158,10 +161,33 @@ class HsbaRepository extends BaseRepositoryV2
         return $id;
     }
     
-    public function updateHsba($hsbaId, $request)
+    public function updateHsba($hsbaId, $input)
     {
-        $input = $request->except('location');
-        $hsba = Hsba::findOrFail($hsbaId);
-		$hsba->update($request->all());
+        $thxData = $input['thx_gplace_json'] ? $input['thx_gplace_json'] : null;
+        $input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
+        $input['ten_phuong_xa'] = null;
+        $input['ten_quan_huyen'] = null;
+        $input['ten_tinh_thanh_pho'] = null;
+        
+        foreach($thxData as $item) {
+            $name = $item['long_name'];
+            $type = $item['types'][0];
+            
+            switch ($type) {
+                case 'sublocality_level_1':
+                    $input['ten_phuong_xa'] = $name;
+                    break;
+                case 'administrative_area_level_2':
+                case 'locality':
+                    $input['ten_quan_huyen'] = $name;
+                    break;
+                case 'administrative_area_level_1':
+                    $input['ten_tinh_thanh_pho'] = $name;
+                    break;
+            }
+        }
+        
+      $hsba = Hsba::findOrFail($hsbaId);
+		  $hsba->update($input);
     }
 }

@@ -6,7 +6,6 @@ use App\Http\Resources\SttDonTiepResource;
 use App\Repositories\SttDonTiep\SttDonTiepRepository;
 use App\Repositories\Bhyt\BhytRepository;
 use App\Repositories\Hsba\HsbaRepository;
-use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
 use App\User;
@@ -20,12 +19,12 @@ class SttDonTiepService
         $this->hsbaRepository = $hsbaRepository;
     }
     
-    public function getSttDonTiep(Request $request)
+    public function getSttDonTiep(array $input)
     {
-        $loaiStt = $request->query('loaiStt');
-        $maSoKiosk = $request->query('maSoKiosk');
-        $phongId = $request->query('phongId');
-        $benhVienId = $request->query('benhVienId');
+        $loaiStt = $input['loaiStt'];
+        $maSoKiosk = $input['maSoKiosk'];
+        $phongId = $input['phongId'];
+        $benhVienId = $input['benhVienId'];
         $data = '';
         
         $stt = $this->sttDonTiepRepository->getSttDontiep($loaiStt, $maSoKiosk, $phongId, $benhVienId, $data);
@@ -46,9 +45,9 @@ class SttDonTiepService
         return $data;
     }
     
-    public function goiSttDonTiep(Request $request)
+    public function goiSttDonTiep(array $input)
     {
-        $data = $this->sttDonTiepRepository->goiSttDonTiep($request);
+        $data = $this->sttDonTiepRepository->goiSttDonTiep($input);
         
         if($data !== null) 
             return new SttDonTiepResource($data);
@@ -56,7 +55,7 @@ class SttDonTiepService
             return $data;
     }
     
-    public function loadSttDonTiep(Request $request)
+    public function loadSttDonTiep(array $input)
     {
         $stt = $this->sttDonTiepRepository->loadSttDonTiep($request);
         
@@ -68,7 +67,7 @@ class SttDonTiepService
         $this->sttDonTiepRepository->finishSttDonTiep($sttId);
     }
     
-    public function countSttDonTiep(Request $request)
+    public function countSttDonTiep(array $input)
     {
         $data = $this->sttDonTiepRepository->countSttDonTiep($request);
         
@@ -118,12 +117,12 @@ class SttDonTiepService
         return $result;
     }
     
-    public function makeSttDonTiepWhenScanCard(Request $request)
+    public function makeSttDonTiepWhenScanCard(array $input)
     {
-        $cardCode = $request['cardCode'];
-        $maSoKiosk = $request['maSoKiosk'];
-        $phongId = $request['phongId'];
-        $benhVienId = $request['benhVienId'];
+        $cardCode = $input['cardCode'];
+        $maSoKiosk = $input['maSoKiosk'];
+        $phongId = $input['phongId'];
+        $benhVienId = $input['benhVienId'];
         
         $result = ['message' => '',
                     'data' => '',
