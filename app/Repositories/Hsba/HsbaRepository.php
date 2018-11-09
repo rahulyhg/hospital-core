@@ -97,6 +97,9 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.phuong_xa_id',
             'hsba.quan_huyen_id',
             'hsba.tinh_thanh_pho_id',
+            'hsba.ten_phuong_xa',
+            'hsba.ten_quan_huyen',
+            'hsba.ten_tinh_thanh_pho',
             'hsba.noi_lam_viec',
             'hsba.dien_thoai_benh_nhan',
             'hsba.email_benh_nhan',
@@ -157,6 +160,7 @@ class HsbaRepository extends BaseRepositoryV2
     
     public function updateHsba($hsbaId, $request)
     {
+        $input = $request->except('location');
         $hsba = Hsba::findOrFail($hsbaId);
 		$hsba->update($request->all());
     }

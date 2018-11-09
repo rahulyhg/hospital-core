@@ -29,12 +29,12 @@ class DangKyKhamBenhFormRequest extends ApiFormRequest
             'ngay_sinh' => 'required|date_format:Y-m-d',
             'gioi_tinh_id' => 'required',
             'yeu_cau_kham_id' => 'required',
-            'tinh_thanh_pho_id' => 'required',
-            'quan_huyen_id' => 'required',
-            'phuong_xa_id' => 'required',
+            'tinh_thanh_pho_id' => 'nullable',
+            'quan_huyen_id' => 'nullable',
+            'phuong_xa_id' => 'nullable',
             'phong_id' => 'required',//|string|regex:/^[a-zA-Z]+$/u',
             'khoa_id' => 'required',
-            'email_benh_nhan' => 'email'
+            'email_benh_nhan' => 'nullable|email'
             //nếu có bh check bh so vs ngày hiện tại
         ];
     }
