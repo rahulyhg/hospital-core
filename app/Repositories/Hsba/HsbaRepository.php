@@ -161,9 +161,33 @@ class HsbaRepository extends BaseRepositoryV2
         return $id;
     }
     
-    public function updateHsba($hsbaId, $request)
+    public function updateHsba($hsbaId, $input)
     {
+        $thxData = $input['thx_gplace_json'] ? $input['thx_gplace_json'] : null;
+        $input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
+        $input['ten_phuong_xa'] = null;
+        $input['ten_quan_huyen'] = null;
+        $input['ten_tinh_thanh_pho'] = null;
+        
+        foreach($thxData as $item) {
+            $name = $item['long_name'];
+            $type = $item['types'][0];
+            
+            switch ($type) {
+                case 'sublocality_level_1':
+                    $input['ten_phuong_xa'] = $name;
+                    break;
+                case 'administrative_area_level_2':
+                case 'locality':
+                    $input['ten_quan_huyen'] = $name;
+                    break;
+                case 'administrative_area_level_1':
+                    $input['ten_tinh_thanh_pho'] = $name;
+                    break;
+            }
+        }
+        
         $hsba = Hsba::findOrFail($hsbaId);
-		$hsba->update($request->all());
+		$hsba->update($input);
     }
 }
