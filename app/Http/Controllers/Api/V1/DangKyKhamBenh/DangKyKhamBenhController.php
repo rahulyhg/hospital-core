@@ -7,6 +7,7 @@ use App\Services\PhongService;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
 use App\Services\DanhMucBenhVienService;
+use App\Services\DanhMucTrangThaiService;
 use App\Services\BenhVienService;
 use App\Http\Controllers\API\V1\APIController;
 
@@ -22,7 +23,8 @@ class DangKyKhamBenhController extends APIController
         DanhMucDichVuService $danhMucDichVuService,
         DanhMucTongHopService $danhMucTongHopService,
         DanhMucBenhVienService $danhMucBenhVienService,
-        BenhVienService $benhVienService
+        BenhVienService $benhVienService,
+        DanhMucTrangThaiService $danhMucTrangThaiService
         )
     {
         $this->phongService = $phongService;
@@ -30,6 +32,7 @@ class DangKyKhamBenhController extends APIController
         $this->danhMucTongHopService = $danhMucTongHopService;
         $this->danhMucBenhVienService = $danhMucBenhVienService;
         $this->benhVienService = $benhVienService;
+        $this->danhMucTrangThaiService = $danhMucTrangThaiService;
     }
     
     /**
@@ -104,6 +107,18 @@ class DangKyKhamBenhController extends APIController
     public function benhVien()
     {
         $data = $this->benhVienService->listBenhVien();
+        return $data;
+    }
+    
+    public function getListLoaiVienPhi()
+    {
+        $data = $this->danhMucTrangThaiService->getListLoaiVienPhi();
+        return $data;
+    }
+    
+    public function getListDoiTuongBenhNhan()
+    {
+        $data = $this->danhMucTrangThaiService->getListDoiTuongBenhNhan();
         return $data;
     }
     /**

@@ -160,6 +160,7 @@ class HsbaRepository extends BaseRepositoryV2
     
     public function updateHsba($hsbaId, $request)
     {
+        $input = $request->except('location');
         $hsba = Hsba::findOrFail($hsbaId);
 		$hsba->update($request->all());
     }
