@@ -187,7 +187,7 @@ class HsbaRepository extends BaseRepositoryV2
             }
         }
         
-        $hsba = Hsba::findOrFail($hsbaId);
-		$hsba->update($input);
+      $hsba = Hsba::findOrFail($hsbaId);
+		  $hsba->update($input);
     }
 }
