@@ -169,25 +169,14 @@ class HsbaRepository extends BaseRepositoryV2
         $input['ten_quan_huyen'] = null;
         $input['ten_tinh_thanh_pho'] = null;
         
-        foreach($thxData as $item) {
-            $name = $item['long_name'];
-            $type = $item['types'][0];
-            
-            switch ($type) {
-                case 'sublocality_level_1':
-                    $input['ten_phuong_xa'] = $name;
-                    break;
-                case 'administrative_area_level_2':
-                case 'locality':
-                    $input['ten_quan_huyen'] = $name;
-                    break;
-                case 'administrative_area_level_1':
-                    $input['ten_tinh_thanh_pho'] = $name;
-                    break;
-            }
+        if($thxData) {
+            $data = Until::getDataFromGooglePlace($thxData);
+            $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
+            $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
+            $input['ten_tinh_thanh_pho'] = $data['ten_tinh_thanh_pho'];
         }
         
-      $hsba = Hsba::findOrFail($hsbaId);
-		  $hsba->update($input);
+        $hsba = Hsba::findOrFail($hsbaId);
+		$hsba->update($input);
     }
 }
