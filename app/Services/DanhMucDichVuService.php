@@ -36,16 +36,16 @@ class DanhMucDichVuService
         return $data;
     }
 
-    public function createDanhMucDichVu(Request $request)
+    public function createDanhMucDichVu(array $input)
     {
-        $id = $this->repository->createDanhMucDichVu($request);
+        $id = $this->repository->createDanhMucDichVu($input);
         
         return $id;
     }
     
-    public function updateDanhMucDichVu($dmdvId, Request $request)
+    public function updateDanhMucDichVu($dmdvId, array $input)
     {
-        $this->repository->updateDanhMucDichVu($dmdvId, $request);
+        $this->repository->updateDanhMucDichVu($dmdvId, $input);
     }
     
     public function deleteDanhMucDichVu($dmdvId)

@@ -13,18 +13,18 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         return DanhMucDichVu::class;
     }
     
-    public function getDataYeuCauKham($request)
+    public function getDataYeuCauKham($input)
     {
         $data = DB::table('danh_muc_dich_vu')
-                ->where('loai_nhom',$request->loai_nhom)
+                ->where('loai_nhom', $input['loai_nhom'])
                 ->orderBy('ten')
                 ->get();
         return $data;    
     }
     
-    public function getDataDanhMucDichVuById($input)
+    public function getDataDanhMucDichVuById($dmdvId)
     {
-        $result = $this->model->where('danh_muc_dich_vu.id', $input)->first(); 
+        $result = $this->model->where('danh_muc_dich_vu.id', $dmdvId)->first(); 
         return $result;
     }
     
@@ -86,16 +86,16 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function createDanhMucDichVu($request)
+    public function createDanhMucDichVu(array $input)
     {
-        $id = DanhMucDichVu::create($request->all())->id;
+        $id = DanhMucDichVu::create($input)->id;
         return $id;
     }
     
-    public function updateDanhMucDichVu($dmdvId, $request)
+    public function updateDanhMucDichVu($dmdvId, array $input)
     {
         $dmdv = DanhMucDichVu::findOrFail($dmdvId);
-		$dmdv->update($request->all());
+		$dmdv->update($input);
     }
     
     public function deleteDanhMucDichVu($dmdvId)

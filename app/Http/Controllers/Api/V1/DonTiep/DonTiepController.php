@@ -88,7 +88,8 @@ class DonTiepController extends APIController
     {
         try {
             if(is_numeric($hsbaId)) {
-                $this->hsbaService->updateHsba($hsbaId, $request);
+                $input = $request->except('location');
+                $this->hsbaService->updateHsba($hsbaId, $input);
 
             } else {
                 $this->setStatusCode(400);

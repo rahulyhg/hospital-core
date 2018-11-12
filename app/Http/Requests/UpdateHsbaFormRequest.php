@@ -22,12 +22,12 @@ class UpdateHsbaFormRequest extends ApiFormRequest
     public function rules()
     {
         return [
-            'ten_benh_nhan'         => 'required|string',
-            'ngay_sinh'             => 'required|date_format:Y-m-d',
-            'gioi_tinh_id'          => 'required|int',
-            'nghe_nghiep_id'        => 'required|int',
-            'dan_toc_id'            => 'required|int',
-            'quoc_tich_id'          => 'required|int',
+            'ten_benh_nhan'         => 'string',
+            'ngay_sinh'             => 'date_format:Y-m-d',
+            'gioi_tinh_id'          => 'int',
+            'nghe_nghiep_id'        => 'string',
+            'dan_toc_id'            => 'string',
+            'quoc_tich_id'          => 'string',
             'email_benh_nhan'       => 'nullable|email',
             'dien_thoai_benh_nhan'  => 'nullable|string',
             'dia_chi_lien_he'       => 'nullable|string',

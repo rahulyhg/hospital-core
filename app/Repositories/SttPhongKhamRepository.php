@@ -15,6 +15,8 @@ class SttPhongKhamRepository extends BaseRepositoryV2
     
     public function countSttPhongKham($loaiStt, $maNhom, $khoaId)
     {
+        $today = Carbon::today();
+        
         $where = [
             ['phong.ma_nhom', '=', $maNhom],
             ['phong.khoa_id', '=', $khoaId],
@@ -23,9 +25,9 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         
         $data = DB::table('phong')
                     ->select('phong.id', 'phong.ten_phong', 'phong.so_phong', DB::raw('count(sttpk.id) as total'))
-                    ->leftJoin('stt_phong_kham as sttpk', function($join) use ($loaiStt) {
+                    ->leftJoin('stt_phong_kham as sttpk', function($join) use ($today) {
                         $join->on('sttpk.phong_id', '=', 'phong.id')
-                            ->where('sttpk.loai_stt', '=', $loaiStt);
+                            ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()]);
                     })
                     ->where($where)
                     ->groupBy('phong.id')
