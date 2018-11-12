@@ -16,7 +16,7 @@ use App\Repositories\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
 use App\Services\SttPhongKhamService;
-use App\Helper\Until;
+use App\Helper\Util;
 
 use Validator;
 
