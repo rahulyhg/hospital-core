@@ -163,7 +163,7 @@ class HsbaRepository extends BaseRepositoryV2
     
     public function updateHsba($hsbaId, $input)
     {
-        $thxData = $input['thx_gplace_json'] ? $input['thx_gplace_json'] : null;
+        $thxData = isset($input['thx_gplace_json']) ? $input['thx_gplace_json'] : null;
         $input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
         $input['ten_phuong_xa'] = null;
         $input['ten_quan_huyen'] = null;
