@@ -56,6 +56,12 @@ class DangKyKhamBenhController extends APIController
         return $data;
     }
     
+    public function getNhomPhong(Request $request)
+    {
+        $data = $this->phongService->getNhomPhong($request->loaiPhong,$request->khoaId);
+        return $data;
+    }
+    
     public function getListYeuCauKham(Request $request)
     {
         $data = $this->danhMucDichVuService->getListYeuCauKham($request);

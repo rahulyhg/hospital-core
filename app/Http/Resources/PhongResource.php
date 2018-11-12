@@ -14,9 +14,14 @@ class PhongResource extends Resource
      */
     public function toArray($request)
     {
-        return [
+        $array = array(
             'ma_nhom'    => $this->ma_nhom,
             'ten_nhom'      => $this->ten_nhom
-        ];
+        );
+        if (isset($this->id)){
+            $array['id'] = $this->id;
+            $array['ten_phong'] = $this->ten_phong;
+        }
+        return $array;
     }
 }
