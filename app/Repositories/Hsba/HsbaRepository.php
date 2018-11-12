@@ -170,7 +170,7 @@ class HsbaRepository extends BaseRepositoryV2
         $input['ten_tinh_thanh_pho'] = null;
         
         if($thxData) {
-            $data = Until::getDataFromGooglePlace($thxData);
+            $data = Util::getDataFromGooglePlace($thxData);
             $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
             $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
             $input['ten_tinh_thanh_pho'] = $data['ten_tinh_thanh_pho'];

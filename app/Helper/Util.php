@@ -1,6 +1,6 @@
 <?php
 
-class Until
+class Util
 {
     static function convertViToEn($str) 
     {
