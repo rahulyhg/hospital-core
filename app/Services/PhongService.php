@@ -21,4 +21,11 @@ class PhongService {
         );
     }
     
+    public function getNhomPhong($loaiPhong,$khoaId)
+    {
+        return PhongResource::collection(
+           $this->phongRepository->getNhomPhong($loaiPhong,$khoaId)
+        );
+    }
+    
 }
