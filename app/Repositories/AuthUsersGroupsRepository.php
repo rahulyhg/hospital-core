@@ -33,18 +33,20 @@ class AuthUsersGroupsRepository extends BaseRepository
                         ])
                     ->get(['khoa_id','phong_id']);
         
-
-        $phongId = $dataSet->implode('phong_id', ',');
-        $khoaId = $dataSet->implode('khoa_id', ',');
-         
-        $phongIdArray = explode(",",$phongId);
-        $khoaIdArray = explode(",",$khoaId);
-        
-        $result = DB::table('phong')
-                ->whereIn('id',$phongIdArray)
-                ->whereIn('khoa_id',$khoaIdArray)
-                ->get(['id','khoa_id','ten_phong']);
-        return $result;
+        if(count($dataSet)>0)
+        {
+            $phongId = $dataSet->implode('phong_id', ',');
+            $khoaId = $dataSet->implode('khoa_id', ',');
+             
+            $phongIdArray = explode(",",$phongId);
+            $khoaIdArray = explode(",",$khoaId);
+            
+            $result = DB::table('phong')
+                    ->whereIn('id',$phongIdArray)
+                    ->whereIn('khoa_id',$khoaIdArray)
+                    ->get(['id','khoa_id','ten_phong']);
+            return $result;
+        }
         
     }    
     
