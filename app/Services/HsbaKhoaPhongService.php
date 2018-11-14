@@ -21,15 +21,15 @@ class HsbaKhoaPhongService
         return $data;
     }
     
-    // public function getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword)
-    // {
-    //     $data = $this->hsbaKhoaPhongRepository->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
-        
-    //     return $data;
-    // }
-    
     public function updateHsbaKhoaPhong($hsbaKhoaPhongId, array $params)
     {
         $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($hsbaKhoaPhongId, $params);
+    }
+    
+    public function getHsbaKhoaPhongById($hsbaKhoaPhongId)
+    {
+        $data = $this->hsbaKhoaPhongRepository->getHsbaKhoaPhongById($hsbaKhoaPhongId);
+        
+        return $data;
     }
 }
