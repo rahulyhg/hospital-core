@@ -59,5 +59,4 @@ class PhongRepository extends BaseRepositoryV2
         return $phong;
         
     }
-    
 }

@@ -27,5 +27,4 @@ class PhongService {
            $this->phongRepository->getNhomPhong($loaiPhong,$khoaId)
         );
     }
-    
 }
