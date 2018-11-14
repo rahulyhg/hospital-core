@@ -40,4 +40,11 @@ class AuthService {
         $bool = $this->authUsersRepository->getUserById($authUsersId);
         return $bool;
     }
+    
+    public function getKhoaPhongId($email)
+    {
+        $id = $this->authUsersRepository->getIdbyEmail($email);
+        $khoaPhongId = $this->authUsersGroupsRepository->getKhoaPhongByUserId($id->id);
+        return $khoaPhongId;
+    }
 }
