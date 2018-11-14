@@ -35,6 +35,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         
         $column = [
             'hsba.id as hsba_id',
+            'hsba_khoa_phong.id as hsba_khoa_phong_id',
             'hsba.ten_benh_nhan',
             'hsba.nam_sinh',
             'hsba.ms_bhyt',
@@ -48,6 +49,12 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'tt1.diengiai as ten_trang_thai_cls',
             'hsba_khoa_phong.trang_thai',
             'tt2.diengiai as ten_trang_thai',
+            'hsba_khoa_phong.cdvv_icd10_code',
+            'hsba_khoa_phong.cdvv_icd10_text',
+            'hsba_khoa_phong.ly_do_vao_vien',
+            'hsba_khoa_phong.qua_trinh_benh_ly',
+            'hsba_khoa_phong.tien_su_benh_ban_than',
+            'hsba_khoa_phong.tien_su_benh_gia_dinh'
         ];
         
         $query = DB::table('hsba_khoa_phong')
@@ -59,8 +66,29 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             ->leftJoin('red_trangthai as tt2', function($join) {
                 $join->on('tt2.giatri', '=', 'hsba_khoa_phong.trang_thai')
                     ->where('tt2.tablename', '=', 'patientstatus');
-            })
-            ->where($where);
+            });
+            
+        if($phongId != 0) {
+            $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
+                $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
+                    ->where('sttpk.phong_id', '=', $phongId);
+            });
+            
+            $arrayColumn = [
+                'sttpk.kb_mach',
+                'sttpk.kb_nhiet_do',
+                'sttpk.kb_huyet_ap_thap',
+                'sttpk.kb_huyet_ap_cao',
+                'sttpk.kb_nhip_tho',
+                'sttpk.kb_can_nang',
+                'sttpk.kb_chieu_cao',
+                'sttpk.kb_sp_o2'
+            ];
+            
+            $column = array_merge($column, $arrayColumn);
+        }
+            
+        $query = $query->where($where);
         
         if($startDay == $endDay){
             $query = $query->whereDate('thoi_gian_vao_vien', '=', $startDay);
@@ -135,14 +163,10 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
 		$hsbaKhoaPhong->update($params);
     }
     
-    public function getHsbaKhoaPhongById($hsba_kp_id)
+    public function getHsbaKhoaPhongById($hsbaKhoaPhongId)
     {
-        $where = [
-            ['hsba_khoa_phong.id', '=', $hsba_kp_id],
-        ];
-        $result = $this->model->where($where)
-                            ->first();
-        return $result;
+        $hsbaKhoaPhong = HsbaKhoaPhong::findOrFail($hsbaKhoaPhongId);
+        return $hsbaKhoaPhong;
     }
 
 }

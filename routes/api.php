@@ -52,7 +52,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
         Route::post('register','DonTiep\DonTiepController@register');
         Route::post('chuyenKhoaPhong','DonTiep\DonTiepController@chuyenKhoaPhong');
-
+    });
+    
+    Route::group(['prefix' => 'setting'], function () {
+        Route::get('khuVuc/{loai}/{benhVienId}','UserSetting\UserSettingController@getListKhuVuc');
+        Route::get('quaySo/{khuVucId}/{benhVienId}','UserSetting\UserSettingController@getListQuay');        
     });
     
     Route::group(['prefix' => 'dangkykhambenh'], function () {
@@ -72,7 +76,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'phongkham'], function () {
-		
+		Route::post('updateHsbaKhoaPhong/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@updateHsbaKhoaPhong');
+		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getHsbaKhoaPhongById');
 		
     });
     
