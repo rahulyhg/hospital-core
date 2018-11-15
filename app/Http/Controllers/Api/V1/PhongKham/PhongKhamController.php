@@ -50,7 +50,8 @@ class PhongKhamController extends APIController
     {
         try 
         {
-            $this->dieuTriService->updateInfoDieuTri($request);
+            $input = $request->all();
+            $this->dieuTriService->updateInfoDieuTri($input);
             $this->setStatusCode(201);
             
         } catch (\Exception $ex) {
@@ -70,5 +71,22 @@ class PhongKhamController extends APIController
         }
         
         return $this->respond($data);
+    }
+    
+    public function chuyenKhoaPhong(Request $request)
+    {   
+        $input = $request->all();
+        $data = $this->dieuTriService->createChuyenPhong($input);
+        return $data;
+        // try 
+        // {
+        //     $data = $this->benhNhanService->createChuyenPhong($request);
+        //     $this->setStatusCode(201);
+        //     return $this->respond($data);
+        // } catch (\Exception $ex) {
+        //     return $this->respondInternalError($ex->getMessage());
+        //     return $ex;
+        // }
+
     }
 }

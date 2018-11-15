@@ -110,20 +110,4 @@ class DonTiepController extends APIController
             return $this->respondInternalError($ex->getMessage());
         }
     }
-    
-    public function chuyenKhoaPhong(Request $request)
-    {   
-        $data = $this->benhNhanService->createChuyenPhong($request);
-        return $data;
-        // try 
-        // {
-        //     $data = $this->benhNhanService->createChuyenPhong($request);
-        //     $this->setStatusCode(201);
-        //     return $this->respond($data);
-        // } catch (\Exception $ex) {
-        //     return $this->respondInternalError($ex->getMessage());
-        //     return $ex;
-        // }
-
-    }
 }
