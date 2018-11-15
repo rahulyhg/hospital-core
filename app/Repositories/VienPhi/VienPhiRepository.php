@@ -18,5 +18,11 @@ class VienPhiRepository extends BaseRepositoryV2
         $id = VienPhi::create($input)->id;
         return $id;
     }
+    
+    public function updateVienPhi($vienPhiId, $params)
+    {
+        $vienPhi = VienPhi::findOrFail($vienPhiId);
+		$vienPhi->update($params);
+    }
  
 }

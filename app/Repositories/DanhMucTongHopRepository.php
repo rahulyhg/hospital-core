@@ -67,42 +67,42 @@ class DanhMucTongHopRepository extends BaseRepository
     
     public function getDataTinh($value)
     {
-        $where = [
-                ['hanh_chinh.ma_tinh', '=', $value]
-            ];
         $data = DB::table('hanh_chinh')
-                ->where($where)
-                ->get();
-        $array = json_decode($data, true);
-      
-        return collect($array)->first(); 
-    }
-  
-    public function getDataHuyen($huyen_matinh, $ma_huyen)
-    {
-        $where = [
-                ['hanh_chinh.huyen_matinh', '=', $huyen_matinh],
-                ['hanh_chinh.ma_huyen', '=', $ma_huyen]
-            ];
-        $data = DB::table('hanh_chinh')
-                ->where($where)
-                ->get();
-        $array = json_decode($data, true);
-      
-        return collect($array)->first(); 
-    }
-    public function getDataXa($xa_matinh, $xa_mahuyen, $ma_xa)
-    {
-        $where = [
-                ['hanh_chinh.xa_matinh', '=', $xa_matinh],
-                ['hanh_chinh.xa_mahuyen', '=', $xa_mahuyen],
-                ['hanh_chinh.ma_xa', '=', $ma_xa]
-            ];
-        $data = DB::table('hanh_chinh')
-                ->where($where)
+                ->whereRaw("upper(hanh_chinh.ten_tinh) like '%$value%'")
                 ->get();
         $array = json_decode($data, true);
       
         return collect($array)->first();  
+    }
+  
+    public function getDataHuyen($huyen_matinh, $ten_huyen)
+    {
+        $data = DB::table('hanh_chinh')
+                ->where('hanh_chinh.huyen_matinh', '=', $huyen_matinh)
+                ->whereRaw("upper(hanh_chinh.ten_huyen) like '%$ten_huyen%'")
+                ->get();
+        $array = json_decode($data, true);
+      
+        return collect($array)->first(); 
+    }
+    
+    public function getDataXa($xa_matinh, $xa_mahuyen, $ten_xa)
+    {
+        $where = [
+                ['hanh_chinh.xa_matinh', '=', $xa_matinh],
+                ['hanh_chinh.xa_mahuyen', '=', $xa_mahuyen],
+            ];
+        $data = DB::table('hanh_chinh')
+                ->where($where)
+                ->whereRaw("upper(hanh_chinh.ten_xa) like '%$ten_xa%'")
+                ->get();
+        $array = json_decode($data, true);
+      
+        return collect($array)->first();  
+    }
+    
+    public function getIdTinhByTen($tenTinh)
+    {
+        
     }
 }
