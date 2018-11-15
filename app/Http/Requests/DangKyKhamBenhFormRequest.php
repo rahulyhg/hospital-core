@@ -32,7 +32,7 @@ class DangKyKhamBenhFormRequest extends ApiFormRequest
             'tinh_thanh_pho_id' => 'nullable',
             'quan_huyen_id' => 'nullable',
             'phuong_xa_id' => 'nullable',
-            'phong_id' => 'required',//|string|regex:/^[a-zA-Z]+$/u',
+            //'phong_id' => 'required',//|string|regex:/^[a-zA-Z]+$/u',
             'khoa_id' => 'required',
             'email_benh_nhan' => 'nullable|email'
             //nếu có bh check bh so vs ngày hiện tại

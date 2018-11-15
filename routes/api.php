@@ -78,7 +78,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::group(['prefix' => 'phongkham'], function () {
 		Route::post('updateHsbaKhoaPhong/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@updateHsbaKhoaPhong');
 		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getHsbaKhoaPhongById');
-		
+		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
