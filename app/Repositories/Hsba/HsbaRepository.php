@@ -139,6 +139,7 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba_khoa_phong.ket_qua_dieu_tri',
             'hsba_khoa_phong.hinh_thuc_ra_vien',
             'vien_phi.loai_vien_phi',
+            'vien_phi.id as vien_phi_id',
             'bhyt.tuyen_bhyt'
         ];
         
