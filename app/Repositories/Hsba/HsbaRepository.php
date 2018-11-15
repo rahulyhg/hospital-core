@@ -137,7 +137,9 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba_khoa_phong.cdrv_icd10_code',
             'hsba_khoa_phong.cdrv_icd10_text',
             'hsba_khoa_phong.ket_qua_dieu_tri',
-            'hsba_khoa_phong.hinh_thuc_ra_vien'
+            'hsba_khoa_phong.hinh_thuc_ra_vien',
+            'vien_phi.loai_vien_phi',
+            'bhyt.tuyen_bhyt'
         ];
         
         $data = DB::table('hsba')
