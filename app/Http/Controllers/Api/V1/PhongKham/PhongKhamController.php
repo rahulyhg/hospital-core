@@ -4,20 +4,24 @@ namespace App\Http\Controllers\Api\V1\PhongKham;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\SttPhongKhamService;
 use App\Services\DieuTriService;
 
 class PhongKhamController extends APIController
 {
-    public function __construct(HsbaKhoaPhongService $hsbaKhoaPhongService, DieuTriService $dieuTriService)
+    public function __construct(HsbaKhoaPhongService $hsbaKhoaPhongService, SttPhongKhamService $sttPhongKhamService, DieuTriService $dieuTriService)
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->sttPhongKhamService = $sttPhongKhamService;
         $this->dieuTriService = $dieuTriService;
     }
     
     public function updateHsbaKhoaPhong($hsbaKhoaPhongId, Request $request)
     {
         try {
-            if(is_numeric($hsbaKhoaPhongId)) {
+            $isNumeric = is_numeric($hsbaKhoaPhongId);
+            
+            if($isNumeric) {
                 $input = $request->all();
                 $this->hsbaKhoaPhongService->updateHsbaKhoaPhong($hsbaKhoaPhongId, $input);
             } else {
@@ -52,5 +56,19 @@ class PhongKhamController extends APIController
         } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
         }
+    }
+  
+    public function getListPhongKham($hsbaId)
+    {
+        $isNumeric = is_numeric($hsbaId);
+        
+        if($isNumeric) {
+            $data = $this->sttPhongKhamService->getListPhongKham($hsbaId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
     }
 }
