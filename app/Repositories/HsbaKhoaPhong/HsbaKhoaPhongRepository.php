@@ -68,25 +68,25 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     ->where('tt2.tablename', '=', 'patientstatus');
             });
             
-        if($phongId != 0) {
-            $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
-                $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
-                    ->where('sttpk.phong_id', '=', $phongId);
-            });
+        // if($phongId != 0) {
+        //     $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
+        //         $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
+        //             ->where('sttpk.phong_id', '=', $phongId);
+        //     });
             
-            $arrayColumn = [
-                'sttpk.kb_mach',
-                'sttpk.kb_nhiet_do',
-                'sttpk.kb_huyet_ap_thap',
-                'sttpk.kb_huyet_ap_cao',
-                'sttpk.kb_nhip_tho',
-                'sttpk.kb_can_nang',
-                'sttpk.kb_chieu_cao',
-                'sttpk.kb_sp_o2'
-            ];
+        //     $arrayColumn = [
+        //         'sttpk.kb_mach',
+        //         'sttpk.kb_nhiet_do',
+        //         'sttpk.kb_huyet_ap_thap',
+        //         'sttpk.kb_huyet_ap_cao',
+        //         'sttpk.kb_nhip_tho',
+        //         'sttpk.kb_can_nang',
+        //         'sttpk.kb_chieu_cao',
+        //         'sttpk.kb_sp_o2'
+        //     ];
             
-            $column = array_merge($column, $arrayColumn);
-        }
+        //     $column = array_merge($column, $arrayColumn);
+        // }
             
         $query = $query->where($where);
         
@@ -165,8 +165,43 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     
     public function getHsbaKhoaPhongById($hsbaKhoaPhongId)
     {
-        $hsbaKhoaPhong = HsbaKhoaPhong::findOrFail($hsbaKhoaPhongId);
-        return $hsbaKhoaPhong;
+        $where = [
+            ['hsba_khoa_phong.id', '=', $hsbaKhoaPhongId],
+        ];
+        
+        $column = [
+            'hsba_khoa_phong.id as hsba_khoa_phong_id',
+            'hsba_khoa_phong.cdvv_icd10_code',
+            'hsba_khoa_phong.cdvv_icd10_text',
+            'hsba_khoa_phong.ly_do_vao_vien',
+            'hsba_khoa_phong.qua_trinh_benh_ly',
+            'hsba_khoa_phong.tien_su_benh_ban_than',
+            'hsba_khoa_phong.tien_su_benh_gia_dinh',
+            'hsba_khoa_phong.kb_toan_than',
+            'hsba_khoa_phong.kb_bo_phan',
+            'hsba_khoa_phong.kb_mach',
+            'hsba_khoa_phong.kb_nhiet_do',
+            'hsba_khoa_phong.kb_huyet_ap_thap',
+            'hsba_khoa_phong.kb_huyet_ap_cao',
+            'hsba_khoa_phong.kb_nhip_tho',
+            'hsba_khoa_phong.kb_can_nang',
+            'hsba_khoa_phong.kb_chieu_cao',
+            'hsba_khoa_phong.kb_sp_o2',
+            'hsba_khoa_phong.tom_tat_kq_cls',
+            'hsba_khoa_phong.tom_tat_benh_an',
+            'hsba_khoa_phong.cdvk_icd10_code',
+            'hsba_khoa_phong.cdvk_icd10_text',
+            'hsba_khoa_phong.tien_luong',
+            'hsba_khoa_phong.huong_xu_tri',
+            'hsba_khoa_phong.cdravien_icd10_code',
+            'hsba_khoa_phong.cdravien_icd10_text',
+            'hsba_khoa_phong.cdrv_kt_icd10_code',
+            'hsba_khoa_phong.cdrv_kt_icd10_text'
+        ];
+        
+        $result = $this->model->where($where)->get($column)->first();
+        
+        return $result;
     }
 
 }

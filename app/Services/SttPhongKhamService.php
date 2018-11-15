@@ -50,4 +50,11 @@ class SttPhongKhamService
             return null;
         }
     }
+    
+    public function getListPhongKham($hsbaId)
+    {
+        $data = $this->sttPhongKhamRepository->getListPhongKham($hsbaId);
+        
+        return $data;
+    }
 }

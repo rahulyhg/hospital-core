@@ -26,6 +26,10 @@ class Util
     
     static function getDataFromGooglePlace($thxData)
     {
+        $input['ten_phuong_xa'] = null;
+        $input['ten_quan_huyen'] = null;
+        $input['ten_tinh_thanh_pho'] = null;
+        
         foreach($thxData as $item) {
             $name = $item['long_name'];
             $type = $item['types'][0];
