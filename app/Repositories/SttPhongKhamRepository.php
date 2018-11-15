@@ -87,4 +87,18 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         return $stt;
     }
     
+    public function getListPhongKham($hsbaId)
+    {
+        $column = [
+            'hsba_id',
+            'hsba_khoa_phong_id',
+            'phong_id',
+            'ten_phong'
+        ];
+        
+        $data = $this->model->where('hsba_id', '=', $hsbaId)
+                            ->get($column);
+                            
+        return $data;
+    }
 }
