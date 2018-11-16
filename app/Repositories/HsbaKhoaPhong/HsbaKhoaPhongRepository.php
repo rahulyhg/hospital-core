@@ -19,7 +19,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $khoaHienTai = 3; //khoa kham benh
         $offset = ($page - 1) * $limit;
         
-        if($phongId) {  //phong kham
+        if($phongId != 141) {  //phong kham
             $where = [
                 ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
                 ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
