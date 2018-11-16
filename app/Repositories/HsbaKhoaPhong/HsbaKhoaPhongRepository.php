@@ -169,37 +169,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             ['hsba_khoa_phong.id', '=', $hsbaKhoaPhongId],
         ];
         
-        $column = [
-            'hsba_khoa_phong.id as hsba_khoa_phong_id',
-            'hsba_khoa_phong.cdvv_icd10_code',
-            'hsba_khoa_phong.cdvv_icd10_text',
-            'hsba_khoa_phong.ly_do_vao_vien',
-            'hsba_khoa_phong.qua_trinh_benh_ly',
-            'hsba_khoa_phong.tien_su_benh_ban_than',
-            'hsba_khoa_phong.tien_su_benh_gia_dinh',
-            'hsba_khoa_phong.kb_toan_than',
-            'hsba_khoa_phong.kb_bo_phan',
-            'hsba_khoa_phong.kb_mach',
-            'hsba_khoa_phong.kb_nhiet_do',
-            'hsba_khoa_phong.kb_huyet_ap_thap',
-            'hsba_khoa_phong.kb_huyet_ap_cao',
-            'hsba_khoa_phong.kb_nhip_tho',
-            'hsba_khoa_phong.kb_can_nang',
-            'hsba_khoa_phong.kb_chieu_cao',
-            'hsba_khoa_phong.kb_sp_o2',
-            'hsba_khoa_phong.tom_tat_kq_cls',
-            'hsba_khoa_phong.tom_tat_benh_an',
-            'hsba_khoa_phong.cdvk_icd10_code',
-            'hsba_khoa_phong.cdvk_icd10_text',
-            'hsba_khoa_phong.tien_luong',
-            'hsba_khoa_phong.huong_xu_tri',
-            'hsba_khoa_phong.cdravien_icd10_code',
-            'hsba_khoa_phong.cdravien_icd10_text',
-            'hsba_khoa_phong.cdrv_kt_icd10_code',
-            'hsba_khoa_phong.cdrv_kt_icd10_text'
-        ];
-        
-        $result = $this->model->where($where)->get($column)->first();
+        $result = $this->model->where($where)->get()->first();
         
         return $result;
     }
