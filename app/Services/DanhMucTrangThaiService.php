@@ -28,4 +28,25 @@ class DanhMucTrangThaiService {
            $this->danhMucTrangThaiRepository->getListDoiTuongBenhNhan()
         );
     }
+    
+    public function getListKetQuaDieuTri()
+    {
+        return DanhMucTrangThaiResource::collection(
+           $this->danhMucTrangThaiRepository->getListKetQuaDieuTri()
+        );
+    }
+    
+    public function getListGiaiPhauBenh()
+    {
+        return DanhMucTrangThaiResource::collection(
+           $this->danhMucTrangThaiRepository->getListGiaiPhauBenh()
+        );
+    }
+    
+    public function getListXuTri()
+    {
+        return DanhMucTrangThaiResource::collection(
+           $this->danhMucTrangThaiRepository->getListXuTri()
+        );
+    }
 }

@@ -35,20 +35,6 @@ class DangKyKhamBenhController extends APIController
         $this->danhMucTrangThaiService = $danhMucTrangThaiService;
     }
     
-    /**
-     * Return the DangKyKhamBenh.
-     * 
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // public function getData(Request $request)
-    // {
-    //     $data = $this->service->getDataPatient($request);
-        
-    //     return $data;
-    // }
-    
     // get danh sach phong kham theo departmentgroupid va departmenttype
     public function getListPhong(Request $request)
     {
@@ -127,61 +113,22 @@ class DangKyKhamBenhController extends APIController
         $data = $this->danhMucTrangThaiService->getListDoiTuongBenhNhan();
         return $data;
     }
-    /**
-     * Return the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // public function show($id)
-    // {
-    //     $patient = $this->service->showPatient($id);
-        
-    //     return $patient;
-    // }
-
-    /**
-     * Creates the Resource for DangKyKhamBenh.
-     *
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // public function store(Request $request)
-    // {
-    //     $patient = $this->service->makePatient($request);
-        
-    //     return $patient;
-    // }
     
-    /**
-     * Update DangKyKhamBenh.
-     *
-     * @param Request           $request
-     * @param int               $id
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // public function update(Request $request, $id)
-    // {
-    //     $patient = $this->service->updatePatient($request, $id);
-        
-    //     return $patient;
-    // }
+    public function getListKetQuaDieuTri()
+    {
+        $data = $this->danhMucTrangThaiService->getListKetQuaDieuTri();
+        return $data;
+    }
     
-    /**
-     * Delete DangKyKhamBenh.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // public function delete($id)
-    // {
-    //     $message = $this->service->deletePatient($id);
-        
-    //     return $message;
-    // }
+    public function getListGiaiPhauBenh()
+    {
+        $data = $this->danhMucTrangThaiService->getListGiaiPhauBenh();
+        return $data;
+    }
     
+    public function getListXuTri()
+    {
+        $data = $this->danhMucTrangThaiService->getListXuTri();
+        return $data;
+    }
 }
