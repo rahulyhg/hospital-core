@@ -35,16 +35,6 @@ class DieuTriService
                 $input = array_except($input, ['khoa_id']);
                 $input = array_except($input, ['phong_id']);
                 $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($dieuTriParams['hsba_khoa_phong_id'], $input);
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($dieuTriParams['hsba_khoa_phong_id'], $hsbaKpParams);
             } catch (\Exception $ex) {
                  throw $ex;
             }
