@@ -21,4 +21,28 @@ class DanhMucTrangThaiRepository extends BaseRepository
                 ->get();
         return $dataSet;    
     }
+    
+    public function getListKetQuaDieuTri()
+    {
+        $dataSet = DB::table('danh_muc_trang_thai')
+                ->where('khoa','ket_qua_dieu_tri')
+                ->get();
+        return $dataSet;    
+    }
+    
+    public function getListGiaiPhauBenh()
+    {
+        $dataSet = DB::table('danh_muc_trang_thai')
+                ->where('khoa','giai_phau_benh')
+                ->get();
+        return $dataSet;    
+    }
+    
+    public function getListXuTri()
+    {
+        $dataSet = DB::table('danh_muc_trang_thai')
+                ->where('khoa','xu_tri')
+                ->get();
+        return $dataSet;    
+    }
 }
