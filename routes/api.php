@@ -72,6 +72,9 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('benhVien','DangKyKhamBenh\DangKyKhamBenhController@benhVien');
     	Route::get('loaiVienPhi','DangKyKhamBenh\DangKyKhamBenhController@getListLoaiVienPhi');
     	Route::get('doiTuongBenhNhan','DangKyKhamBenh\DangKyKhamBenhController@getListDoiTuongBenhNhan');
+    	Route::get('ketQuaDieuTri','DangKyKhamBenh\DangKyKhamBenhController@getListKetQuaDieuTri');
+    	Route::get('giaiPhauBenh','DangKyKhamBenh\DangKyKhamBenhController@getListGiaiPhauBenh');
+    	Route::get('xuTri','DangKyKhamBenh\DangKyKhamBenhController@getListXuTri');
     });
     
     Route::group(['prefix' => 'phongkham'], function () {
