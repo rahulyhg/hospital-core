@@ -157,7 +157,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
          return $id;
     }
     
-    public function updateHsbaKhoaPhong($hsbaKhoaPhongId, $params)
+    public function updateHsbaKhoaPhong($hsbaKhoaPhongId,array $params)
     {
         $hsbaKhoaPhong = HsbaKhoaPhong::findOrFail($hsbaKhoaPhongId);
 		$hsbaKhoaPhong->update($params);
