@@ -22,16 +22,27 @@ class DieuTriService
         //2. update thông tin phiếu điều trị
         $result = DB::transaction(function () use ($dieuTriParams) {
             try {
-                $data = $this->dieuTriRepository->getDieuTriByHsba_Kp($dieuTriParams['hsba_khoa_phong_id'], $dieuTriParams['khoa_id'], $dieuTriParams['phong_id']); 
+                $dataDieuTri = $this->dieuTriRepository->getDieuTriByHsba_Kp($dieuTriParams['hsba_khoa_phong_id'], $dieuTriParams['khoa_id'], $dieuTriParams['phong_id']); 
                 $dieuTriParams['thoi_gian_chi_dinh'] = Carbon::now()->toDateTimeString();
-                $this->dieuTriRepository->updateDieuTri($data['id'], $dieuTriParams);
+                //$this->dieuTriRepository->updateDieuTri($dataDieuTri['id'], $dieuTriParams);
+                //cập nhật hsba_khoa_phong
+                $hsbaKpParams = null;
+                $input = array_where($dieuTriParams, function ($value, $key) {
+                        return $value != '';
+                });
+                $input = array_except($input, ['hsba_khoa_phong_id']);
+                $input = array_except($input, ['thoi_gian_chi_dinh']);
+                $input = array_except($input, ['khoa_id']);
+                $input = array_except($input, ['phong_id']);
+                $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($dieuTriParams['hsba_khoa_phong_id'], $input);
             } catch (\Exception $ex) {
                  throw $ex;
             }
         });
-        
         return $result;
     }
+    
+    
     
     public function createChuyenPhong($request)
     {
