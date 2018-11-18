@@ -65,20 +65,14 @@ class HsbaRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getHsbaByHsbaId($hsbaId, $phongId)
+    public function getHsbaByHsbaId($hsbaId)
     {
         $loaiBenhAn = 24; //kham benh
         
-        if($phongId != 0)
-            $where = [
-                ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
-                ['hsba.id', '=', $hsbaId]
-            ];
-        else
-            $where = [
-                ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
-                ['hsba.id', '=', $hsbaId]
-            ];
+        $where = [
+            ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+            ['hsba.id', '=', $hsbaId]
+        ];
         
         $column = [
             'hsba.id as hsba_id',
@@ -140,10 +134,13 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba_khoa_phong.hinh_thuc_ra_vien',
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
-            'bhyt.tuyen_bhyt'
+            'bhyt.tuyen_bhyt',
+            // 'sttpk.loai_stt',
+            // 'sttpk.so_thu_tu',
+            // 'sttpk.stt_don_tiep_id',
         ];
         
-        $data = DB::table('hsba')
+        $query = DB::table('hsba')
                 ->leftJoin('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'hsba_khoa_phong.loai_benh_an')
@@ -156,9 +153,13 @@ class HsbaRepository extends BaseRepositoryV2
                 ->leftJoin('khoa', 'khoa.id', '=', 'hsba_khoa_phong.khoa_hien_tai')
                 ->leftJoin('phong', 'phong.id', '=', 'hsba_khoa_phong.phong_hien_tai')
                 ->leftJoin('bhyt', 'bhyt.id', '=', 'hsba_khoa_phong.bhyt_id')
-                ->leftJoin('vien_phi', 'vien_phi.hsba_id', '=', 'hsba.id')
-                ->where($where)
-                ->get($column);
+                ->leftJoin('vien_phi', 'vien_phi.hsba_id', '=', 'hsba.id');
+                // ->leftJoin('stt_phong_kham as sttpk', function($join) use ($hsbaId) {
+                //     $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
+                //         ->where('sttpk.hsba_id', '=', $hsbaId);
+                // });
+            
+        $data = $query->where($where)->get($column);
           
         $array = json_decode($data, true);
         
