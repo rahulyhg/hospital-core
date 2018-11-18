@@ -68,21 +68,16 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     ->where('tt2.tablename', '=', 'patientstatus');
             });
             
-        // if($phongId != 0) {
+        // if($phongId != 141) {
         //     $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
         //         $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
         //             ->where('sttpk.phong_id', '=', $phongId);
         //     });
             
         //     $arrayColumn = [
-        //         'sttpk.kb_mach',
-        //         'sttpk.kb_nhiet_do',
-        //         'sttpk.kb_huyet_ap_thap',
-        //         'sttpk.kb_huyet_ap_cao',
-        //         'sttpk.kb_nhip_tho',
-        //         'sttpk.kb_can_nang',
-        //         'sttpk.kb_chieu_cao',
-        //         'sttpk.kb_sp_o2'
+        //         'sttpk.loai_stt',
+        //         'sttpk.so_thu_tu',
+        //         'sttpk.stt_don_tiep_id',
         //     ];
             
         //     $column = array_merge($column, $arrayColumn);
