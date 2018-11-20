@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\DangKyKhamBenh;
 
 use Illuminate\Http\Request;
 use App\Services\PhongService;
+use App\Services\KhoaService;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
 use App\Services\DanhMucBenhVienService;
@@ -20,6 +21,7 @@ class DangKyKhamBenhController extends APIController
      */
     public function __construct(
         PhongService $phongService, 
+        KhoaService $khoaService, 
         DanhMucDichVuService $danhMucDichVuService,
         DanhMucTongHopService $danhMucTongHopService,
         DanhMucBenhVienService $danhMucBenhVienService,
@@ -28,6 +30,7 @@ class DangKyKhamBenhController extends APIController
         )
     {
         $this->phongService = $phongService;
+        $this->khoaService = $khoaService;
         $this->danhMucDichVuService = $danhMucDichVuService;
         $this->danhMucTongHopService = $danhMucTongHopService;
         $this->danhMucBenhVienService = $danhMucBenhVienService;
@@ -129,6 +132,12 @@ class DangKyKhamBenhController extends APIController
     public function getListXuTri()
     {
         $data = $this->danhMucTrangThaiService->getListXuTri();
+        return $data;
+    }
+    
+    public function getListKhoa($loaiKhoa, $benhVienId)
+    {
+        $data = $this->khoaService->getListKhoa($loaiKhoa, $benhVienId);
         return $data;
     }
 }
