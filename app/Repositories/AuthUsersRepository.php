@@ -98,6 +98,7 @@ class AuthUsersRepository extends BaseRepository
                 $input['userstatus']=1;
             else
                 $input['userstatus']=0;
+            $input['password']=bcrypt($input['password']);    
             $input['created_at']=Carbon::now()->toDateTimeString();
             $input['updated_at']=Carbon::now()->toDateTimeString();
             $id = AuthUsers::create($input)->id;
