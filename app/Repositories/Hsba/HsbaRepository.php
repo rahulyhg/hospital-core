@@ -107,6 +107,7 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.ten_nguoi_than',
             'hsba.dien_thoai_nguoi_than',
             'hsba.ms_bhyt',
+            'hsba.thx_gplace_json',
             'bhyt.ma_cskcbbd',
             'bhyt.tu_ngay',
             'bhyt.den_ngay',
@@ -114,6 +115,7 @@ class HsbaRepository extends BaseRepositoryV2
             'bhyt.du5nam6thangluongcoban',
             'bhyt.dtcbh_luyke6thang',
             'tt2.diengiai as doi_tuong_benh_nhan',
+            'hsba_khoa_phong.khoa_hien_tai',
             'hsba_khoa_phong.id as hsba_khoa_phong_id',
             'hsba_khoa_phong.cdvv_icd10_text',
             'hsba_khoa_phong.cdvv_icd10_code',
@@ -130,8 +132,31 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba_khoa_phong.thoi_gian_ra_vien',
             'hsba_khoa_phong.cdrv_icd10_code',
             'hsba_khoa_phong.cdrv_icd10_text',
+            'hsba_khoa_phong.cdrv_kt_icd10_code',
+            'hsba_khoa_phong.cdrv_kt_icd10_text',
             'hsba_khoa_phong.ket_qua_dieu_tri',
             'hsba_khoa_phong.hinh_thuc_ra_vien',
+            'hsba_khoa_phong.kham_toan_than',
+            'hsba_khoa_phong.kham_bo_phan',
+            'hsba_khoa_phong.ket_qua_can_lam_san',
+            'hsba_khoa_phong.huong_xu_ly',
+            'hsba_khoa_phong.tom_tat_benh_an',
+            'hsba_khoa_phong.tien_luong',
+            'hsba_khoa_phong.mach',
+            'hsba_khoa_phong.nhiet_do',
+            'hsba_khoa_phong.nhip_tho',
+            'hsba_khoa_phong.sp_o2',
+            'hsba_khoa_phong.can_nang',
+            'hsba_khoa_phong.chieu_cao',
+            'hsba_khoa_phong.thi_luc_mat_trai',
+            'hsba_khoa_phong.thi_luc_mat_phai',
+            'hsba_khoa_phong.kl_thi_luc_mat_trai',
+            'hsba_khoa_phong.kl_thi_luc_mat_phai',
+            'hsba_khoa_phong.nhan_ap_mat_trai',
+            'hsba_khoa_phong.nhan_ap_mat_phai',
+            'hsba_khoa_phong.huyet_ap_thap',
+            'hsba_khoa_phong.huyet_ap_cao',
+            'hsba_khoa_phong.chan_doan_ban_dau',
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
             'bhyt.tuyen_bhyt',
@@ -175,12 +200,13 @@ class HsbaRepository extends BaseRepositoryV2
     public function updateHsba($hsbaId, $input)
     {
         $thxData = isset($input['thx_gplace_json']) ? $input['thx_gplace_json'] : null;
-        $input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
-        $input['ten_phuong_xa'] = null;
-        $input['ten_quan_huyen'] = null;
-        $input['ten_tinh_thanh_pho'] = null;
+        //$input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
+        // $input['ten_phuong_xa'] = null;
+        // $input['ten_quan_huyen'] = null;
+        // $input['ten_tinh_thanh_pho'] = null;
         
         if($thxData) {
+            $input['thx_gplace_json'] = json_encode($thxData);
             $data = Util::getDataFromGooglePlace($thxData);
             $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
             $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
