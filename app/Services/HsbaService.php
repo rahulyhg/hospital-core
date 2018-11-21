@@ -20,9 +20,9 @@ class HsbaService
         return new HsbaResource($data);
     }
     
-    public function getHsbaByHsbaId($hsbaId, $phongId)
+    public function getHsbaByHsbaId($hsbaId)
     {
-        $data = $this->hsbaRepository->getHsbaByHsbaId($hsbaId, $phongId);
+        $data = $this->hsbaRepository->getHsbaByHsbaId($hsbaId);
          
         return $data;
     }

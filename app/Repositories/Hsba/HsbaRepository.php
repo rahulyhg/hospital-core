@@ -9,6 +9,8 @@ use App\Helper\Util;
 
 class HsbaRepository extends BaseRepositoryV2
 {
+    const BENH_AN_KHAM_BENH = 24;
+    
     public function getModel()
     {
         return Hsba::class;
@@ -65,20 +67,12 @@ class HsbaRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getHsbaByHsbaId($hsbaId, $phongId)
+    public function getHsbaByHsbaId($hsbaId)
     {
-        $loaiBenhAn = 24; //kham benh
-        
-        if($phongId != 0)
-            $where = [
-                ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
-                ['hsba.id', '=', $hsbaId]
-            ];
-        else
-            $where = [
-                ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
-                ['hsba.id', '=', $hsbaId]
-            ];
+        $where = [
+            ['hsba_khoa_phong.loai_benh_an', '=', self::BENH_AN_KHAM_BENH],
+            ['hsba.id', '=', $hsbaId]
+        ];
         
         $column = [
             'hsba.id as hsba_id',
@@ -113,6 +107,7 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.ten_nguoi_than',
             'hsba.dien_thoai_nguoi_than',
             'hsba.ms_bhyt',
+            'hsba.thx_gplace_json',
             'bhyt.ma_cskcbbd',
             'bhyt.tu_ngay',
             'bhyt.den_ngay',
@@ -120,6 +115,8 @@ class HsbaRepository extends BaseRepositoryV2
             'bhyt.du5nam6thangluongcoban',
             'bhyt.dtcbh_luyke6thang',
             'tt2.diengiai as doi_tuong_benh_nhan',
+            'hsba_khoa_phong.trang_thai',
+            'hsba_khoa_phong.khoa_hien_tai',
             'hsba_khoa_phong.id as hsba_khoa_phong_id',
             'hsba_khoa_phong.cdvv_icd10_text',
             'hsba_khoa_phong.cdvv_icd10_code',
@@ -136,14 +133,39 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba_khoa_phong.thoi_gian_ra_vien',
             'hsba_khoa_phong.cdrv_icd10_code',
             'hsba_khoa_phong.cdrv_icd10_text',
+            'hsba_khoa_phong.cdrv_kt_icd10_code',
+            'hsba_khoa_phong.cdrv_kt_icd10_text',
             'hsba_khoa_phong.ket_qua_dieu_tri',
             'hsba_khoa_phong.hinh_thuc_ra_vien',
+            'hsba_khoa_phong.kham_toan_than',
+            'hsba_khoa_phong.kham_bo_phan',
+            'hsba_khoa_phong.ket_qua_can_lam_san',
+            'hsba_khoa_phong.huong_xu_ly',
+            'hsba_khoa_phong.tom_tat_benh_an',
+            'hsba_khoa_phong.tien_luong',
+            'hsba_khoa_phong.mach',
+            'hsba_khoa_phong.nhiet_do',
+            'hsba_khoa_phong.nhip_tho',
+            'hsba_khoa_phong.sp_o2',
+            'hsba_khoa_phong.can_nang',
+            'hsba_khoa_phong.chieu_cao',
+            'hsba_khoa_phong.thi_luc_mat_trai',
+            'hsba_khoa_phong.thi_luc_mat_phai',
+            'hsba_khoa_phong.kl_thi_luc_mat_trai',
+            'hsba_khoa_phong.kl_thi_luc_mat_phai',
+            'hsba_khoa_phong.nhan_ap_mat_trai',
+            'hsba_khoa_phong.nhan_ap_mat_phai',
+            'hsba_khoa_phong.huyet_ap_thap',
+            'hsba_khoa_phong.huyet_ap_cao',
+            'hsba_khoa_phong.chan_doan_ban_dau',
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
-            'bhyt.tuyen_bhyt'
+            'bhyt.tuyen_bhyt',
+            'sttpk.loai_stt',
+            'sttpk.stt_don_tiep_id',
         ];
         
-        $data = DB::table('hsba')
+        $query = DB::table('hsba')
                 ->leftJoin('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'hsba_khoa_phong.loai_benh_an')
@@ -157,8 +179,13 @@ class HsbaRepository extends BaseRepositoryV2
                 ->leftJoin('phong', 'phong.id', '=', 'hsba_khoa_phong.phong_hien_tai')
                 ->leftJoin('bhyt', 'bhyt.id', '=', 'hsba_khoa_phong.bhyt_id')
                 ->leftJoin('vien_phi', 'vien_phi.hsba_id', '=', 'hsba.id')
-                ->where($where)
-                ->get($column);
+                ->leftJoin('stt_phong_kham as sttpk', function($join) use ($hsbaId) {
+                    $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
+                        ->where('sttpk.hsba_id', '=', $hsbaId)
+                        ->orderBy('sttpk.id', 'desc');
+                });
+            
+        $data = $query->where($where)->get($column);
           
         $array = json_decode($data, true);
         
@@ -174,12 +201,13 @@ class HsbaRepository extends BaseRepositoryV2
     public function updateHsba($hsbaId, $input)
     {
         $thxData = isset($input['thx_gplace_json']) ? $input['thx_gplace_json'] : null;
-        $input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
-        $input['ten_phuong_xa'] = null;
-        $input['ten_quan_huyen'] = null;
-        $input['ten_tinh_thanh_pho'] = null;
+        //$input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
+        // $input['ten_phuong_xa'] = null;
+        // $input['ten_quan_huyen'] = null;
+        // $input['ten_tinh_thanh_pho'] = null;
         
         if($thxData) {
+            $input['thx_gplace_json'] = json_encode($thxData);
             $data = Util::getDataFromGooglePlace($thxData);
             $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
             $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
@@ -190,18 +218,5 @@ class HsbaRepository extends BaseRepositoryV2
 		$hsba->update($input);
     }
     
-    public function getHsbaById($hsbaId)
-    {
-        $where = [
-            ['hsba.id', '=', $hsbaId],
-        ];
-        
-        $column = [
-            'hsba.nam_sinh',
-        ];
-        
-        $result = $this->model->where($where)->get($column)->first();
-        
-        return $result;
-    }
+    
 }
