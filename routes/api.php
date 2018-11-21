@@ -99,7 +99,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getListNguoiDung','AuthUser\AuthUserController@getListNguoiDung');
  		Route::get('getAuthUsersById/{id}','AuthUser\AuthUserController@getAuthUsersById');
      	Route::post('createAuthUsers','AuthUser\AuthUserController@createAuthUsers');
-//     	Route::post('updateAuthUsers/{id}','AuthUser\AuthUserController@updateAuthUsers');
+     	Route::post('updateAuthUsers/{id}','AuthUser\AuthUserController@updateAuthUsers');
      	Route::delete('deleteAuthUsers/{id}','AuthUser\AuthUserController@deleteAuthUsers');
      	Route::get('checkEmail/{email}','AuthUser\AuthUserController@checkEmailbyEmail');
     });    

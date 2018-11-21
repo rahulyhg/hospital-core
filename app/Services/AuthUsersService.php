@@ -37,5 +37,10 @@ class AuthUsersService
     {
         $data = $this->authUsersRepository->checkEmailbyEmail($email);
         return $data;
+    }
+    
+    public function updateAuthUsers($id, array $input)
+    {
+        $this->authUsersRepository->updateAuthUsers($id, $input);
     }    
 }
