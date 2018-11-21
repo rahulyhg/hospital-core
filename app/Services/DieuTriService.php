@@ -6,31 +6,61 @@ use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
 use App\Repositories\HsbaKhoaPhong\HsbaKhoaPhongRepository;
+use App\Repositories\Hsba\HsbaRepository;
+use App\Repositories\VienPhi\VienPhiRepository;
 use App\Repositories\PhongRepository;
 use App\Services\SttPhongKhamService;
 
 class DieuTriService
 {
-    const KET_THUC_DIEU_TRI = 99;
-    const CHO_DIEU_TRI = 0;
-    const DANG_DIEU_TRI = 2;
+    //xử trí
+    const XT_CHUYEN_PHONG_KHAM = 1;
+    const XT_KET_THUC_KHAM = 3;
+    const XT_TRA_BN_KHONG_KHAM = 6;
+    const XT_BO_VE = 7;
+    const XT_CHUYEN_KHOA = 10;
+    
+    //trạng thái hsba khoa phòng
+    const TT_KET_THUC_DIEU_TRI = 99;
+    const TT_CHO_DIEU_TRI = 0;
+    const TT_DANG_DIEU_TRI = 2;
+    
+    //trang thai hsba
+    const DONG_HSBA = 1;
+    
+    //hình thức ra viện
+    const RA_VIEN = 1;
+    const BO_VE = 3;
     const CHUYEN_KHOA = 8;
+    
+    //hình thức vào viện
     const NHAN_TU_KKB = 2;
+    
+    //loại phòng
     const PHONG_DIEU_TRI_NOI_TRU = 3;
     const PHONG_DIEU_TRI_NGOAI_TRU = 9;
     const PHONG_HANH_CHINH = 1;
+    
+    //loại bệnh án
     const BENH_AN_KHAM_BENH = 24;
+    
+    //viện phí
+    const VP_TRANG_THAI = 1;
     
     public function __construct
     (
         DieuTriRepository $dieuTriRepository, 
         HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, 
+        HsbaRepository $hsbaRepository, 
+        VienPhiRepository $vienPhiRepository, 
         PhongRepository $phongRepository,
         SttPhongKhamService $sttPhongKhamService
     )
     {
         $this->dieuTriRepository = $dieuTriRepository;
         $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
+        $this->hsbaRepository = $hsbaRepository;
+        $this->vienPhiRepository = $vienPhiRepository;
         $this->phongRepository = $phongRepository;
         $this->sttPhongKhamService = $sttPhongKhamService;
     }
@@ -50,10 +80,7 @@ class DieuTriService
                 $input = array_where($dieuTriParams, function ($value, $key) {
                         return $value != '';
                 });
-                $input = array_except($input, ['hsba_khoa_phong_id']);
-                $input = array_except($input, ['thoi_gian_chi_dinh']);
-                $input = array_except($input, ['khoa_id']);
-                $input = array_except($input, ['phong_id']);
+                $input = array_except($input, ['hsba_khoa_phong_id', 'thoi_gian_chi_dinh', 'khoa_id', 'phong_id']);
                 $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($dieuTriParams['hsba_khoa_phong_id'], $input);
             } catch (\Exception $ex) {
                  throw $ex;
@@ -62,7 +89,23 @@ class DieuTriService
         return $result;
     }
     
-    public function createChuyenPhong(array $request)
+    public function xuTriBenhNhan(array $request)
+    {
+        switch ($request['xu_tri']) {
+            case self::XT_CHUYEN_PHONG_KHAM:     
+            case self::XT_CHUYEN_KHOA:   
+                $data = $this->createChuyenPhong($request);
+                return $data;
+                break;
+            case self::XT_KET_THUC_KHAM: 
+            case self::XT_TRA_BN_KHONG_KHAM:
+            case self::XT_BO_VE:     
+                $this->createKetThucKham($request);
+                break;
+        }
+    }
+    
+    private function createChuyenPhong(array $request)
     {
         //1. tìm khoa, phòng hiện tại của bệnh nhân
         //1.1 viện phí ?
@@ -76,14 +119,16 @@ class DieuTriService
                 $hsbaKp = $this->hsbaKhoaPhongRepository->getHsbaKhoaPhongById($request['hsba_khoa_phong_id']);
                 if($hsbaKp == null) 
                     return 'không tìm thấy hsba_khoa_phong';
-                if($hsbaKp['trang_thai'] == self::KET_THUC_DIEU_TRI)
+                if($hsbaKp['trang_thai'] == self::TT_KET_THUC_DIEU_TRI)
                     return 'hsba_khoa_phong này đã đóng';
                 if($khoaChuyenDen == null)
                     $khoaChuyenDen = $hsbaKp['khoa_hien_tai'];
+                    
                 //1.1
                 //viện phí ?
                 $khoaHienTai = $hsbaKp['khoa_hien_tai'];
                 $phongHienTai = $hsbaKp['phong_hien_tai'];
+                
                 switch ($khoaHienTai) {
                     case $khoaChuyenDen ://2.1 chuyển phòng
                         //thêm stt_phong_kham
@@ -100,6 +145,7 @@ class DieuTriService
                         $sttPhongKhamParams['hsba_id'] = $hsbaKp['hsba_id'];
                         $sttPhongKhamParams['hsba_khoa_phong_id'] = $hsbaKp['id'];
                         $data = $this->sttPhongKhamService->getSttPhongKham($sttPhongKhamParams);
+                        
                         //tạo phiếu điều trị đối vs phòng chuyển đến
                         $dieuTriParams['hsba_khoa_phong_id'] = $hsbaKp['id'];
                         $dieuTriParams['hsba_id'] = $hsbaKp['hsba_id'];
@@ -110,36 +156,42 @@ class DieuTriService
                         $dieuTriParams['nam_sinh'] = $request['nam_sinh'];
                         $dieuTriParams['gioi_tinh_id'] = $request['gioi_tinh_id'];
                         $idDieuTri = $this->dieuTriRepository->createDataDieuTri($dieuTriParams);
+                        
                         //update phong_hien_tai chuyển tới của hsba_khoa_phong hiện tại 
                         $hsbaKpParams['phong_hien_tai'] = $data['phong_id'];
                         $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($hsbaKp['id'], $hsbaKpParams);
                         return $data;
                     break;    
+                    
                     default://2.2 chuyển khoa
                         //update hsba_khoa_phong hiện tại
-                        $this->updateHsbaKhoaPhongByXuTri($hsbaKp['id'], $request, self::KET_THUC_DIEU_TRI, self::CHUYEN_KHOA); //99: kết thúc điều trị; 8: chuyển khoa
+                        $this->updateHsbaKhoaPhongByXuTri($hsbaKp['id'], $request, self::TT_KET_THUC_DIEU_TRI, self::CHUYEN_KHOA); //99: kết thúc điều trị; 8: chuyển khoa
+                        
                         //tạo hsba_khoa_phong 
                         $hsbaKpParams = null;
-                        //$hsbaKpParams['auth_users_id'] = $request['auth_users_id'];
                         $hsbaKpParams['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
                         $hsbaKpParams['yeu_cau_kham_id'] = $hsbaKp['yeu_cau_kham_id'];
                         $hsbaKpParams['cdtd_icd10_text'] = $request['cdtd_icd10_text'] == $hsbaKp['cdtd_icd10_text'] ? $hsbaKp['cdtd_icd10_text'] : $request['cdtd_icd10_text'];
                         $hsbaKpParams['cdtd_icd10_code'] = $request['cdtd_icd10_code'] == $hsbaKp['cdtd_icd10_code'] ? $hsbaKp['cdtd_icd10_code'] : $request['cdtd_icd10_code'];
                         $hsbaKpParams['benh_vien_id'] = $hsbaKp['benh_vien_id'];
                         $hsbaKpParams['khoa_hien_tai'] = $khoaChuyenDen;
+                        
                         //phòng hành chính của khoa chuyển đến
                         $phong = $this->phongRepository->getPhongHanhChinhByKhoaID($khoaChuyenDen);
                         $hsbaKpParams['phong_hien_tai'] = $phong->id;
                         $hsbaKpParams['loai_benh_an'] = $phong->loai_benh_an;
-                        $hsbaKpParams['trang_thai'] = self::CHO_DIEU_TRI; //0: chờ điều trị
+                        $hsbaKpParams['trang_thai'] = self::TT_CHO_DIEU_TRI; //0: chờ điều trị
                         $hsbaKpParams['hsba_id'] = $hsbaKp['hsba_id'];
                         $hsbaKpParams['benh_nhan_id'] = $hsbaKp['benh_nhan_id'];
                         $hsbaKpParams['hinh_thuc_vao_vien_id'] = self::NHAN_TU_KKB; //2: nhận từ khoa khám bệnh
                         $hsbaKpParams['vien_phi_id'] = $hsbaKp['vien_phi_id'];
                         $hsbaKpParams['bhyt_id'] = $hsbaKp['bhyt_id'];
+                        $hsbaKpParams['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
+                        
                         //kiểm tra phòng chuyển đến có phải là phòng điều trị -> nếu đúng -> lấy trạng thái = 2: đang điều trị ngược lại 0: đang chờ điều trị
-                        $hsbaKpParams['trang_thai'] = $phong->loai_phong == self::PHONG_DIEU_TRI_NOI_TRU || $phong->loai_phong == self::PHONG_DIEU_TRI_NGOAI_TRU ? self::DANG_DIEU_TRI : self::CHO_DIEU_TRI; 
+                        $hsbaKpParams['trang_thai'] = $phong->loai_phong == self::PHONG_DIEU_TRI_NOI_TRU || $phong->loai_phong == self::PHONG_DIEU_TRI_NGOAI_TRU ? self::TT_DANG_DIEU_TRI : self::TT_CHO_DIEU_TRI; 
                         $idHsbaKp = $this->hsbaKhoaPhongRepository->createDataHsbaKhoaPhong($hsbaKpParams);
+                        
                         return 'OK';
                     break;
                 }
@@ -161,5 +213,54 @@ class DieuTriService
         $input = array_except($input, ['hsba_khoa_phong_id', 'khoa_chuyen_den', 'phong_chuyen_den', 'ten_benh_nhan', 'nam_sinh',
                                         'xu_tri', 'giai_phau_benh', 'loai_stt', 'gioi_tinh_id', 'stt_don_tiep_id', 'ms_bhyt']);
         $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($hsbaKp, $input);
+    }
+    
+    private function createKetThucKham(array $request)
+    {
+        $result = DB::transaction(function () use ($request) {
+            try {
+                $hsbaKp = $this->hsbaKhoaPhongRepository->getHsbaKhoaPhongById($request['hsba_khoa_phong_id']);
+                if($hsbaKp == null) 
+                    return 'không tìm thấy hsba_khoa_phong';
+                if($hsbaKp['trang_thai'] == self::TT_KET_THUC_DIEU_TRI)
+                    return 'hsba_khoa_phong này đã đóng';
+                
+                //cập nhật hsba_khoa_phong
+                switch ($request['xu_tri']) {
+                    case self::XT_KET_THUC_KHAM: 
+                        $hinh_thuc_ra_vien = self::RA_VIEN;
+                        break;
+                    case self::XT_TRA_BN_KHONG_KHAM:    //??? hỏi bác sỹ
+                        $hinh_thuc_ra_vien = self::RA_VIEN;
+                        break;
+                    case self::XT_BO_VE: 
+                        $hinh_thuc_ra_vien = self::BO_VE;
+                        break;
+                }
+                $request['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
+                $this->updateHsbaKhoaPhongByXuTri($hsbaKp['id'], $request, self::TT_KET_THUC_DIEU_TRI, $hinh_thuc_ra_vien);
+                
+                //cập nhật hsba
+                $hsbaParams = null;
+                $hsbaParams['cdrv_icd10_code'] = $request['cdrv_icd10_code'] ? $request['cdrv_icd10_code'] : $hsbaKp['cdrv_icd10_code'];
+                $hsbaParams['cdrv_icd10_text'] = $request['cdrv_icd10_text'] ? $request['cdrv_icd10_text'] : $hsbaKp['cdrv_icd10_text'];
+                $hsbaParams['cdrv_kem_theo_icd10_code'] = $request['cdrv_kt_icd10_code'] ? $request['cdrv_kt_icd10_code'] : $hsbaKp['cdrv_kt_icd10_code'];
+                $hsbaParams['cdrv_kem_theo_icd10_text'] = $request['cdrv_kt_icd10_text'] ? $request['cdrv_kt_icd10_text'] : $hsbaKp['cdrv_kt_icd10_text'];
+                $hsbaParams['trang_thai_hsba'] = self::DONG_HSBA;
+                $hsbaParams['hinh_thuc_ra_vien'] = $hinh_thuc_ra_vien;
+                $hsbaParams['ket_qua_dieu_tri'] = $request['ket_qua_dieu_tri'];
+                $hsbaParams['ngay_ra_vien'] = Carbon::now()->toDateTimeString();
+                $this->hsbaRepository->updateHsba($hsbaKp['hsba_id'], $hsbaParams);
+                
+                //cập nhật viện phí
+                $vienPhiParams = null;
+                $vienPhiParams['trang_thai'] = self::VP_TRANG_THAI;
+                $this->vienPhiRepository->updateVienPhi($hsbaKp['vien_phi_id'], $vienPhiParams);
+            }
+            catch (\Exception $ex) {
+                 throw $ex;
+            }
+        });
+        return $result;    
     }
 }
