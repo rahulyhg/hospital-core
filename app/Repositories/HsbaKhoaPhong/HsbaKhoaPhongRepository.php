@@ -111,7 +111,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             });
         }
         
-        if($status != -1 && $phongId != 0) {
+        if($status != -1 && $phongId != 141) {
             $query = $query->where(function($queryAdv) use ($status) {
                 $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $status);
             });

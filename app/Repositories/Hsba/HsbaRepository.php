@@ -9,6 +9,8 @@ use App\Helper\Util;
 
 class HsbaRepository extends BaseRepositoryV2
 {
+    const BENH_AN_KHAM_BENH = 24;
+    
     public function getModel()
     {
         return Hsba::class;
@@ -67,10 +69,8 @@ class HsbaRepository extends BaseRepositoryV2
     
     public function getHsbaByHsbaId($hsbaId)
     {
-        $loaiBenhAn = 24; //kham benh
-        
         $where = [
-            ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+            ['hsba_khoa_phong.loai_benh_an', '=', self::BENH_AN_KHAM_BENH],
             ['hsba.id', '=', $hsbaId]
         ];
         
@@ -115,6 +115,7 @@ class HsbaRepository extends BaseRepositoryV2
             'bhyt.du5nam6thangluongcoban',
             'bhyt.dtcbh_luyke6thang',
             'tt2.diengiai as doi_tuong_benh_nhan',
+            'hsba_khoa_phong.trang_thai',
             'hsba_khoa_phong.khoa_hien_tai',
             'hsba_khoa_phong.id as hsba_khoa_phong_id',
             'hsba_khoa_phong.cdvv_icd10_text',
@@ -160,9 +161,8 @@ class HsbaRepository extends BaseRepositoryV2
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
             'bhyt.tuyen_bhyt',
-            // 'sttpk.loai_stt',
-            // 'sttpk.so_thu_tu',
-            // 'sttpk.stt_don_tiep_id',
+            'sttpk.loai_stt',
+            'sttpk.stt_don_tiep_id',
         ];
         
         $query = DB::table('hsba')
@@ -178,11 +178,12 @@ class HsbaRepository extends BaseRepositoryV2
                 ->leftJoin('khoa', 'khoa.id', '=', 'hsba_khoa_phong.khoa_hien_tai')
                 ->leftJoin('phong', 'phong.id', '=', 'hsba_khoa_phong.phong_hien_tai')
                 ->leftJoin('bhyt', 'bhyt.id', '=', 'hsba_khoa_phong.bhyt_id')
-                ->leftJoin('vien_phi', 'vien_phi.hsba_id', '=', 'hsba.id');
-                // ->leftJoin('stt_phong_kham as sttpk', function($join) use ($hsbaId) {
-                //     $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
-                //         ->where('sttpk.hsba_id', '=', $hsbaId);
-                // });
+                ->leftJoin('vien_phi', 'vien_phi.hsba_id', '=', 'hsba.id')
+                ->leftJoin('stt_phong_kham as sttpk', function($join) use ($hsbaId) {
+                    $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
+                        ->where('sttpk.hsba_id', '=', $hsbaId)
+                        ->orderBy('sttpk.id', 'desc');
+                });
             
         $data = $query->where($where)->get($column);
           
@@ -217,18 +218,5 @@ class HsbaRepository extends BaseRepositoryV2
 		$hsba->update($input);
     }
     
-    public function getHsbaById($hsbaId)
-    {
-        $where = [
-            ['hsba.id', '=', $hsbaId],
-        ];
-        
-        $column = [
-            'hsba.nam_sinh',
-        ];
-        
-        $result = $this->model->where($where)->get($column)->first();
-        
-        return $result;
-    }
+    
 }
