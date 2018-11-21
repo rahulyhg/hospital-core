@@ -79,23 +79,26 @@ class PhongKhamController extends APIController
     {
         $input = $request->all();
         $data = $this->dieuTriService->xuTriBenhNhan($input);
-        return $data;
+        
+        if(!$data) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
     }
     
     public function chuyenKhoaPhong(Request $request)
     {   
         $input = $request->all();
         $data = $this->dieuTriService->createChuyenPhong($input);
-        return $data;
-        // try 
-        // {
-        //     $data = $this->benhNhanService->createChuyenPhong($request);
-        //     $this->setStatusCode(201);
-        //     return $this->respond($data);
-        // } catch (\Exception $ex) {
-        //     return $this->respondInternalError($ex->getMessage());
-        //     return $ex;
-        // }
+        
+        if(!$data) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
     }
     
     public function getIcd10ByCode($icd10Code)
