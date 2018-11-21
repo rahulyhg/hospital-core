@@ -101,6 +101,12 @@ class PhongKhamController extends APIController
     public function getIcd10ByCode($icd10Code)
     {
         $data = $this->icd10Service->getIcd10ByCode($icd10Code);
-        return $data;
+        
+        if(!$data) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
     }
 }

@@ -8,7 +8,7 @@ use App\Repositories\BaseRepositoryV2;
 class PhongRepository extends BaseRepositoryV2
 {
     const BENH_AN_KHAM_BENH = 24;
-    const TRANG_THAI = 1;
+    const TRANG_THAI_HOAT_DONG = 1;
     const PHONG_HANH_CHINH = 1;
     
     public function getModel()
@@ -23,7 +23,7 @@ class PhongRepository extends BaseRepositoryV2
                     'loai_phong'=>$loaiPhong,
                     'khoa_id'=>$khoaId,
                     'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
-                    'trang_thai'=>self::TRANG_THAI
+                    'trang_thai'=>self::TRANG_THAI_HOAT_DONG
                     ])
                 ->orderBy('ten_phong')
                 ->get();
@@ -37,7 +37,7 @@ class PhongRepository extends BaseRepositoryV2
                     'loai_phong'=>$loaiPhong,
                     'khoa_id'=>$khoaId,
                     'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
-                    'trang_thai'=>self::TRANG_THAI
+                    'trang_thai'=>self::TRANG_THAI_HOAT_DONG
                     ])
                 ->orderBy('ten_nhom')
                 ->distinct()
