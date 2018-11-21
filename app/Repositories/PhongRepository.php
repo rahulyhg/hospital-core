@@ -7,6 +7,10 @@ use App\Repositories\BaseRepositoryV2;
 
 class PhongRepository extends BaseRepositoryV2
 {
+    const BENH_AN_KHAM_BENH = 24;
+    const TRANG_THAI_HOAT_DONG = 1;
+    const PHONG_HANH_CHINH = 1;
+    
     public function getModel()
     {
         return Phong::class;
@@ -18,8 +22,8 @@ class PhongRepository extends BaseRepositoryV2
                 ->where([
                     'loai_phong'=>$loaiPhong,
                     'khoa_id'=>$khoaId,
-                    'loai_benh_an'=>24,
-                    'trang_thai'=>1
+                    'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
+                    'trang_thai'=>self::TRANG_THAI_HOAT_DONG
                     ])
                 ->orderBy('ten_phong')
                 ->get();
@@ -32,8 +36,8 @@ class PhongRepository extends BaseRepositoryV2
                 ->where([
                     'loai_phong'=>$loaiPhong,
                     'khoa_id'=>$khoaId,
-                    'loai_benh_an'=>24,
-                    'trang_thai'=>1
+                    'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
+                    'trang_thai'=>self::TRANG_THAI_HOAT_DONG
                     ])
                 ->orderBy('ten_nhom')
                 ->distinct()
@@ -53,10 +57,13 @@ class PhongRepository extends BaseRepositoryV2
     public function getPhongHanhChinhByKhoaID($khoaId)
     {
         $phong = DB::table('phong')
-                ->where(['khoa_id'=>$khoaId, 'loai_phong'=> 1, 'trang_thai'=>1])
+                ->where([
+                    ['khoa_id', '=', $khoaId],
+                    ['loai_phong', '=', self::PHONG_HANH_CHINH],
+                    ['loai_benh_an', '!=', self::BENH_AN_KHAM_BENH]
+                ])
                 ->get()
                 ->first();
         return $phong;
-        
     }
 }
