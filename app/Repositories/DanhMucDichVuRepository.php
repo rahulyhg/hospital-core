@@ -8,6 +8,14 @@ use App\Http\Resources\HsbaResource;
 
 class DanhMucDichVuRepository extends BaseRepositoryV2
 {
+    const SU_DUNG = 0;
+    const LOAI_XET_NGHIEM = 2;
+    const LOAI_CHAN_DOAN_HINH_ANH = 3;
+    const LOAI_CHUYEN_KHOA = 4;
+    const XET_NGHIEM = 'G1';
+    const CHAN_DOAN_HINH_ANH = 'G2';
+    const CHUYEN_KHOA = 'G3';
+    
     public function getModel()
     {
         return DanhMucDichVu::class;
@@ -102,4 +110,66 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
     {
         DanhMucDichVu::destroy($dmdvId);
     }
+    
+    public function getYLenhByLoaiNhom($loaiNhom)
+    {
+        $column = [
+            'danh_muc_dich_vu.id',
+            'ten_nhom',
+            'loai_nhom',
+            'ma',
+            'ma_nhom_bhyt',
+            'ten',
+            'ten_nhan_dan',
+            'ten_bhyt',
+            'ten_nuoc_ngoai',
+            'don_vi_tinh',
+            'gia',
+            'gia_nhan_dan',
+            'gia_bhyt',
+            'gia_nuoc_ngoai'
+        ];
+        
+        $tenNhom = null;
+        
+        switch($loaiNhom) {
+            case self::LOAI_XET_NGHIEM:
+                $tenNhom = self::XET_NGHIEM;
+                break;
+            case self::LOAI_CHAN_DOAN_HINH_ANH:
+                $tenNhom = self::CHAN_DOAN_HINH_ANH;
+                break;
+            case self::LOAI_CHUYEN_KHOA:
+                $tenNhom = self::CHUYEN_KHOA;
+                break;
+        }
+        
+        $where = [
+            ['loai_nhom', '=', $loaiNhom],    
+            ['trang_thai', '=', self::SU_DUNG],
+        ];
+        
+        $result = $this->model->where($where)->orderBy('id')->get($column);
+        
+        if($result) {
+            list($parent, $children) = $result->partition(function($item) use($tenNhom) {
+                return $item->ten_nhom == $tenNhom;
+            });
+            
+            $data = $parent->each(function($itemParent, $keyParent) use ($children) {
+                $arrayChildren = $children->filter(function($itemChildren, $keyChildren) use ($itemParent) {
+                    if($itemChildren->ten_nhom == $itemParent->ma) {
+                        $itemChildren['key'] = $itemChildren->id;
+                        return $itemChildren;
+                    }
+                })->values()->all();
+                $itemParent['children'] = $arrayChildren;
+                $itemParent['key'] = $itemParent->id;
+            })->values()->all();
+        }
+        
+        return $data;
+    }
+    
+    
 }

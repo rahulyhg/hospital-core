@@ -44,17 +44,10 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'hsba.ngay_ra_vien',
             'hsba_khoa_phong.thoi_gian_vao_vien',
             'hsba_khoa_phong.thoi_gian_ra_vien',
-            'hsba_khoa_phong.id as hsba_khoa_phong_id',
             'hsba_khoa_phong.trang_thai_cls',
             'tt1.diengiai as ten_trang_thai_cls',
             'hsba_khoa_phong.trang_thai',
             'tt2.diengiai as ten_trang_thai',
-            'hsba_khoa_phong.cdvv_icd10_code',
-            'hsba_khoa_phong.cdvv_icd10_text',
-            'hsba_khoa_phong.ly_do_vao_vien',
-            'hsba_khoa_phong.qua_trinh_benh_ly',
-            'hsba_khoa_phong.tien_su_benh_ban_than',
-            'hsba_khoa_phong.tien_su_benh_gia_dinh'
         ];
         
         $query = DB::table('hsba_khoa_phong')
