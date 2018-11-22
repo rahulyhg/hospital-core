@@ -10,6 +10,7 @@ use App\Services\DanhMucTongHopService;
 use App\Services\DanhMucBenhVienService;
 use App\Services\DanhMucTrangThaiService;
 use App\Services\BenhVienService;
+use App\Services\HsbaKhoaPhongService;
 use App\Http\Controllers\API\V1\APIController;
 
 class DangKyKhamBenhController extends APIController
@@ -26,7 +27,8 @@ class DangKyKhamBenhController extends APIController
         DanhMucTongHopService $danhMucTongHopService,
         DanhMucBenhVienService $danhMucBenhVienService,
         BenhVienService $benhVienService,
-        DanhMucTrangThaiService $danhMucTrangThaiService
+        DanhMucTrangThaiService $danhMucTrangThaiService,
+        HsbaKhoaPhongService $hsbaKhoaPhongService
         )
     {
         $this->phongService = $phongService;
@@ -36,6 +38,8 @@ class DangKyKhamBenhController extends APIController
         $this->danhMucBenhVienService = $danhMucBenhVienService;
         $this->benhVienService = $benhVienService;
         $this->danhMucTrangThaiService = $danhMucTrangThaiService;
+        $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        
     }
     
     // get danh sach phong kham theo departmentgroupid va departmenttype
@@ -140,4 +144,10 @@ class DangKyKhamBenhController extends APIController
         $data = $this->khoaService->getListKhoa($loaiKhoa, $benhVienId);
         return $data;
     }
+    
+    public function getLichSuKhamDieuTriByBenhNhanId(Request $request)
+    {
+        $data = $this->hsbaKhoaPhongService->getLichSuKhamDieuTri($request->benhNhanId);
+        return $this->respond($data);
+    }    
 }
