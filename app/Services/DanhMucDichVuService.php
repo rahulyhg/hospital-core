@@ -15,8 +15,6 @@ class DanhMucDichVuService
     
     public function getListYeuCauKham(Request $request)
     {
-        //$offset = $request->query('offset',0);
-        
         return DanhMucDichVuResource::collection(
            $this->repository->getDataYeuCauKham($request)
         );
@@ -51,5 +49,12 @@ class DanhMucDichVuService
     public function deleteDanhMucDichVu($dmdvId)
     {
         $this->repository->deleteDanhMucDichVu($dmdvId);
+    }
+    
+    public function getYLenhByLoaiNhom($loaiNhom)
+    {
+        $data = $this->repository->getYLenhByLoaiNhom($loaiNhom);
+        
+        return $data;
     }
 }
