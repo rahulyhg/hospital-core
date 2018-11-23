@@ -32,4 +32,10 @@ class HsbaKhoaPhongService
         
         return $data;
     }
+    
+    public function getLichSuKhamDieuTri($id)
+    {
+        $data = $this->hsbaKhoaPhongRepository->getLichSuKhamDieuTri($id);
+        return $data;
+    }    
 }

@@ -119,6 +119,16 @@ class AuthUsersRepository extends BaseRepository
             return true;
         else
             return false;
+    }
+    
+    public function updateAuthUsers($id, array $input)
+    {
+        if($input['userstatus']==true)
+            $input['userstatus']=1;
+        else
+            $input['userstatus']=0; 
+        $update = AuthUsers::findOrFail($id);
+		$update->update($input);
     }    
     
 }

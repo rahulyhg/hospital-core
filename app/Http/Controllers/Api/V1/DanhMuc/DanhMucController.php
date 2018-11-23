@@ -79,4 +79,18 @@ class DanhMucController extends APIController
         
         return $this->respond([]);        
     }
+    
+    public function getYLenhByLoaiNhom($loaiNhom)
+    {
+        $isNumeric = is_numeric($loaiNhom);
+        
+        if($isNumeric) {
+            $data = $this->dmdvService->getYLenhByLoaiNhom($loaiNhom);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }
