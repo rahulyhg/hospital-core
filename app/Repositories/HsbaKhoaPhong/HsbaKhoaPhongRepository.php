@@ -161,5 +161,22 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         
         return $result;
     }
+    
+    public function getLichSuKhamDieuTri($id)
+    {
+        $where = [
+            ['hsba_khoa_phong.benh_nhan_id', '=', $id],
+        ];
+        $column=[
+            'phong.ten_phong',
+            'hsba_khoa_phong.thoi_gian_vao_vien',
+            'hsba_khoa_phong.cdrv_icd10_text'
+        ];
+        $result = DB::table('hsba_khoa_phong')
+                    ->leftJoin('phong','phong.id','=','hsba_khoa_phong.phong_hien_tai')
+                    ->where($where)
+                    ->get($column);
+        return $result;
+    }    
 
 }
