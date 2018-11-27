@@ -30,7 +30,7 @@ class SttPhongKhamService
             
             if($stt) {
                 $input = ['phong_hien_tai' => $params['phong_id']];
-                $this->hsbaKhoaPhongService->updateHsbaKhoaPhong($params['hsba_khoa_phong_id'], $input);
+                $this->hsbaKhoaPhongService->update($params['hsba_khoa_phong_id'], $input);
             }
             
             $data = [
