@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Http\Resources\DanhMucDichVuResource;
-use App\Repositories\DanhMucDichVuRepository;
+use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use Illuminate\Http\Request;
 
 class DanhMucDichVuService

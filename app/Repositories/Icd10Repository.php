@@ -22,4 +22,15 @@ class Icd10Repository extends BaseRepositoryV2
         $data = $this->model->where('icd10code', '=', $icd10code)->get($column)->first();
         return $data;
     }
+    
+    public function getListIcd10ByCode($icd10code)
+    {
+        $column = [
+            'icd10id',
+            'icd10code',
+            'icd10name'
+        ];
+        $data = $this->model->where('icd10code', 'LIKE', '%'.$icd10code.'%')->get($column);
+        return $data;
+    }    
 }

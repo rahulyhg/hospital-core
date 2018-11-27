@@ -11,6 +11,7 @@ use App\Services\DanhMucBenhVienService;
 use App\Services\DanhMucTrangThaiService;
 use App\Services\BenhVienService;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\Icd10Service;
 use App\Http\Controllers\API\V1\APIController;
 
 class DangKyKhamBenhController extends APIController
@@ -28,7 +29,8 @@ class DangKyKhamBenhController extends APIController
         DanhMucBenhVienService $danhMucBenhVienService,
         BenhVienService $benhVienService,
         DanhMucTrangThaiService $danhMucTrangThaiService,
-        HsbaKhoaPhongService $hsbaKhoaPhongService
+        HsbaKhoaPhongService $hsbaKhoaPhongService,
+        Icd10Service $icd10Service
         )
     {
         $this->phongService = $phongService;
@@ -39,6 +41,7 @@ class DangKyKhamBenhController extends APIController
         $this->benhVienService = $benhVienService;
         $this->danhMucTrangThaiService = $danhMucTrangThaiService;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->icd10Service = $icd10Service;
         
     }
     
@@ -149,5 +152,11 @@ class DangKyKhamBenhController extends APIController
     {
         $data = $this->hsbaKhoaPhongService->getLichSuKhamDieuTri($request->benhNhanId);
         return $this->respond($data);
+    }
+    
+    public function getListIcd10ByCode(Request $request)
+    {
+        $data = $this->icd10Service->getListIcd10ByCode($request->icd10Code);
+        return $data;
     }    
 }
