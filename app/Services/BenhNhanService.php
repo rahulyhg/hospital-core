@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Repositories\BenhNhan\BenhNhanRepository;
 use App\Repositories\Hsba\HsbaRepository;
-use App\Repositories\HsbaKhoaPhong\HsbaKhoaPhongRepository; 
+use App\Repositories\Hsba\HsbaKhoaPhongRepository; 
 use App\Repositories\Bhyt\BhytRepository; 
 use App\Repositories\VienPhi\VienPhiRepository; 
 use App\Repositories\DanhMucTongHopRepository;
@@ -38,7 +38,7 @@ class BenhNhanService{
         $this->sttPhongKhamService = $sttPhongKhamService;
     }
     
-    public function createBenhNhan(Request $request)
+    public function registerBenhNhan(Request $request)
     {
         //1. Kiểm tra thông tin bảo hiểm
         //2. Nếu có bảo hiểm thì bệnh nhân này đã tồn tại không tạo mới thông tin bệnh nhân
@@ -139,7 +139,7 @@ class BenhNhanService{
                 $hsbaKpParams['hinh_thuc_vao_vien_id'] = 2;
                 $hsbaKpParams['bhyt_id'] = $idBhyt;
                 //insert hsba_khoa_phong
-                $idHsbaKp = $this->hsbaKhoaPhongRepository->createDataHsbaKhoaPhong($hsbaKpParams);
+                $idHsbaKp = $this->hsbaKhoaPhongRepository->createData($hsbaKpParams);
                 //sothutuphongkham
                 $yeuCauKham = $this->danhMucDichVuRepository->getDataDanhMucDichVuById($hsbaKpParams['yeu_cau_kham_id']);
                 $sttPhongKhamParams['benh_nhan_id'] = $idBenhNhan;
@@ -167,7 +167,7 @@ class BenhNhanService{
                 //update phong_id từ stt_phong_kham
                 //$this->hsbaRepository->updateHsba($idHsba, $thxData);
                 $this->hsbaRepository->updateHsba($idHsba, ['phong_id' => $phongId, 'thx_gplace_json' => $thxData]);
-                $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($idHsbaKp, ['phong_hien_tai' => $phongId, 'vien_phi_id' => $idVienPhi]);
+                $this->hsbaKhoaPhongRepository->update($idHsbaKp, ['phong_hien_tai' => $phongId, 'vien_phi_id' => $idVienPhi]);
                 $this->vienPhiRepository->updateVienPhi($idVienPhi, ['phong_id' => $phongId]);
                 //set params dieu_tri
                 $dieuTriParams['hsba_khoa_phong_id'] = $idHsbaKp;

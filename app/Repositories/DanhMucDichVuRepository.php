@@ -167,11 +167,13 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
                 $arrayChildren = $children->filter(function($itemChildren, $keyChildren) use ($itemParent) {
                     if($itemChildren->ten_nhom == $itemParent->ma) {
                         $itemChildren['key'] = $itemChildren->id;
+                        $itemChildren['parent'] = $itemParent->id;
                         return $itemChildren;
                     }
                 })->values()->all();
                 $itemParent['children'] = $arrayChildren;
                 $itemParent['key'] = $itemParent->id;
+                $itemParent['parent'] = 0;
             })->values()->all();
         }
         
