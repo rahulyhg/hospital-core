@@ -15,7 +15,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return HsbaKhoaPhong::class;
     }
     
-    public function getListBenhNhan($phongId, $benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1)
+    public function getList($phongId, $benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1)
     {
         $loaiBenhAn = 24; //kham benh
         $khoaHienTai = 3; //khoa kham benh
@@ -141,19 +141,19 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function createDataHsbaKhoaPhong(array $input)
+    public function createData(array $input)
     {
          $id = HsbaKhoaPhong::create($input)->id;
          return $id;
     }
     
-    public function updateHsbaKhoaPhong($hsbaKhoaPhongId,array $params)
+    public function update($hsbaKhoaPhongId,array $params)
     {
         $hsbaKhoaPhong = HsbaKhoaPhong::findOrFail($hsbaKhoaPhongId);
 		$hsbaKhoaPhong->update($params);
     }
     
-    public function getHsbaKhoaPhongById($hsbaKhoaPhongId)
+    public function getById($hsbaKhoaPhongId)
     {
         $where = [
             ['hsba_khoa_phong.id', '=', $hsbaKhoaPhongId],

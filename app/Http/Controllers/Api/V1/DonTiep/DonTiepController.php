@@ -49,7 +49,7 @@ class DonTiepController extends APIController
             return $this->respond([]);
         }
         
-        $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhan($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword, $status);
+        $listBenhNhan = $this->hsbaKhoaPhongService->getList($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword, $status);
         
         //if($type == "HC"){
             //$data = $redis->get('list_BN_HC');
@@ -73,7 +73,7 @@ class DonTiepController extends APIController
         return $this->respond($listBenhNhan);
     }
     
-    public function getHsbaByHsbaId($hsbaId) 
+    public function getByHsbaId($hsbaId) 
     {
         if(is_numeric($hsbaId)) {
             $data = $this->hsbaKhoaPhongService->getByHsbaId($hsbaId);

@@ -46,7 +46,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('countSttDonTiep','DonTiep\SttDonTiepController@countSttDonTiep');
         
         Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
-        Route::get('getHsbaByHsbaId/{hsbaId}','DonTiep\DonTiepController@getHsbaByHsbaId');
+        Route::get('getHsbaByHsbaId/{hsbaId}','DonTiep\DonTiepController@getByHsbaId');
         Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient');
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
@@ -80,8 +80,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'phongkham'], function () {
-		Route::post('updateHsbaKhoaPhong/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@updateHsbaKhoaPhong');
-		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getHsbaKhoaPhongById');
+		Route::post('updateHsbaKhoaPhong/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@update');
+		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getById');
 		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri');
 		Route::get('getListPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListPhongKham');
 		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan');
