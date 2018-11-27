@@ -5,6 +5,7 @@ use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\DanhMucDichVu;
 use App\Http\Resources\HsbaResource;
+use Carbon\Carbon;
 
 class DanhMucDichVuRepository extends BaseRepositoryV2
 {
@@ -23,11 +24,17 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
     
     public function getDataYeuCauKham($input)
     {
+        $now = Carbon::now();
+        if($now->hour > 15)
+            $oderBy = "ASC";
+        else
+            $oderBy = "DESC";
         $data = DB::table('danh_muc_dich_vu')
                 ->where('loai_nhom', $input['loai_nhom'])
+                ->orderBy('ngoai_gio',$oderBy)
                 ->orderBy('ten')
                 ->get();
-        return $data;    
+        return $data;
     }
     
     public function getDataDanhMucDichVuById($dmdvId)
@@ -160,11 +167,13 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
                 $arrayChildren = $children->filter(function($itemChildren, $keyChildren) use ($itemParent) {
                     if($itemChildren->ten_nhom == $itemParent->ma) {
                         $itemChildren['key'] = $itemChildren->id;
+                        $itemChildren['parent'] = $itemParent->id;
                         return $itemChildren;
                     }
                 })->values()->all();
                 $itemParent['children'] = $arrayChildren;
                 $itemParent['key'] = $itemParent->id;
+                $itemParent['parent'] = 0;
             })->values()->all();
         }
         
