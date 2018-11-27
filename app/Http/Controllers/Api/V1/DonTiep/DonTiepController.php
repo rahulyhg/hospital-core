@@ -76,7 +76,7 @@ class DonTiepController extends APIController
     public function getHsbaByHsbaId($hsbaId) 
     {
         if(is_numeric($hsbaId)) {
-            $data = $this->hsbaKhoaPhongService->getHsbaByHsbaId($hsbaId);
+            $data = $this->hsbaKhoaPhongService->getByHsbaId($hsbaId);
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);

@@ -164,7 +164,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getHsbaByHsbaId($hsbaId)
+    public function getByHsbaId($hsbaId)
     {
         $where = [
             ['hsba_khoa_phong.loai_benh_an', '=', self::BENH_AN_KHAM_BENH],
