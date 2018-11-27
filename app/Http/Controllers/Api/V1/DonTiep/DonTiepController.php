@@ -76,7 +76,7 @@ class DonTiepController extends APIController
     public function getHsbaByHsbaId($hsbaId) 
     {
         if(is_numeric($hsbaId)) {
-            $data = $this->hsbaService->getHsbaByHsbaId($hsbaId);
+            $data = $this->hsbaKhoaPhongService->getHsbaByHsbaId($hsbaId);
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);
@@ -103,7 +103,7 @@ class DonTiepController extends APIController
     {   
         try 
         {
-            $dataPrint = $this->benhNhanService->createBenhNhan($request);
+            $dataPrint = $this->benhNhanService->registerBenhNhan($request);
             $this->setStatusCode(201);
             return $this->respond($dataPrint);
         } catch (\Exception $ex) {

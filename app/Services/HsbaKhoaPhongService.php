@@ -3,7 +3,7 @@ namespace App\Services;
 
 use App\Models\HsbaKhoaPhong;
 use App\Http\Resources\HsbaKhoaPhongResource;
-use App\Repositories\HsbaKhoaPhong\HsbaKhoaPhongRepository;
+use App\Repositories\Hsba\HsbaKhoaPhongRepository;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -24,6 +24,13 @@ class HsbaKhoaPhongService
     public function updateHsbaKhoaPhong($hsbaKhoaPhongId, array $params)
     {
         $this->hsbaKhoaPhongRepository->updateHsbaKhoaPhong($hsbaKhoaPhongId, $params);
+    }
+    
+    public function getHsbaByHsbaId($hsbaId)
+    {
+        $data = $this->hsbaKhoaPhongRepository->getHsbaByHsbaId($hsbaId);
+         
+        return $data;
     }
     
     public function getHsbaKhoaPhongById($hsbaKhoaPhongId)

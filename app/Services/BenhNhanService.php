@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Repositories\BenhNhan\BenhNhanRepository;
 use App\Repositories\Hsba\HsbaRepository;
-use App\Repositories\HsbaKhoaPhong\HsbaKhoaPhongRepository; 
+use App\Repositories\Hsba\HsbaKhoaPhongRepository; 
 use App\Repositories\Bhyt\BhytRepository; 
 use App\Repositories\VienPhi\VienPhiRepository; 
 use App\Repositories\DanhMucTongHopRepository;
@@ -38,7 +38,7 @@ class BenhNhanService{
         $this->sttPhongKhamService = $sttPhongKhamService;
     }
     
-    public function createBenhNhan(Request $request)
+    public function registerBenhNhan(Request $request)
     {
         //1. Kiểm tra thông tin bảo hiểm
         //2. Nếu có bảo hiểm thì bệnh nhân này đã tồn tại không tạo mới thông tin bệnh nhân

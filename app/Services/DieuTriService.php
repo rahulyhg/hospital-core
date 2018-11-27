@@ -5,7 +5,7 @@ use App\Repositories\DieuTri\DieuTriRepository;
 use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
-use App\Repositories\HsbaKhoaPhong\HsbaKhoaPhongRepository;
+use App\Repositories\Hsba\HsbaKhoaPhongRepository;
 use App\Repositories\Hsba\HsbaRepository;
 use App\Repositories\VienPhi\VienPhiRepository;
 use App\Repositories\PhongRepository;
