@@ -15,13 +15,15 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return HsbaKhoaPhong::class;
     }
     
-    public function getList($phongId, $benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1)
+    public function getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1)
     {
+        $khoaHienTai = $dataBenhVienThietLap['khoaHienTai']; //khoa kham benh
+        $phongDonTiepID = $dataBenhVienThietLap['phongDonTiepID'];
+
         $loaiBenhAn = 24; //kham benh
-        $khoaHienTai = 3; //khoa kham benh
         $offset = ($page - 1) * $limit;
         
-        if($phongId != 141) {  //phong kham
+        if($phongId != $phongDonTiepID) {  //phong kham
             $where = [
                 ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
                 ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
@@ -63,7 +65,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     ->where('tt2.tablename', '=', 'patientstatus');
             });
             
-        // if($phongId != 141) {
+        // if($phongId != $phongDonTiepID) {
         //     $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
         //         $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
         //             ->where('sttpk.phong_id', '=', $phongId);
@@ -106,7 +108,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             });
         }
         
-        if($status != -1 && $phongId != 141) {
+        if($status != -1 && $phongId != $phongDonTiepID) {
             $query = $query->where(function($queryAdv) use ($status) {
                 $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $status);
             });
@@ -305,5 +307,4 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     ->get($column);
         return $result;
     }    
-
 }
