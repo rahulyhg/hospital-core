@@ -51,6 +51,10 @@ class DonTiepController extends APIController
         
         $listBenhNhan = $this->hsbaKhoaPhongService->getList($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword, $status);
         
+        if(empty($listBenhNhan)) {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
         //if($type == "HC"){
             //$data = $redis->get('list_BN_HC');
             
