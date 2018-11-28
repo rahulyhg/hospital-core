@@ -15,13 +15,10 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return HsbaKhoaPhong::class;
     }
     
-    public function getList($phongId, $benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1)
+    public function getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1)
     {
-        // Lay du lieu thiet lap cua benh vien
-        $dataThietLap = $this->getThietLapByBenhVien($benhVienId);
-        if(empty($dataThietLap)) return [];
-        $khoaHienTai = $dataThietLap['khoaHienTai']; //khoa kham benh
-        $phongDonTiepID = $dataThietLap['phongDonTiepID'];
+        $khoaHienTai = $dataBenhVienThietLap['khoaHienTai']; //khoa kham benh
+        $phongDonTiepID = $dataBenhVienThietLap['phongDonTiepID'];
 
         $loaiBenhAn = 24; //kham benh
         $offset = ($page - 1) * $limit;
@@ -310,15 +307,4 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     ->get($column);
         return $result;
     }    
-    
-    public function getThietLapByBenhVien($benhVienId) {
-        $data = [];
-        $hospital = DB::table('benh_vien')->find($benhVienId);
-        if(empty($hospital->thiet_lap)) return $data;
-        $settingHospital = json_decode($hospital->thiet_lap);
-        $khoaKhamBenh = $settingHospital->khoa->khoa_kham_benh;
-        $data['khoaHienTai'] = intval($khoaKhamBenh->id); //khoa kham benh
-        $data['phongDonTiepID'] = intval($khoaKhamBenh->phong->phong_don_tiep);
-        return $data;
-    }
 }
