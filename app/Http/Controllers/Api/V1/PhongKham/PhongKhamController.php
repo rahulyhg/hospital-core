@@ -18,14 +18,14 @@ class PhongKhamController extends APIController
         $this->icd10Service = $icd10Service;
     }
     
-    public function updateHsbaKhoaPhong($hsbaKhoaPhongId, Request $request)
+    public function update($hsbaKhoaPhongId, Request $request)
     {
         try {
             $isNumeric = is_numeric($hsbaKhoaPhongId);
             
             if($isNumeric) {
                 $input = $request->all();
-                $this->hsbaKhoaPhongService->updateHsbaKhoaPhong($hsbaKhoaPhongId, $input);
+                $this->hsbaKhoaPhongService->update($hsbaKhoaPhongId, $input);
             } else {
                 $this->setStatusCode(400);
             }
@@ -34,12 +34,12 @@ class PhongKhamController extends APIController
         }
     }
     
-    public function getHsbaKhoaPhongById($hsbaKhoaPhongId)
+    public function getById($hsbaKhoaPhongId)
     {
         $isNumeric = is_numeric($hsbaKhoaPhongId);
         
         if($isNumeric) {
-            $data = $this->hsbaKhoaPhongService->getHsbaKhoaPhongById($hsbaKhoaPhongId);
+            $data = $this->hsbaKhoaPhongService->getById($hsbaKhoaPhongId);
         } else {
             $this->setStatusCode(400);
             $data = [];

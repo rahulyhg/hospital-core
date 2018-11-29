@@ -49,8 +49,20 @@ class DonTiepController extends APIController
             return $this->respond([]);
         }
         
-        $listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhan($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword, $status);
+        try 
+        {
+            $dataBenhVienThietLap = $this->hsbaKhoaPhongService->getBenhVienThietLap($benhVienId);
+            $listBenhNhan = $this->hsbaKhoaPhongService->getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit, $page, $keyword, $status);
+            $this->setStatusCode(200);
+            return $this->respond($listBenhNhan);
+        } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        }
         
+        // if(empty($listBenhNhan)) {
+        //     $this->setStatusCode(400);
+        //     return $this->respond([]);
+        // }
         //if($type == "HC"){
             //$data = $redis->get('list_BN_HC');
             
@@ -73,10 +85,10 @@ class DonTiepController extends APIController
         return $this->respond($listBenhNhan);
     }
     
-    public function getHsbaByHsbaId($hsbaId) 
+    public function getByHsbaId($hsbaId) 
     {
         if(is_numeric($hsbaId)) {
-            $data = $this->hsbaService->getHsbaByHsbaId($hsbaId);
+            $data = $this->hsbaKhoaPhongService->getByHsbaId($hsbaId);
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);
@@ -103,7 +115,7 @@ class DonTiepController extends APIController
     {   
         try 
         {
-            $dataPrint = $this->benhNhanService->createBenhNhan($request);
+            $dataPrint = $this->benhNhanService->registerBenhNhan($request);
             $this->setStatusCode(201);
             return $this->respond($dataPrint);
         } catch (\Exception $ex) {

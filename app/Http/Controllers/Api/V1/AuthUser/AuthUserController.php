@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\AuthUsersService;
 use App\Http\Requests\AuthUserFormRequest;
+use App\Http\Requests\UpdateAuthUsersFormRequest;
 
 class AuthUserController extends APIController
 {
@@ -68,6 +69,22 @@ class AuthUserController extends APIController
     {
         $data = $this->authUsersService->checkEmailbyEmail($email);
         return $this->respond($data);
+    }
+    
+    public function updateAuthUsers($id,UpdateAuthUsersFormRequest $request)
+    {
+        try {
+            $isNumericId = is_numeric($id);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $this->authUsersService->updateAuthUsers($id, $input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
     }    
 
 }
