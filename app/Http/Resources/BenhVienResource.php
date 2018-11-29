@@ -18,7 +18,8 @@ class BenhVienResource extends Resource
             'id'      => $this->id,
             'ma'    => $this->ma,
             'ten'    => $this->ten,
-            'dia_chi'    => $this->dia_chi
+            'dia_chi'    => $this->dia_chi,
+            'thiet_lap'  => $this->thiet_lap
         ];
     }
 }
