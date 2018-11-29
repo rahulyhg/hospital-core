@@ -49,4 +49,11 @@ class DanhMucTrangThaiService {
            $this->danhMucTrangThaiRepository->getListXuTri()
         );
     }
+    
+    public function getDataDanhMucTrangThaiById($dmttId)
+    {
+        return DanhMucTrangThaiResource::collection(
+           $this->danhMucTrangThaiRepository->getDataDanhMucTrangThaiById($dmttId)
+        );
+    }
 }

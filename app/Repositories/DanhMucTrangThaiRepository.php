@@ -45,4 +45,37 @@ class DanhMucTrangThaiRepository extends BaseRepository
                 ->get();
         return $dataSet;    
     }
+    
+    public function getDataDanhMucTrangThaiById($dmttId) {
+        $result = DB::table('danh_muc_trang_thai')
+                ->where('id',$dmttId)
+                ->first();
+        return $result;    
+        
+    }
+    
+    public function createDanhMucTrangThai(array $input)
+    {
+        //$id = DanhMucTrangThai::create($input)->id;
+        $id = DB::table('danh_muc_trang_thai')->insertGetId($input);
+        //$id = DB::getPdo()->lastInsertId();
+        return $id;
+    }
+    
+    public function updateDanhMucTrangThai($dmttId, array $input)
+    {
+        //$dmtt = DanhMucTrangThai::findOrFail($dmttId);
+		//$dmtt->update($input);
+		DB::table('danh_muc_trang_thai')
+            ->where('id', $dmttId)
+            ->update($input);
+    }
+    
+    public function deleteDanhMucTrangThai($dmttId)
+    {
+        DB::table('danh_muc_trang_thai')->where('id', $dmttId)->delete();
+        //DanhMucTrangThai::destroy($dmttId);
+    }
+    
+    
 }
