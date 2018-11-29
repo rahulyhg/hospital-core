@@ -56,4 +56,26 @@ class DanhMucTongHopService {
            $this->danhMucTongHopRepository->getListXa($maHuyen,$maTinh)
         );
     }
+    
+    public function getDanhMucTongHopTheoKhoa($khoa, $limit, $page) {
+        return DanhMucTongHopResource::collection(
+           $this->danhMucTongHopRepository->getDanhMucTongHopTheoKhoa($khoa, $limit, $page)
+        );
+    }
+    
+    public function createDanhMucTongHop(array $input)
+    {
+        $id = $this->danhMucTongHopRepository->createDanhMucTongHop($input);
+        return $id;
+    }
+    
+    public function updateDanhMucTongHop($dmthId, array $input)
+    {
+        $this->danhMucTongHopRepository->updateDanhMucTongHop($dmthId, $input);
+    }
+    
+    public function deleteDanhMucTongHop($dmthId)
+    {
+        $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
+    }
 }
