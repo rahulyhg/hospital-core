@@ -46,11 +46,11 @@ class DanhMucTrangThaiRepository extends BaseRepository
         return $dataSet;    
     }
     
-    public function getDataDanhMucTrangThaiById($dmttId) {
-        $result = DB::table('danh_muc_trang_thai')
-                ->where('id',$dmttId)
-                ->first();
-        return $result;    
+    public function getDanhMucTrangThaiByKhoa($khoa) {
+        $dataset = DB::table('danh_muc_trang_thai')
+                ->where('khoa',$khoa)
+                ->get();
+        return $dataset;    
         
     }
     
@@ -73,8 +73,9 @@ class DanhMucTrangThaiRepository extends BaseRepository
     
     public function deleteDanhMucTrangThai($dmttId)
     {
-        DB::table('danh_muc_trang_thai')->where('id', $dmttId)->delete();
         //DanhMucTrangThai::destroy($dmttId);
+        DB::table('danh_muc_trang_thai')->where('id', $dmttId)->delete();
+        
     }
     
     

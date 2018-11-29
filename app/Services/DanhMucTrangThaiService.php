@@ -53,7 +53,7 @@ class DanhMucTrangThaiService {
     public function getDanhMucTrangThaiByKhoa($khoa)
     {
         return DanhMucTrangThaiResource::collection(
-            $this->danhMucTrangThaiRepository->getDataDanhMucTrangThaiByKhoa($khoa)
+            $this->danhMucTrangThaiRepository->getDanhMucTrangThaiByKhoa($khoa)
         );
         
     }
