@@ -1,17 +1,14 @@
 <?php
-namespace App\Repositories;
+namespace App\Repositories\DanhMuc;
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\DanhMucTongHop;
-
 class DanhMucTongHopRepository extends BaseRepositoryV2
 {
-
     public function getModel()
     {
         return DanhMucTongHop::class;
     }
-
     public function getListNgheNghiep()
     {
         $ngheNghiep = DB::table('danh_muc_tong_hop')
