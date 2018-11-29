@@ -26,4 +26,10 @@ class BhytService
     {
         $this->bhytRepository->updateBhyt($hsbaId, $request);
     }
+    
+    public function getMaBhytTreEm($maTinh)
+    {
+        $data = $this->bhytRepository->getMaBhytTreEm($maTinh);
+        return $data;
+    }    
 }

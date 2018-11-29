@@ -1,15 +1,21 @@
 <?php
 namespace App\Repositories;
 use DB;
+use App\Models\BenhVien;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Config;
 use Exception;
 
-class BenhVienRepository extends BaseRepository
+class BenhVienRepository extends BaseRepositoryV2
 {
+    public function getModel()
+    {
+        return BenhVien::class;
+    }
+    
     public function listBenhVien()
     {
-        $dataSet = DB::table('benh_vien')
+        $dataSet = $this->model
                 ->orderBy('id')
                 ->get();
         return $dataSet;    
@@ -17,7 +23,7 @@ class BenhVienRepository extends BaseRepository
     
     public function getBenhVienThietLap($benhVienId) {
         $data = [];
-        $hospital = DB::table('benh_vien')->find($benhVienId);
+        $hospital = $this->model->find($benhVienId);
         $settingHospital = json_decode($hospital->thiet_lap);
         if(empty($hospital->thiet_lap)) {
             throw new Exception(Config::get('constants.error_get_thiet_lap_benh_vien'));

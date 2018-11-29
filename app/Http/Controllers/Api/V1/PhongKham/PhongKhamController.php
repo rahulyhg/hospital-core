@@ -53,6 +53,7 @@ class PhongKhamController extends APIController
         try 
         {
             $input = $request->all();
+            $input = $request->except('bmi');
             $this->dieuTriService->updateInfoDieuTri($input);
             $this->setStatusCode(201);
             

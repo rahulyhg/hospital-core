@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\AuthUsersRepository;
+use App\Repositories\Auth\AuthUsersRepository;
 use Illuminate\Http\Request;
 
 class AuthUsersService
