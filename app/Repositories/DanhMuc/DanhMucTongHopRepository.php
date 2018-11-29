@@ -5,6 +5,7 @@ use App\Repositories\BaseRepository;
 
 class DanhMucTongHopRepository extends BaseRepository
 {
+    
     public function getListNgheNghiep()
     {
         $ngheNghiep = DB::table('danh_muc_tong_hop')
