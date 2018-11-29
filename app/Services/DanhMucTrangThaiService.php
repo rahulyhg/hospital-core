@@ -50,10 +50,12 @@ class DanhMucTrangThaiService {
         );
     }
     
-    public function getDanhMucTrangThaiById($dmttId)
+    public function getDanhMucTrangThaiByKhoa($khoa)
     {
-        $data = $this->danhMucTrangThaiRepository->getDataDanhMucTrangThaiById($dmttId);
-        return $data;
+        return DanhMucTrangThaiResource::collection(
+            $this->danhMucTrangThaiRepository->getDataDanhMucTrangThaiByKhoa($khoa)
+        );
+        
     }
     
     public function createDanhMucTrangThai(array $input)
