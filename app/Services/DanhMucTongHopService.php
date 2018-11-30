@@ -72,9 +72,9 @@ class DanhMucTongHopService {
     }
     
     public function getDanhMucTongHopTheoKhoa($khoa, $limit, $page) {
-        return DanhMucTongHopResource::collection(
-           $this->danhMucTongHopRepository->getDanhMucTongHopTheoKhoa($khoa, $limit, $page)
-        );
+        $data = $this->danhMucTongHopRepository->getDanhMucTongHopTheoKhoa($khoa, $limit, $page);
+        
+        return $data;
     }
     
     public function createDanhMucTongHop(array $input)
