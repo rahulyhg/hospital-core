@@ -5,15 +5,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
+use App\Services\DanhMucTrangThaiService;
 use App\Http\Requests\DanhMucDichVuFormRequest;
 use App\Http\Requests\DanhMucTongHopFormRequest;
+use App\Http\Requests\DanhMucTrangThaiFormRequest;
 
 class DanhMucController extends APIController
 {
-    public function __construct(DanhMucDichVuService $dmdvService, DanhMucTongHopService $dmthService)
+    public function __construct(DanhMucDichVuService $dmdvService, DanhMucTongHopService $dmthService, DanhMucTrangThaiService $dmttService)
     {
         $this->dmdvService = $dmdvService;
         $this->dmthService = $dmthService;
+        $this->dmttService = $dmttService;
     }
     
     public function getListDanhMucDichVu(Request $request)
@@ -155,5 +158,19 @@ class DanhMucController extends APIController
         }
         
         return $this->respond([]);        
+    }
+    
+    public function getListDanhMucTrangThaiByKhoa($khoa) {
+        if($khoa === null){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+        $data = $this->dmttService->getListDanhMucTrangThaiByKhoa($khoa);
+        
+        if(empty($data)) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        return $this->respond($data);
     }
 }

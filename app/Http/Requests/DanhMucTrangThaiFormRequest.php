@@ -24,7 +24,7 @@ class DanhMucDichVuFormRequest extends ApiFormRequest
         return [
             'khoa'      => 'required|string',
             'gia_tri'   => 'required|string',
-            'dien_giai' => 'nullable|string'
+            'dien_giai' => 'required|string'
         ];
     }
 }
