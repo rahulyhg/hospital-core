@@ -2,10 +2,15 @@
 namespace App\Repositories\DanhMuc;
 use DB;
 use App\Repositories\BaseRepository;
-use Response;
+use App\Models\DanhMucTrangThai;
 
-class DanhMucTrangThaiRepository extends BaseRepository
+
+class DanhMucTrangThaiRepository extends BaseRepositoryV2
 {
+    public function getModel()
+    {
+        return DanhMucTrangThai::class;
+    }
 
     public function getListLoaiVienPhi()
     {
@@ -48,12 +53,9 @@ class DanhMucTrangThaiRepository extends BaseRepository
     }
     
     public function getListDanhMucTrangThaiByKhoa($khoa) {
-        $data = DB::table('danh_muc_trang_thai')
-                ->where('khoa',$khoa)
+        $data = $this->model->where('khoa',$khoa)
                 ->get();
-        $array = json_decode($data, true);
-      
-        return collect($array);  
+        return [ 'data' => $data ];
         
     }
 }
