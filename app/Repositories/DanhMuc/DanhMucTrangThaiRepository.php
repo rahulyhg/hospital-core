@@ -57,7 +57,10 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         $dataSet = DB::table('danh_muc_trang_thai')
                 ->where('khoa',$khoa)
                 ->get();
-        return $dataSet;
+        return [
+            'data' => $dataSet,
+            'date' => ''
+        ];
         
         
     }
