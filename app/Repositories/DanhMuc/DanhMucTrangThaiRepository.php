@@ -2,7 +2,7 @@
 namespace App\Repositories\DanhMuc;
 use DB;
 use App\Repositories\BaseRepository;
-use Illuminate\Http\Response;
+use Response;
 
 class DanhMucTrangThaiRepository extends BaseRepository
 {
