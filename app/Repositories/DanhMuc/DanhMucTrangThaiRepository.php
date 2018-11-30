@@ -45,4 +45,12 @@ class DanhMucTrangThaiRepository extends BaseRepository
                 ->get();
         return $dataSet;    
     }
+    
+    public function getListDanhMucTrangThaiByKhoa($khoa) {
+        $dataset = DB::table('danh_muc_trang_thai')
+                ->where('khoa',$khoa)
+                ->get();
+        return $dataset;    
+        
+    }
 }
