@@ -49,4 +49,29 @@ class DanhMucTrangThaiService {
            $this->danhMucTrangThaiRepository->getListXuTri()
         );
     }
+    
+    public function getListDanhMucTrangThaiByKhoa($khoa)
+    {
+        return DanhMucTrangThaiResource::collection(
+            $this->danhMucTrangThaiRepository->getListDanhMucTrangThaiByKhoa($khoa)
+        );
+        
+    }
+    
+    public function createDanhMucTrangThai(array $input)
+    {
+        $id = $this->danhMucTrangThaiRepository->createDanhMucTrangThai($input);
+        
+        return $id;
+    }
+    
+    public function updateDanhMucTrangThai($dmttId, array $input)
+    {
+        $this->danhMucTrangThaiRepository->updateDanhMucTrangThai($dmttId, $input);
+    }
+    
+    public function deleteDanhMucTrangThai($dmttId)
+    {
+        $this->danhMucTrangThaiRepository->deleteDanhMucTrangThai($dmttId);
+    }
 }
