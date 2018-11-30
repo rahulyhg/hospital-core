@@ -50,7 +50,8 @@ class DanhMucTrangThaiRepository extends BaseRepository
         $data = DB::table('danh_muc_trang_thai')
                 ->where('khoa',$khoa)
                 ->get();
-        return [ 'data' => $data ];
+        //return [ 'data' => $data ];
+        return $data;
         
     }
 }
