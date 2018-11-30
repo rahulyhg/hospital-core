@@ -51,7 +51,9 @@ class DanhMucTrangThaiRepository extends BaseRepository
         $data = DB::table('danh_muc_trang_thai')
                 ->where('khoa',$khoa)
                 ->get();
-        return json_decode($data, true);
+        $array = json_decode($data, true);
+      
+        return collect($array)->first();  
         
     }
 }
