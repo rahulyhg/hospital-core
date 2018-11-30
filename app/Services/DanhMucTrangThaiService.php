@@ -45,11 +45,11 @@ class DanhMucTrangThaiService {
     
     public function getListXuTri()
     {
-        /*return DanhMucTrangThaiResource::collection(
+        return DanhMucTrangThaiResource::collection(
            $this->danhMucTrangThaiRepository->getListXuTri()
         );
-        */
-        return $this->danhMucTrangThaiRepository->getListXuTri();
+        
+        
     }
     
     public function getListDanhMucTrangThaiByKhoa($khoa)
