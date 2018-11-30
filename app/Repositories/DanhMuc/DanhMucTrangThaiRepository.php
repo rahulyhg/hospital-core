@@ -56,7 +56,7 @@ class DanhMucTrangThaiRepository extends BaseRepository
             'totalPage'     => 1,
             'totalRecord'   => 1
         ];
-        //return $data;
+        return $result;
         
     }
 }
