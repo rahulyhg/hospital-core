@@ -29,7 +29,7 @@ class BhytRepository extends BaseRepositoryV2
     
     public function createDataBhyt(array $input)
     {
-        $id = Bhyt::create($input)->id;
+        $id = $this->model->create($input)->id;
         return $id;
     }
     
@@ -46,7 +46,7 @@ class BhytRepository extends BaseRepositoryV2
     
     public function updateBhyt($hsbaId, $request)
     {
-        $bhyt = Bhyt::where('hsba_id', '=', $hsbaId);
+        $bhyt = $this->model->where('hsba_id', '=', $hsbaId);
 		$bhyt->update($request->all());
     }
     
