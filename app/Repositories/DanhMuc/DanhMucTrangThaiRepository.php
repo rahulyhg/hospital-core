@@ -47,10 +47,10 @@ class DanhMucTrangThaiRepository extends BaseRepository
     }
     
     public function getListDanhMucTrangThaiByKhoa($khoa) {
-        $dataset = DB::table('danh_muc_trang_thai')
+        $data = DB::table('danh_muc_trang_thai')
                 ->where('khoa',$khoa)
                 ->get();
-        return $dataset;    
+        return [ 'data' => $data ];
         
     }
 }
