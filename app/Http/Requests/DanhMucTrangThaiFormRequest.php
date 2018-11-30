@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class DanhMucDichVuFormRequest extends ApiFormRequest
+class DanhMucTrangThaiFormRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
