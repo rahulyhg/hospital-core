@@ -53,7 +53,7 @@ class DanhMucTrangThaiRepository extends BaseRepository
                 ->get();
         $array = json_decode($data, true);
       
-        return collect($array)->first();  
+        return collect($array);  
         
     }
 }
