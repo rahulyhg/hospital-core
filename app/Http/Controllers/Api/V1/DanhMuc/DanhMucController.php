@@ -173,4 +173,47 @@ class DanhMucController extends APIController
         }
         return $this->respond($data);
     }
+    
+    public function createDanhMucTrangThai(DanhMucTrangThaiFormRequest $request) {
+        $input = $request->all();
+        
+        $id = $this->dmttService->createDanhMucTrangThai($input);
+        if($id) {
+            $this->setStatusCode(201);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
+    }
+    
+    public function updateDanhMucTrangThai($dmttId, DanhMucTrangThaiFormRequest $request)
+    {
+        try {
+            $isNumericId = is_numeric($dmttId);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $this->dmttService->updateDanhMucTrangThai($dmttId, $input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    
+    public function deleteDanhMucTrangThai($dmttId)
+    {
+        $isNumericId = is_numeric($dmttId);
+        
+        if($isNumericId) {
+            $this->dmttService->deleteDanhMucTrangThai($dmttId);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);        
+    }
 }

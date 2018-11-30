@@ -61,4 +61,21 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         
         
     }
+    
+    public function createDanhMucTrangThai(array $input)
+    {
+        $id = $this->model->create($input)->id;
+        return $id;
+    }
+    
+    public function updateDanhMucTrangThai($dmttId, array $input)
+    {
+        $dmtt = $this->model->findOrFail($dmttId);
+		$dmtt->update($input);
+    }
+    
+    public function deleteDanhMucTrangThai($dmttId)
+    {
+        $this->model->destroy($dmttId);
+    }
 }
