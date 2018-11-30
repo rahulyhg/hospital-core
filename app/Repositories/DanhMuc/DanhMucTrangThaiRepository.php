@@ -1,7 +1,7 @@
 <?php
 namespace App\Repositories\DanhMuc;
 use DB;
-use App\Repositories\BaseRepository;
+use App\Repositories\BaseRepositoryV2;
 use App\Models\DanhMucTrangThai;
 
 
