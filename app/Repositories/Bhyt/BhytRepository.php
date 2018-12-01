@@ -29,7 +29,7 @@ class BhytRepository extends BaseRepositoryV2
     
     public function createDataBhyt(array $input)
     {
-        $id = Bhyt::create($input)->id;
+        $id = $this->model->create($input)->id;
         return $id;
     }
     
@@ -46,7 +46,22 @@ class BhytRepository extends BaseRepositoryV2
     
     public function updateBhyt($hsbaId, $request)
     {
-        $bhyt = Bhyt::where('hsba_id', '=', $hsbaId);
+        $bhyt = $this->model->where('hsba_id', '=', $hsbaId);
 		$bhyt->update($request->all());
     }
+    
+    public function getMaBhytTreEm($maTinh)
+    {
+        $result = Bhyt::where('ms_bhyt', 'LIKE', 'TE1'.'%')
+                        ->orderBy('ms_bhyt','desc')
+                        ->first();
+        if($result){
+            $result = substr($result->ms_bhyt,7,8);
+            $code = $result+1;
+            $bhytCode = 'TE-1'.'-'.$maTinh.'-'.'KT'.'-'.sprintf('%08d',$code);
+        }
+        else
+            $bhytCode = 'TE-1'.'-'.$maTinh.'-'.'KT'.'-'.'00000001';
+		return $bhytCode;
+    }    
 }

@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Http\Resources\BenhVienResource;
-use App\Repositories\AuthUsersRepository;
-use App\Repositories\AuthUsersGroupsRepository;
-use App\Repositories\AuthGroupsHasRolesRepository;
+use App\Repositories\Auth\AuthUsersRepository;
+use App\Repositories\Auth\AuthUsersGroupsRepository;
+use App\Repositories\Auth\AuthGroupsHasRolesRepository;
 use App\Http\Resources\AuthResource;
 use Illuminate\Http\Request;
 use Validator;

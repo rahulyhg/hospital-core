@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories;
+namespace App\Repositories\DanhMuc;
 use DB;
 use App\Repositories\BaseRepository;
 

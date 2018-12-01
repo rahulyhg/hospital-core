@@ -20,6 +20,7 @@ class HsbaRepository extends BaseRepositoryV2
     {
         $column = [
             'hsba.id as hsba_id',
+            'hsba.benh_nhan_id',
             'hsba.ten_benh_nhan as ho_va_ten',
             'hsba.ten_benh_nhan',
             'hsba.gioi_tinh_id as gioi_tinh',

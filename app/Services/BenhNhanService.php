@@ -47,7 +47,7 @@ class BenhNhanService{
         //kiểm tra thông tin scan
         $scan = $request->only('scan');
         //return $idBenhNhan;
-        //$array = $request->all();
+        $arrayRequest = $request->all();
         $dataNgheNghiep = $this -> danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('nghe_nghiep', $request['nghe_nghiep_id']);
         $dataDanToc =  $this -> danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('dan_toc', $request['dan_toc_id']);
         $dataQuocTich =  $this -> danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('quoc_tich', $request['quoc_tich_id']);
@@ -62,16 +62,40 @@ class BenhNhanService{
             $dataHuyen = $this->danhMucTongHopRepository->getDataHuyen($dataTinh['ma_tinh'], mb_convert_case($dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
             $dataXa = $this->danhMucTongHopRepository->getDataXa($request['tinh_thanh_pho_id'], $request['quan_huyen_id'], $request['phuong_xa_id']);
         }
+        
+        $array = ['loai_nguoi_than', 'ten_nguoi_than', 'dien_thoai_nguoi_than'];
+        $arrayLoaiNguoiThan =  $arrayRequest['loai_nguoi_than'];//[ 'Cha', 'Me','EM', 'Vo' ];
+        $arrayTenNguoiThan = $arrayRequest['ten_nguoi_than'];
+        $arrayDTNguoiThan = $arrayRequest['dien_thoai_nguoi_than'];
+        $dataNguoiThan = [];
+        $count = 1;
+
+        foreach($array as $key=>$item) {
+            if($count == 1) {
+                foreach($arrayLoaiNguoiThan as $key1=>$item1) {
+                    $dataNguoiThan[$key1][$item] =  $item1;
+                }
+            }
+            if($count == 2) {
+                foreach($arrayTenNguoiThan as $key2=>$item2) {
+                    $dataNguoiThan[$key2][$item] =  $item2;
+                }
+            }
+            if($count == 3) {
+                foreach($arrayDTNguoiThan as $key3=>$item3) {
+                    $dataNguoiThan[$key3][$item] =  $item3;
+                }
+            }
+            $count++;
+        }
         //set params benh_nhan 
         $benhNhanParams = $request->only('benh_nhan_id' , 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
                                         , 'so_nha', 'duong_thon', 'noi_lam_viec'
-                                        , 'loai_nguoi_than', 'ten_nguoi_than', 'dien_thoai_nguoi_than'
                                         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
                                         );
         $hsbaParams = $request->only( 'auth_users_id', 'khoa_id'
                                                 , 'ngay_sinh', 'gioi_tinh_id'
                                                 , 'so_nha', 'duong_thon', 'noi_lam_viec'
-                                                , 'loai_nguoi_than', 'ten_nguoi_than', 'dien_thoai_nguoi_than'
                                                 , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
                                                 , 'ms_bhyt', 'benh_vien_id'
                                         );
@@ -83,7 +107,7 @@ class BenhNhanService{
         $bhytParams['image_url'] = $request->only('image_url_bhyt')['image_url_bhyt'];     
         $dieuTriParams = $request ->only ('cd_icd10_code', 'cd_icd10_text');        
         $sttPhongKhamParams =  $request ->only ('loai_stt', 'ma_nhom', 'stt_don_tiep_id');
-        $result = DB::transaction(function () use ($thxData, $scan, $benhNhanParams, $hsbaParams,$hsbaKpParams, $dataNgheNghiep, $dataDanToc, $dataQuocTich, $dataTinh, $dataHuyen, $dataXa, $bhytParams, $sttPhongKhamParams ) {
+        $result = DB::transaction(function () use ($thxData, $scan, $benhNhanParams, $hsbaParams,$hsbaKpParams, $dataNgheNghiep, $dataDanToc, $dataQuocTich, $dataTinh, $dataHuyen, $dataXa, $bhytParams, $sttPhongKhamParams, $dataNguoiThan ) {
             try {
                 // if(strlen($scan['scan']) == 12)//thẻ bn
                 //     $idBenhNhan = $this->BenhNhanRepository->checkMaSoBenhNhan(trim($scan['scan']));
@@ -105,6 +129,7 @@ class BenhNhanService{
                 $benhNhanParams['quan_huyen_id'] = $dataHuyen['ma_huyen'];
                 $benhNhanParams['phuong_xa_id'] = $dataXa['ma_xa'];
                 $benhNhanParams['nam_sinh'] =  str_limit($benhNhanParams['ngay_sinh'], 4,'');
+                $benhNhanParams['nguoi_than'] = json_encode($dataNguoiThan);
                 if($idBenhNhan == null)//insert tbl benh_nhan
                      $idBenhNhan = $this->benhNhanRepository->createDataBenhNhan($benhNhanParams);
                 else 
@@ -128,6 +153,7 @@ class BenhNhanService{
                 $hsbaParams['quan_huyen_id'] = $dataHuyen['ma_huyen'];
                 $hsbaParams['phuong_xa_id'] = $dataXa['ma_xa'];
                 $hsbaParams['nam_sinh'] =  str_limit($benhNhanParams['ngay_sinh'], 4,'');
+                $hsbaParams['nguoi_than'] = json_encode($dataNguoiThan);
                  //insert hsba
                 $idHsba = $this->hsbaRepository->createDataHsba($hsbaParams);
                 //set params hsba_khoa_phong

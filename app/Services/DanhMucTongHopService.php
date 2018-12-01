@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Department;
 use App\Http\Resources\DanhMucTongHopResource;
 use App\Http\Resources\HanhChinhResource;
-use App\Repositories\DanhMucTongHopRepository;
+use App\Repositories\DanhMuc\DanhMucTongHopRepository;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -55,5 +55,27 @@ class DanhMucTongHopService {
         return HanhChinhResource::collection(
            $this->danhMucTongHopRepository->getListXa($maHuyen,$maTinh)
         );
+    }
+    
+    public function getDanhMucTongHopTheoKhoa($khoa, $limit, $page) {
+        return DanhMucTongHopResource::collection(
+           $this->danhMucTongHopRepository->getDanhMucTongHopTheoKhoa($khoa, $limit, $page)
+        );
+    }
+    
+    public function createDanhMucTongHop(array $input)
+    {
+        $id = $this->danhMucTongHopRepository->createDanhMucTongHop($input);
+        return $id;
+    }
+    
+    public function updateDanhMucTongHop($dmthId, array $input)
+    {
+        $this->danhMucTongHopRepository->updateDanhMucTongHop($dmthId, $input);
+    }
+    
+    public function deleteDanhMucTongHop($dmthId)
+    {
+        $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
     }
 }
