@@ -60,7 +60,14 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
             
-            $data = DanhMucTrangThai::limit($limit)->offset($offset)->orderBy('khoa','asc')->orderBy('LENGTH(gia_tri)','asc')->orderBy('gia_tri','asc')->get();
+            $data = DanhMucTrangThai::limit($limit)->offset($offset)->orderBy('khoa','asc')->orderBy('gia_tri','asc')->get();
+            /*
+            $data = DB::table('danh_muc_trang_thai')->limit($limit)
+                    ->offset($offset)
+                    ->orderBy('khoa','asc')
+                    ->orderBy('LENGTH(gia_tri)','asc')
+                    ->orderBy('gia_tri','asc')
+                    ->get();*/
         } else {
             $totalPage = 0;
             $data = [];
