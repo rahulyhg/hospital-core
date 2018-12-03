@@ -60,6 +60,12 @@ class DanhMucTrangThaiService {
         
     }
     
+    public function getDanhMucTrangThaiById($id)
+    {
+        return $this->danhMucTrangThaiRepository->getDanhMucTrangThaiById($khoa);
+        
+    }
+    
     public function createDanhMucTrangThai(array $input)
     {
         $id = $this->danhMucTrangThaiRepository->createDanhMucTrangThai($input);

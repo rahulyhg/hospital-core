@@ -174,6 +174,20 @@ class DanhMucController extends APIController
         return $this->respond($data);
     }
     
+    public function getDmttById($dmdvId)
+    {
+        $isNumericId = is_numeric($dmdvId);
+        
+        if($isNumericId) {
+            $data = $this->dmttService->getDanhMucTrangThaiById($dmdvId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
     public function createDanhMucTrangThai(DanhMucTrangThaiFormRequest $request) {
         $input = $request->all();
         
