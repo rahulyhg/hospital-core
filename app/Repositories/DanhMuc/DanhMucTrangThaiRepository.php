@@ -74,7 +74,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
             'totalPage'     => $totalPage,
             'totalRecord'   => $totalRecord
         ];
-        echo("<script>console.log('PHP: ".$result."');</script>");
+        echo("<script>console.log('PHP: ".$result['page']."');</script>");
         return $data;
     }
     
