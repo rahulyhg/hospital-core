@@ -52,7 +52,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         return $dataSet;    
     }
     
-    public function getListDanhMucDichVu($limit = 100, $page = 1)
+    public function getListDanhMucTrangThai($limit = 100, $page = 1)
     {
         $offset = ($page - 1) * $limit;
         
