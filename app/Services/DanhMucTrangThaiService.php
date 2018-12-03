@@ -62,7 +62,7 @@ class DanhMucTrangThaiService {
     
     public function getDanhMucTrangThaiById($id)
     {
-        return $this->danhMucTrangThaiRepository->getDanhMucTrangThaiById($khoa);
+        return $this->danhMucTrangThaiRepository->getDanhMucTrangThaiById($id);
         
     }
     
