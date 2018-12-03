@@ -54,9 +54,7 @@ class DanhMucTrangThaiService {
     
     public function getListDanhMucTrangThai($limit, $page)
     {
-        return DanhMucTrangThaiResource::collection(
-            $this->danhMucTrangThaiRepository->getListDanhMucTrangThai($limit, $page)
-        );
+        return $this->danhMucTrangThaiRepository->getListDanhMucTrangThai($limit, $page);
         
     }
     
