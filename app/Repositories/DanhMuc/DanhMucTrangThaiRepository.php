@@ -56,15 +56,13 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     {
         $offset = ($page - 1) * $limit;
         
-        $query = $this->model;
+        $query = DanhMucTrangThai::all();
             
-        $totalRecord = $query->count();
+        $totalRecord = DanhMucTrangThai::count();
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
             
-            $data = $query->offset($offset)
-                        ->limit($limit)
-                        ->get();
+            $data = DanhMucTrangThai::limit($limit)->offset($offset)->get();
         } else {
             $totalPage = 0;
             $data = [];
