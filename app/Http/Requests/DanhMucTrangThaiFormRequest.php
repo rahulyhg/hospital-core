@@ -27,7 +27,7 @@ class DanhMucTrangThaiFormRequest extends ApiFormRequest
                 $table = array_shift( $parameters ); 
 
                 // start building the conditions
-                $fields = [ $attribute => $value ]; // current field, company_code in your case
+                $fields = [ $attribute => $value ];
 
                 // iterates over the other parameters and build the conditions for all the required fields
                 while ( $field = array_shift( $parameters ) ) {
@@ -38,7 +38,7 @@ class DanhMucTrangThaiFormRequest extends ApiFormRequest
                 $result = \DB::table( $table )->select( \DB::raw( 1 ) )->where( $fields )->first();
 
                 return empty( $result ); // edited here
-            }, 'your custom composite unique key validation message' );
+            }, 'Composite unique key validation message' );
             
         return [
             'khoa'      => 'required|string|composite_unique:danh_muc_trang_thai,gia_tri',
