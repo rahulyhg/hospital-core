@@ -52,6 +52,36 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         return $dataSet;    
     }
     
+    public function getListDanhMucDichVu($limit = 100, $page = 1)
+    {
+        $offset = ($page - 1) * $limit;
+        
+        $query = $this->model;
+            
+        $totalRecord = $query->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->offset($offset)
+                        ->limit($limit)
+                        ->get();
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+            
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
+    }
+    
     public function getListDanhMucTrangThaiByKhoa($khoa) {
         //$dataSet = $this->model->where('khoa',$khoa)->get();
         $dataSet = DB::table('danh_muc_trang_thai')

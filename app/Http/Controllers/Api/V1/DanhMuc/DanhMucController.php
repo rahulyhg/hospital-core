@@ -160,6 +160,23 @@ class DanhMucController extends APIController
         return $this->respond([]);        
     }
     
+    public function getListDanhMucTrangThai(Request $request) {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        
+        if($khoa === null){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+        $data = $this->dmttService->getListDanhMucTrangThai($limit, $page);
+        
+        if(empty($data)) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        return $this->respond($data);
+    }
+    
     public function getListDanhMucTrangThaiByKhoa($khoa) {
         if($khoa === null){
             $this->setStatusCode(400);
