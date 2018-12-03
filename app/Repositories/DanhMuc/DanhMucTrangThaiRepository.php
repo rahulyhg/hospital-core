@@ -75,7 +75,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
             'totalRecord'   => $totalRecord
         ];
         
-        return $data;
+        return $result;
     }
     
     public function getListDanhMucTrangThaiByKhoa($khoa) {
