@@ -98,7 +98,7 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
             'totalRecord'   => $totalRecord
         ];
         
-        return $result['page'];
+        return $totalPage;
     }
     
     public function createDanhMucDichVu(array $input)
