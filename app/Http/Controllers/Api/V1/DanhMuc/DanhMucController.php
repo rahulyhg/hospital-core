@@ -104,10 +104,6 @@ class DanhMucController extends APIController
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         
-        if($khoa === null){
-            $this->setStatusCode(400);
-            return $this->respond([]);
-        }
         $data = $this->dmthService->getDanhMucTongHopTheoKhoa($khoa, $limit, $page);
         
         if(empty($data)) {
