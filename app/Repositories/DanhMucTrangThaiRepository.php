@@ -86,11 +86,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         
     }
     
-    public function getDanhMucTrangThaiById($id) {
-        $data = $this->model->where('id',$id)->first();
-        return $data;    
-        
-    }
+    
     
     
    
