@@ -55,8 +55,6 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     public function getListDanhMucTrangThai($limit = 100, $page = 1)
     {
         $offset = ($page - 1) * $limit;
-        
-        $query = DanhMucTrangThai::all();
             
         $totalRecord = DanhMucTrangThai::count();
         if($totalRecord) {
@@ -77,7 +75,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
             'totalRecord'   => $totalRecord
         ];
         
-        return $result;
+        return $data;
     }
     
     public function getListDanhMucTrangThaiByKhoa($khoa) {
