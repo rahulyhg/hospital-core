@@ -6,10 +6,10 @@ class NhomNguoiThan
 {
     private $data = [];
     
-    const REQUIRED_SIZE = 3;
+    const REQUIRED_SIZE = 1;
     
     public function __construct(array $nhomLoaiNguoiThan, array $nhomTenNguoiThan, array $nhomDTNguoiThan) {
-        if (count($nhomLoaiNguoiThan)!=self::REQUIRED_SIZE || count($nhomTenNguoiThan)!=self::REQUIRED_SIZE || count($nhomDTNguoiThan)!=self::REQUIRED_SIZE) {
+        if (count($nhomLoaiNguoiThan)<self::REQUIRED_SIZE || count($nhomTenNguoiThan)<self::REQUIRED_SIZE || count($nhomDTNguoiThan)<self::REQUIRED_SIZE) {
             
             // var_dump($nhomLoaiNguoiThan);
             // echo "<hr/>";
