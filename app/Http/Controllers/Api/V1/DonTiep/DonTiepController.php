@@ -7,7 +7,7 @@ use App\Http\Requests\UpdateHsbaFormRequest;
 use App\Services\SttDonTiepService;
 use App\Services\HsbaKhoaPhongService;
 use App\Services\HsbaService;
-use App\Services\BenhNhanService;
+use App\Services\BenhNhanServiceV2;
 use App\Services\BhytService;
 use App\Services\PhongService;
 use App\Http\Controllers\Api\V1\APIController;
@@ -20,7 +20,7 @@ class DonTiepController extends APIController
         SttDonTiepService $sttDonTiepService, 
         HsbaKhoaPhongService $hsbaKhoaPhongService, 
         HsbaService $hsbaService, 
-        BenhNhanService $benhNhanService, 
+        BenhNhanServiceV2 $benhNhanService, 
         BhytService $bhytService,
         PhongService $phongService
     )
