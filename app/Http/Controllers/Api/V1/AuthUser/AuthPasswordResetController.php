@@ -1,53 +1,31 @@
 <?php
 namespace App\Http\Controllers\Api\V1\AuthUser;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\V1\APIController;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use App\Notifications\PasswordResetRequest;
-use App\Notifications\PasswordResetSuccess;
-use App\AuthUser;   
-use App\Models\Auth\AuthPasswordReset;
+use App\Services\AuthUsersService;
 
-class AuthPasswordResetController extends Controller {
+class AuthPasswordResetController extends APIController {
     /**
      * Create token password reset
      *
      * @param  [string] email
      * @return [string] message
     */
-     
-    public function create(Request $request)
+    
+    public function __construct(AuthUsersService $authUsersService)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-        ]);
-        
-        $user = AuthUser::where('email', $request->email)->first();
-        
-        if (!$user) {
-            return response()->json([
-                'message' => "We can't find a user with that e-mail address."
-            ], 404);    
+        $this->authUsersService = $authUsersService;      
+    }
+     
+    public function create(Request $request) {
+        $responseData = $this->authUsersService->createToken($request);
+        if($responseData['status'] == 'error') {
+            $this->setStatusCode($responseData['statusCode']);
+            $data['message'] = $responseData['message'];
+            return $this->respond($data);
         }
-        
-        $passwordReset = AuthPasswordReset::updateOrCreate(
-            ['email' => $user->email],
-            [
-                'email' => $user->email,
-                'token' => str_random(60)
-             ]
-        );
-        
-        if ($user && $passwordReset) {
-            $user->notify(
-                new PasswordResetRequest($passwordReset->token)
-            );
-        }
-            
-        return response()->json([
-            'message' => 'We have e-mailed your password reset link!'
-        ]);
+        return $this->respond($responseData); 
     }
     
     /**
@@ -59,20 +37,13 @@ class AuthPasswordResetController extends Controller {
     */
     
     public function find($token) {
-        $passwordReset = AuthPasswordReset::where('token', $token)->first();
-        if (!$passwordReset) {
-            return response()->json([
-                'message' => 'This password reset token is invalid.'
-            ], 404);      
+        $responseData = $this->authUsersService->find($token);
+        if($responseData['status'] == 'error') {
+            $this->setStatusCode($responseData['statusCode']);
+            $data['message'] = $responseData['message'];
+            return $this->respond($data);
         }
-        
-        if (Carbon::parse($passwordReset->updated_at)->addMinutes(720)->isPast()) {
-            $passwordReset->delete();
-            return response()->json([
-                'message' => 'This password reset token is invalid.'
-            ], 404);   
-        }
-        return response()->json($passwordReset);
+        return $this->respond($responseData); 
     }
     
     /**
@@ -85,38 +56,14 @@ class AuthPasswordResetController extends Controller {
      * @return [string] message
      * @return [json] user object
     */
-    
+
     public function reset(Request $request) {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string|confirmed',
-            'token' => 'required|string'
-        ]);
-        
-        $passwordReset = AuthPasswordReset::where([
-            ['token', $request->token],
-            ['email', $request->email]
-        ])->first();
-        
-        if (!$passwordReset) {
-            return response()->json([
-                'message' => 'This password reset token is invalid.'
-            ], 404);    
+        $responseData = $this->authUsersService->resetPassword($request);
+        if($responseData['status'] == 'error') {
+            $this->setStatusCode($responseData['statusCode']);
+            $data['message'] = $responseData['message'];
+            return $this->respond($data);
         }
-        
-        $user = AuthUser::where('email', $passwordReset->email)->first();
-        
-        if (!$user) {
-            return response()->json([
-                'message' => "We can't find a user with that e-mail address."
-            ], 404);
-        }
-        
-        $user->password = bcrypt($request->password);
-        $user->save();
-        
-        $passwordReset->delete();
-        $user->notify(new PasswordResetSuccess($passwordReset));
-        return response()->json($user);
+        return $this->respond($responseData); 
     }
 }
