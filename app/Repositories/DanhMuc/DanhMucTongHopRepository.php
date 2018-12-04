@@ -1,11 +1,14 @@
 <?php
-namespace App\Repositories;
+namespace App\Repositories\DanhMuc;
 use DB;
-use App\Repositories\BaseRepository;
-
-class DanhMucTongHopRepository extends BaseRepository
+use App\Repositories\BaseRepositoryV2;
+use App\Models\DanhMucTongHop;
+class DanhMucTongHopRepository extends BaseRepositoryV2
 {
-
+    public function getModel()
+    {
+        return DanhMucTongHop::class;
+    }
     public function getListNgheNghiep()
     {
         $ngheNghiep = DB::table('danh_muc_tong_hop')
@@ -104,5 +107,34 @@ class DanhMucTongHopRepository extends BaseRepository
     public function getIdTinhByTen($tenTinh)
     {
         
+    }
+    
+    public function getDanhMucTongHopTheoKhoa($khoa, $limit = 100, $page = 1) {
+        $offset = ($page - 1) * $limit;
+        
+        $data = $this->model
+                ->where('khoa', $khoa)
+                ->orderBy('id', 'desc')
+                ->offset($offset)
+                ->limit($limit)
+                ->get();
+        return $data;
+    }
+    
+    public function createDanhMucTongHop(array $input)
+    {
+        $id = $this->model->create($input)->id;
+        return $id;
+    }
+    
+    public function updateDanhMucTongHop($dmthId, array $input)
+    {
+        $dmth = $this->model->findOrFail($dmthId);
+		$dmth->update($input);
+    }
+    
+    public function deleteDanhMucTongHop($dmthId)
+    {
+        $this->model->destroy($dmthId);
     }
 }
