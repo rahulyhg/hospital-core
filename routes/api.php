@@ -88,6 +88,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getListPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListPhongKham');
 		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan');
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
+		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
+		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {

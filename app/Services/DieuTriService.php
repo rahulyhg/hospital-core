@@ -263,4 +263,10 @@ class DieuTriService
         });
         return $result;    
     }
+    
+    public function getPhieuDieuTri(array $input)
+    {
+        $result = $this->dieuTriRepository->getPhieuDieuTri($input);
+        return $result;
+    }
 }

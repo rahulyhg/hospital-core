@@ -214,6 +214,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'bhyt.du5nam6thangluongcoban',
             'bhyt.dtcbh_luyke6thang',
             'tt2.diengiai as doi_tuong_benh_nhan',
+            'hsba_khoa_phong.doi_tuong_benh_nhan as doi_tuong_benh_nhan_id',
             'hsba_khoa_phong.trang_thai',
             'hsba_khoa_phong.khoa_hien_tai',
             'hsba_khoa_phong.id as hsba_khoa_phong_id',
@@ -262,6 +263,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'bhyt.tuyen_bhyt',
             'sttpk.loai_stt',
             'sttpk.stt_don_tiep_id',
+            'dieu_tri.id as phieu_dieu_tri_id'
         ];
         
         $query = DB::table('hsba')
@@ -282,6 +284,12 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
                         ->where('sttpk.hsba_id', '=', $hsbaId)
                         ->orderBy('sttpk.id', 'desc');
+                })
+                ->leftJoin('dieu_tri', function($join) use ($hsbaId) {
+                    $join->on('dieu_tri.hsba_khoa_phong_id', '=', 'hsba_khoa_phong.id')
+                        ->on('dieu_tri.khoa_id', '=', 'hsba_khoa_phong.khoa_hien_tai')
+                        ->on('dieu_tri.phong_id', '=', 'hsba_khoa_phong.phong_hien_tai')
+                        ->where('dieu_tri.hsba_id', '=', $hsbaId);
                 });
             
         $data = $query->where($where)->get($column);
