@@ -9,12 +9,11 @@ class KhuVucRepository extends BaseRepository
     
     public function getListKhuVuc($loai,$benhVienId)
     {
-        $dataSet = DB::table('khu_vuc')
-                ->where([
-                    'loai'=>$loai,
-                    'benh_vien_id'=>$benhVienId,
-                    ])
-                ->get();
+        $dataSet = $this->model->where([
+                                    'loai'=>$loai,
+                                    'benh_vien_id'=>$benhVienId,
+                                    ])
+                                ->get();
         return $dataSet;    
         
     }
