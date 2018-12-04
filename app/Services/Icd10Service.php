@@ -19,4 +19,10 @@ class Icd10Service {
         $data = $this->icd10Repository->getIcd10ByCode($icd10Code);
         return $data;
     }
+    
+    public function getListIcd10ByCode($icd10Code)
+    {
+        $data = $this->icd10Repository->getListIcd10ByCode($icd10Code);
+        return $data;
+    }    
 }

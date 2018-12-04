@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Department;
 use App\Http\Resources\DanhMucTrangThaiResource;
 use App\Http\Resources\HanhChinhResource;
-use App\Repositories\DanhMucTrangThaiRepository;
+use App\Repositories\DanhMuc\DanhMucTrangThaiRepository;
 use Illuminate\Http\Request;
 use Validator;
 
