@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories;
+namespace App\Repositories\Auth;
 use DB;
 use App\Repositories\BaseRepository;
 use App\Models\Auth\AuthUsers;

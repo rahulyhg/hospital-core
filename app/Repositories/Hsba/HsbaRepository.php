@@ -20,6 +20,7 @@ class HsbaRepository extends BaseRepositoryV2
     {
         $column = [
             'hsba.id as hsba_id',
+            'hsba.benh_nhan_id',
             'hsba.ten_benh_nhan as ho_va_ten',
             'hsba.ten_benh_nhan',
             'hsba.gioi_tinh_id as gioi_tinh',
@@ -41,9 +42,10 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.email_benh_nhan',
             'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
-            'hsba.loai_nguoi_than',
-            'hsba.ten_nguoi_than',
-            'hsba.dien_thoai_nguoi_than',
+            // 'hsba.loai_nguoi_than',
+            // 'hsba.ten_nguoi_than',
+            // 'hsba.dien_thoai_nguoi_than',
+            'hsba.nguoi_than',
             'hsba.loai_benh_an',
             'hsba.trang_thai_hsba',
             'hsba.is_dang_ky_truoc',
