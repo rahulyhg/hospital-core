@@ -100,6 +100,29 @@ class DanhMucController extends APIController
         return $this->respond($data);
     }
     
+    public function getListDanhMucTongHop(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        
+        $data = $this->dmthService->getListDanhMucTongHop($limit, $page);
+        return $this->respond($data);
+    }
+    
+    public function getDmthById($dmthId)
+    {
+        $isNumericId = is_numeric($dmthId);
+        
+        if($isNumericId) {
+            $data = $this->dmthService->getDmthById($dmthId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
     public function getDanhMucTongHopTheoKhoa(Request $request, $khoa) {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);

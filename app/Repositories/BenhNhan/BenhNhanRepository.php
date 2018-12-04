@@ -15,7 +15,7 @@ class BenhNhanRepository extends BaseRepositoryV2
     
     public function createDataBenhNhan(array $input)
     {
-         $id = BenhNhan::create($input)->id;
+         $id = $this->model->create($input)->id;
          return $id;
     }
     
