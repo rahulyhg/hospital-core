@@ -54,7 +54,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'tt2.diengiai as ten_trang_thai',
         ];
         
-        $query = DB::table('hsba_khoa_phong')
+        $query = $this->model
             ->leftJoin('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
             ->leftJoin('red_trangthai as tt1', function($join) {
                 $join->on('tt1.giatri', '=', 'hsba_khoa_phong.trang_thai_cls')
@@ -145,13 +145,13 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     
     public function createData(array $input)
     {
-         $id = HsbaKhoaPhong::create($input)->id;
+         $id = $this->model->create($input)->id;
          return $id;
     }
     
     public function update($hsbaKhoaPhongId,array $params)
     {
-        $hsbaKhoaPhong = HsbaKhoaPhong::findOrFail($hsbaKhoaPhongId);
+        $hsbaKhoaPhong = $this->model->findOrFail($hsbaKhoaPhongId);
 		$hsbaKhoaPhong->update($params);
     }
     
@@ -266,8 +266,8 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'dieu_tri.id as phieu_dieu_tri_id'
         ];
         
-        $query = DB::table('hsba')
-                ->leftJoin('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
+        $query = $this->model
+                ->rightJoin('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'hsba_khoa_phong.loai_benh_an')
                         ->where('tt1.tablename', '=', 'loaibenhanid');
@@ -310,10 +310,9 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'hsba_khoa_phong.thoi_gian_ra_vien',
             'hsba_khoa_phong.cdrv_icd10_text'
         ];
-        $result = DB::table('hsba_khoa_phong')
-                    ->leftJoin('phong','phong.id','=','hsba_khoa_phong.phong_hien_tai')
-                    ->where($where)
-                    ->get($column);
+        $result = $this->model->leftJoin('phong','phong.id','=','hsba_khoa_phong.phong_hien_tai')
+                            ->where($where)
+                            ->get($column);
         return $result;
     }    
 }

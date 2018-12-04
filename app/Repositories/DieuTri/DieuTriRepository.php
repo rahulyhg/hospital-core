@@ -15,7 +15,7 @@ class DieuTriRepository extends BaseRepositoryV2
     
     public function createDataDieuTri(array $input)
     {
-        $id = DieuTri::create($input)->id;
+        $id = $this->model->create($input)->id;
         return $id;
     }
     
@@ -32,7 +32,7 @@ class DieuTriRepository extends BaseRepositoryV2
     
     public function updateDieuTri($dieu_tri_id, $input)
     {
-        $dieuTri = DieuTri::findOrFail($dieu_tri_id);
+        $dieuTri = $this->model->findOrFail($dieu_tri_id);
 		$dieuTri->update($input);
     }
     
