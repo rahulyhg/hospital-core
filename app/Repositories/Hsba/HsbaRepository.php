@@ -195,7 +195,9 @@ class HsbaRepository extends BaseRepositoryV2
   
     public function createDataHsba(array $input)
     {
-        $id = Hsba::create($input)->id;
+        $hsbaKpObj = Hsba::create($input);
+        //var_dump($hsbaKpObj);
+        $id = $hsbaKpObj->id;
         return $id;
     }
     
