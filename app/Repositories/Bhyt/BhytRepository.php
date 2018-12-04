@@ -56,12 +56,11 @@ class BhytRepository extends BaseRepositoryV2
                         ->orderBy('ms_bhyt','desc')
                         ->first();
         if($result){
-            $result = substr($result->ms_bhyt,7,8);
-            $code = $result+1;
-            $bhytCode = 'TE-1'.'-'.$maTinh.'-'.'KT'.'-'.sprintf('%08d',$code);
+            $result = substr($result->ms_bhyt,7,8)+1;
+            $bhytCode = 'TE1'.sprintf('%02d',$maTinh).'KT'.sprintf('%08d',$result);
         }
         else
-            $bhytCode = 'TE-1'.'-'.$maTinh.'-'.'KT'.'-'.'00000001';
+            $bhytCode = 'TE1'.sprintf('%02d',$maTinh).'KT'.'00000001';
 		return $bhytCode;
     }    
 }

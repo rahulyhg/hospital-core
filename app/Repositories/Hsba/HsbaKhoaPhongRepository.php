@@ -299,6 +299,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $column=[
             'phong.ten_phong',
             'hsba_khoa_phong.thoi_gian_vao_vien',
+            'hsba_khoa_phong.thoi_gian_ra_vien',
             'hsba_khoa_phong.cdrv_icd10_text'
         ];
         $result = DB::table('hsba_khoa_phong')
