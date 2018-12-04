@@ -26,6 +26,12 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register', 'AuthController@register');
         Route::post('login', 'AuthController@login');
+        
+        Route::group(['prefix' => 'password'], function () {
+            Route::post('create', 'AuthUser\AuthPasswordResetController@create');
+            Route::get('find/{token}', 'AuthUser\AuthPasswordResetController@find');
+            Route::post('reset', 'AuthUser\AuthPasswordResetController@reset');
+        });
     });
     
     Route::get('patient', 'SamplePatientController@index');
