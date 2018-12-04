@@ -38,7 +38,7 @@ class DanhMucTrangThaiFormRequest extends ApiFormRequest
                 $result = \DB::table( $table )->select( \DB::raw( 1 ) )->where( $fields )->first();
 
                 return empty( $result ); // edited here
-            }, 'Composite unique key validation message' );
+            }, 'Cặp trường khóa và giá trị vừa nhập đã có trong Cơ sở dữ liệu, vui lòng thay đổi 1 trong 2 trường!' );
             
         return [
             'khoa'      => 'required|string|composite_unique:danh_muc_trang_thai,gia_tri',

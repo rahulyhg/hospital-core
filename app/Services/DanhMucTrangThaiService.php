@@ -81,7 +81,8 @@ class DanhMucTrangThaiService {
     
     public function updateDanhMucTrangThai($dmttId, array $input)
     {
-        $this->danhMucTrangThaiRepository->updateDanhMucTrangThai($dmttId, $input);
+        $result = $this->danhMucTrangThaiRepository->updateDanhMucTrangThai($dmttId, $input);
+        return $result;
     }
     
     public function deleteDanhMucTrangThai($dmttId)

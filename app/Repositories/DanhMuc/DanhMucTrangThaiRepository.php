@@ -11,63 +11,20 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     {
         return DanhMucTrangThai::class;
     }
-
-    public function getListLoaiVienPhi()
-    {
-        $dataSet = DB::table('danh_muc_trang_thai')
-                ->where('khoa','loai_vien_phi')
-                ->get();
-        return $dataSet;    
-    }
-    
-    public function getListDoiTuongBenhNhan()
-    {
-        $dataSet = DB::table('danh_muc_trang_thai')
-                ->where('khoa','doi_tuong_benh_nhan')
-                ->get();
-        return $dataSet;    
-    }
-    
-    public function getListKetQuaDieuTri()
-    {
-        $dataSet = DB::table('danh_muc_trang_thai')
-                ->where('khoa','ket_qua_dieu_tri')
-                ->get();
-        return $dataSet;    
-    }
-    
-    public function getListGiaiPhauBenh()
-    {
-        $dataSet = DB::table('danh_muc_trang_thai')
-                ->where('khoa','giai_phau_benh')
-                ->get();
-        return $dataSet;    
-    }
-    
-    public function getListXuTri()
-    {
-        $dataSet = DB::table('danh_muc_trang_thai')
-                ->where('khoa','xu_tri')
-                ->get();
-        return $dataSet;    
-    }
     
     public function getListDanhMucTrangThai($limit = 100, $page = 1)
     {
         $offset = ($page - 1) * $limit;
             
-        $totalRecord = DanhMucTrangThai::count();
+        $totalRecord = $this->model->count();
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
             
-            $data = DanhMucTrangThai::limit($limit)->offset($offset)->orderBy('khoa','asc')->orderBy('gia_tri','asc')->get();
-            /*
-            $data = DB::table('danh_muc_trang_thai')->limit($limit)
+            $data = $this->model->limit($limit)
                     ->offset($offset)
                     ->orderBy('khoa','asc')
-                    ->orderBy('LENGTH(gia_tri)','asc')
-                    ->orderBy('gia_tri','asc')
-                    ->get();*/
+                    ->orderBy(DB::raw('LENGTH(gia_tri), gia_tri'))
+                    ->get();
         } else {
             $totalPage = 0;
             $data = [];
@@ -86,12 +43,8 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     }
     
     public function getListDanhMucTrangThaiByKhoa($khoa) {
-        //$dataSet = $this->model->where('khoa',$khoa)->get();
-        $dataSet = DB::table('danh_muc_trang_thai')
-                ->where('khoa',$khoa)
-                ->get();
+        $dataSet = $this->model->where('khoa',$khoa)->get();
         return $dataSet;
-        
         
     }
     
@@ -104,7 +57,8 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     public function updateDanhMucTrangThai($dmttId, array $input)
     {
         $dmtt = $this->model->findOrFail($dmttId);
-		$dmtt->update($input);
+		$result = $dmtt->update($input);
+		return $result;
     }
     
     public function deleteDanhMucTrangThai($dmttId)
