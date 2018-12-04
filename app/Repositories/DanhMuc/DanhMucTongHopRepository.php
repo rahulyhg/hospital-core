@@ -109,16 +109,68 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
         
     }
     
+    public function getListDanhMucTongHop($limit = 100, $page = 1) {
+        $offset = ($page - 1) * $limit;
+        $query = $this->model->where('id', '>', 0);
+        $totalRecord = $query->count();
+        
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->orderBy('id', 'desc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get();
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+        
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
+    }
+    
+    public function getDataDanhMucTongHopById($dmthId)
+    {
+        $result = $this->model->find($dmthId); 
+        return $result;
+    }
+    
     public function getDanhMucTongHopTheoKhoa($khoa, $limit = 100, $page = 1) {
         $offset = ($page - 1) * $limit;
+        $query = $this->model->where('khoa', $khoa);
+        $totalRecord = $query->count();
         
-        $data = $this->model
-                ->where('khoa', $khoa)
-                ->orderBy('id', 'desc')
-                ->offset($offset)
-                ->limit($limit)
-                ->get();
-        return $data;
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->orderBy('id', 'desc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get();
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+        
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
     }
     
     public function createDanhMucTongHop(array $input)
