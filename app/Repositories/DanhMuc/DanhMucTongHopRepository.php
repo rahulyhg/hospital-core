@@ -11,7 +11,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     }
     public function getListNgheNghiep()
     {
-        $ngheNghiep = DB::table('danh_muc_tong_hop')
+        $ngheNghiep = $this->model
                 ->where('khoa','nghe_nghiep')
                 ->get();
         return $ngheNghiep;    
@@ -19,7 +19,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     
     public function getListBenhVien()
     {
-        $benhVien = DB::table('danh_muc_benh_vien')
+        $benhVien = $this->model
                 ->orderBy('id')
                 ->get();
         return $benhVien;    
@@ -27,7 +27,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     
     public function getListDanToc()
     {
-        $danToc = DB::table('danh_muc_tong_hop')
+        $danToc = $this->model
                 ->where('khoa','dan_toc')
                 ->get();
         return $danToc;    
@@ -35,7 +35,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     
     public function getListQuocTich()
     {
-        $quocTich = DB::table('danh_muc_tong_hop')
+        $quocTich = $this->model
                 ->where('khoa','quoc_tich')
                 ->orderBy('gia_tri')
                 ->get();
@@ -44,11 +44,30 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     
     public function getListTinh()
     {
-        $tinh = DB::table('danh_muc_tong_hop')
-                ->where('khoa','tinh')
+        $tinh = DB::table('hanh_chinh')
+                ->where('ma_tinh','<>',0)
                 ->get();
         return $tinh;    
     }
+    
+    public function getListHuyen($maTinh)
+    {
+        $huyen = DB::table('hanh_chinh')
+                ->where('ma_huyen','<>',0)
+                ->where('huyen_matinh','=',$maTinh)
+                ->get();
+        return $huyen;    
+    }
+    
+    public function getListXa($maHuyen,$maTinh)
+    {
+        $huyen = DB::table('hanh_chinh')
+                ->where('ma_xa','<>',0)
+                ->where('xa_mahuyen','=',$maHuyen)
+                ->where('xa_matinh','=',$maTinh)
+                ->get();
+        return $huyen;    
+    }    
     
     public function getTenDanhMucTongHopByKhoaGiaTri($khoa, $gia_tri)
     {
@@ -60,7 +79,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
             'danh_muc_tong_hop.gia_tri',
             'danh_muc_tong_hop.dien_giai'
         ];
-        $data = DB::table('danh_muc_tong_hop')
+        $data = $this->model
                 ->where($where)
                 ->get($column);
         $array = json_decode($data, true);
@@ -189,4 +208,115 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     {
         $this->model->destroy($dmthId);
     }
+    
+    public function getThxByKey($thxKey)
+    {
+        $key = explode(" ",$thxKey);
+        $result = array();
+        if(count($key)==1){
+            $dataTinh = DB::table('hanh_chinh')
+                ->where('kyhieu_tinh','like',strtoupper($key[0]).'%')
+                ->get(['ma_tinh','ten_tinh','kyhieu_tinh']);
+            if($dataTinh){
+                foreach($dataTinh as $itemTinh){
+                    $dataHuyen = DB::table('hanh_chinh')
+                        ->where('huyen_matinh',$itemTinh->ma_tinh)
+                        ->where('ma_huyen','<>',0)
+                        ->get(['ma_huyen','ten_huyen','huyen_matinh','kyhieu_huyen']);
+                    if($dataHuyen){
+                        foreach($dataHuyen as $itemHuyen){
+                            $dataXa = DB::table('hanh_chinh')
+                                ->where('xa_mahuyen',$itemHuyen->ma_huyen)
+                                ->where('xa_matinh',$itemTinh->ma_tinh)
+                                ->get(['ten_xa','ma_xa','kyhieu_xa']);
+                            if($dataXa){
+                                foreach($dataXa as $itemXa){
+                                    $result[] = [
+                                        'dia_chi'=>$itemTinh->ten_tinh.' - '.$itemHuyen->ten_huyen.' - '.$itemXa->ten_xa,
+                                        'ma_tinh'=>$itemTinh->ma_tinh,
+                                        'ma_huyen'=>$itemHuyen->ma_huyen,
+                                        'ma_xa'=>$itemXa->ma_xa,
+                                        'thx_code'=>$itemTinh->ma_tinh.' '.$itemHuyen->ma_huyen.' '.$itemXa->ma_xa,
+                                        'thx_ky_hieu'=>$itemTinh->kyhieu_tinh.' '.$itemHuyen->kyhieu_huyen.' '.$itemXa->kyhieu_xa
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(count($key)==2){
+            $dataTinh = DB::table('hanh_chinh')
+                    ->where('kyhieu_tinh','like',strtoupper($key[0]).'%')
+                    ->get(['ma_tinh','ten_tinh','kyhieu_tinh']);
+            if($dataTinh){
+                foreach($dataTinh as $itemTinh){
+                    $dataHuyen = DB::table('hanh_chinh')
+                        ->where('huyen_matinh',$itemTinh->ma_tinh)
+                        ->where('ma_huyen','<>',0)
+                        ->where('kyhieu_huyen','like',strtoupper($key[1]).'%')
+                        ->get(['ma_huyen','ten_huyen','huyen_matinh','kyhieu_huyen']);
+                    if($dataHuyen){
+                        foreach($dataHuyen as $itemHuyen){
+                            $dataXa = DB::table('hanh_chinh')
+                                ->where('xa_mahuyen',$itemHuyen->ma_huyen)
+                                ->where('xa_matinh',$itemTinh->ma_tinh)
+                                ->where('ma_xa','<>',0)
+                                ->get(['ten_xa','kyhieu_xa','ma_xa']);
+                            if($dataXa){
+                                foreach($dataXa as $itemXa){
+                                    $result[] = [
+                                        'dia_chi'=>$itemTinh->ten_tinh.' - '.$itemHuyen->ten_huyen.' - '.$itemXa->ten_xa,
+                                        'ma_tinh'=>$itemTinh->ma_tinh,
+                                        'ma_huyen'=>$itemHuyen->ma_huyen,
+                                        'ma_xa'=>$itemXa->ma_xa,
+                                        'thx_code'=>$itemTinh->ma_tinh.' '.$itemHuyen->ma_huyen.' '.$itemXa->ma_xa,
+                                        'thx_ky_hieu'=>$itemTinh->kyhieu_tinh.' '.$itemHuyen->kyhieu_huyen.' '.$itemXa->kyhieu_xa
+                                    ];                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(count($key)==3){
+            $dataTinh = DB::table('hanh_chinh')
+                    ->where('kyhieu_tinh','like',strtoupper($key[0]).'%')
+                    ->get(['ma_tinh','ten_tinh','kyhieu_tinh']);
+            if($dataTinh){
+                foreach($dataTinh as $itemTinh){
+                    $dataHuyen = DB::table('hanh_chinh')
+                        ->where('huyen_matinh',$itemTinh->ma_tinh)
+                        ->where('ma_huyen','<>',0)
+                        ->where('kyhieu_huyen','like',strtoupper($key[1]).'%')
+                        ->get(['ma_huyen','ten_huyen','huyen_matinh','kyhieu_huyen']);
+                    if($dataHuyen){
+                        foreach($dataHuyen as $itemHuyen){
+                            $dataXa = DB::table('hanh_chinh')
+                                ->where('kyhieu_xa','like',strtoupper($key[2]).'%')
+                                ->where('xa_mahuyen',$itemHuyen->ma_huyen)
+                                ->where('xa_matinh',$itemTinh->ma_tinh)
+                                ->where('ma_xa','<>',0)
+                                ->get(['ten_xa','kyhieu_xa','ma_xa']);
+                            if($dataXa){
+                                foreach($dataXa as $itemXa){
+                                    $result[] = [
+                                        'dia_chi'=>$itemTinh->ten_tinh.' - '.$itemHuyen->ten_huyen.' - '.$itemXa->ten_xa,
+                                        'ma_tinh'=>$itemTinh->ma_tinh,
+                                        'ma_huyen'=>$itemHuyen->ma_huyen,
+                                        'ma_xa'=>$itemXa->ma_xa,
+                                        'thx_code'=>$itemTinh->ma_tinh.' '.$itemHuyen->ma_huyen.' '.$itemXa->ma_xa,
+                                        'thx_ky_hieu'=>$itemTinh->kyhieu_tinh.' '.$itemHuyen->kyhieu_huyen.' '.$itemXa->kyhieu_xa
+                                    ];                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $result;
+    }    
 }

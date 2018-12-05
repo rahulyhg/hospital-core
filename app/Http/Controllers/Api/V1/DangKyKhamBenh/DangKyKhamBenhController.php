@@ -167,5 +167,11 @@ class DangKyKhamBenhController extends APIController
     {
         $data = $this->bhytService->getMaBhytTreEm($request->maTinh);
         return $data;
+    }
+    
+    public function getThxByKey(Request $request)
+    {
+        $data = $this->danhMucTongHopService->getThxByKey($request->thxKey);
+        return $data;
     }    
 }
