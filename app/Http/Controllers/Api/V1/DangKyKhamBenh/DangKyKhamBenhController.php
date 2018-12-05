@@ -11,6 +11,7 @@ use App\Services\DanhMucBenhVienService;
 use App\Services\DanhMucTrangThaiService;
 use App\Services\BenhVienService;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\HanhChinhService;
 use App\Services\Icd10Service;
 use App\Services\BhytService;
 use App\Http\Controllers\API\V1\APIController;
@@ -32,7 +33,8 @@ class DangKyKhamBenhController extends APIController
         DanhMucTrangThaiService $danhMucTrangThaiService,
         HsbaKhoaPhongService $hsbaKhoaPhongService,
         Icd10Service $icd10Service,
-        BhytService $bhytService
+        BhytService $bhytService,
+        HanhChinhService $hanhChinhService
         )
     {
         $this->phongService = $phongService;
@@ -45,6 +47,7 @@ class DangKyKhamBenhController extends APIController
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
         $this->icd10Service = $icd10Service;
         $this->bhytService = $bhytService;
+        $this->hanhChinhService = $hanhChinhService;
         
     }
     
@@ -93,19 +96,19 @@ class DangKyKhamBenhController extends APIController
     
     public function getListTinh()
     {
-        $data = $this->danhMucTongHopService->getListTinh();
+        $data = $this->hanhChinhService->getListTinh();
         return $data;
     }
     
     public function getListHuyen(Request $request)
     {
-        $data = $this->danhMucTongHopService->getListHuyen($request->maTinh);
+        $data = $this->hanhChinhService->getListHuyen($request->maTinh);
         return $data;
     }
     
     public function getListXa(Request $request)
     {
-        $data = $this->danhMucTongHopService->getListXa($request->maHuyen,$request->maTinh);
+        $data = $this->hanhChinhService->getListXa($request->maHuyen,$request->maTinh);
         return $data;
     }
     
@@ -166,6 +169,12 @@ class DangKyKhamBenhController extends APIController
     public function getBhytTreEm(Request $request)
     {
         $data = $this->bhytService->getMaBhytTreEm($request->maTinh);
+        return $data;
+    }
+    
+    public function getThxByKey(Request $request)
+    {
+        $data = $this->hanhChinhService->getThxByKey($request->thxKey);
         return $data;
     }    
 }
