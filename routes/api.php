@@ -26,6 +26,12 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register', 'AuthController@register');
         Route::post('login', 'AuthController@login');
+        
+        Route::group(['prefix' => 'password'], function () {
+            Route::post('create', 'AuthUser\AuthPasswordResetController@create');
+            Route::get('find/{token}', 'AuthUser\AuthPasswordResetController@find');
+            Route::post('reset', 'AuthUser\AuthPasswordResetController@reset');
+        });
     });
     
     Route::get('patient', 'SamplePatientController@index');
@@ -88,6 +94,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getListPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListPhongKham');
 		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan');
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
+		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
+		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
@@ -97,6 +105,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::post('updateDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@updateDanhMucDichVu');
     	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu');
     	Route::get('getYLenhByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getYLenhByLoaiNhom');
+    	Route::get('getListDanhMucTongHop','DanhMuc\DanhMucController@getListDanhMucTongHop');
+		Route::get('getDmthById/{dmthId}','DanhMuc\DanhMucController@getDmthById');
     	Route::get('getDanhMucTongHopTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTongHopTheoKhoa');
     	Route::post('createDanhMucTongHop','DanhMuc\DanhMucController@createDanhMucTongHop');
     	Route::post('updateDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@updateDanhMucTongHop');
