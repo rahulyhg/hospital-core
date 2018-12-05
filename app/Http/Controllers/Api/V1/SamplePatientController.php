@@ -149,6 +149,98 @@ class SamplePatientController extends APIController
         //return $data;
     }
     
+    public function addToQueue(Request $request) {
+        
+        $queueParams = $request->only(
+            'benh_vien_id','hsba_id','hsba_khoa_phong_id', 'ten_benh_nhan', 'nam_sinh', 'ms_bhyt', 'trang_thai_hsba',
+            'ngay_tao', 'ngay_ra_vien', 'thoi_gian_vao_vien', 'thoi_gian_ra_vien',
+            'trang_thai_cls', 'ten_trang_thai_cls', 'trang_thai', 'ten_trang_thai'
+        );
+        
+        $messageAttributes = [
+            'benh_vien_id' => ['DataType' => "Number",
+                                'StringValue' => $queueParams['benh_vien_id']
+                            ],
+            'khoa_id' => ['DataType' => "Number",
+                                'StringValue' => $queueParams['khoa_id']
+                            ],
+            'phong_id' => ['DataType' => "Number",
+                                'StringValue' => $queueParams['phong_id']
+                            ]
+        ];
+        
+        $messageBody = [
+            'benh_vien_id' => $queueParams['benh_vien_id'],
+            'hsba_id' => $queueParams['hsba_id'], 
+            'hsba_khoa_phong_id' => $queueParams['hsba_khoa_phong_id'], 
+            'ten_benh_nhan' => $queueParams['ten_benh_nhan'], 
+            'nam_sinh' => $queueParams['nam_sinh'], 
+            'ms_bhyt' => $queueParams['ms_bhyt'], 
+            'trang_thai_hsba' => $queueParams['trang_thai_hsba'],
+            'ngay_tao' => $queueParams['ngay_tao'], 
+            'ngay_ra_vien' => $queueParams['ngay_ra_vien'], 
+            'thoi_gian_vao_vien' => $queueParams['thoi_gian_vao_vien'], 
+            'thoi_gian_ra_vien' => $queueParams['thoi_gian_ra_vien'],
+            'trang_thai_cls' => $queueParams['trang_thai_cls'], 
+            'ten_trang_thai_cls' => $queueParams['ten_trang_thai_cls'], 
+            'trang_thai' => $queueParams['trang_thai'], 
+            'ten_trang_thai' => $queueParams['ten_trang_thai']
+        ];
+        
+        try {
+            // Push
+            
+            $this->sqsRepo->push(
+                $messageAttributes,$messageBody
+            );
+            
+            
+            
+        } catch ( \Exception $ex) {
+            echo $ex->getMessage();
+        }
+        
+    }
+    
+    public function getFromQueue() {
+        // Pop
+            
+        $messageObjects = $this->sqsRepo->pop(10);
+         
+        foreach ($messageObjects as $k => $messageObject) {
+            
+            
+            $messageBody = $messageObject->getBody();
+            //echo "<hr/><br/>";
+            //var_dump($messageObject->message['Body']);
+            //var_dump($messageBody);
+            //continue;
+            $benhVienId = $messageBody['benh_vien_id'];
+            $khoaId = 10;
+            $phongId= 100;
+            
+            
+            $hsbaKPId = $messageBody['hsba_khoa_phong_id'];
+            $thoiGianVaoVienObject = Carbon::createFromFormat('Y-m-d H:i:s', $messageBody['thoi_gian_vao_vien']);
+            $ngayVaoVien = $thoiGianVaoVienObject->format('Y-m-d');
+            
+            $suffix = $benhVienId.':'.$khoaId.':'.$phongId.':'.$ngayVaoVien.":".$hsbaKPId;
+            $this->redisRepo->hmset($suffix,$messageBody);
+             
+        }
+        
+        echo "<pre>";
+        var_dump ($messages);
+        echo "</pre>";
+    }
+    
+    
+    public function addToCache() {
+        
+    }
+    
+    
+    
     /**
      * Return the specified resource.
      *
@@ -205,5 +297,7 @@ class SamplePatientController extends APIController
         
         return $message;
     }
+    
+    
     
 }

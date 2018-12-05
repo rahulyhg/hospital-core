@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
+// Framework Libraries
 use Illuminate\Http\Request;
-
 use DB;
+use Validator;
 
+// Services
+use App\Services\SttPhongKhamService;
+use App\Services\HsbaKhoaPhongService;
+
+// Repositories
 use App\Repositories\BenhNhan\BenhNhanRepository;
 use App\Repositories\Hsba\HsbaRepository;
 use App\Repositories\Hsba\HsbaKhoaPhongRepository; 
@@ -17,14 +23,13 @@ use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
 use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
-use App\Services\SttPhongKhamService;
-use App\Helper\Util;
-use Carbon\Carbon;
 
 //Value objects
 use App\Models\ValueObjects\NhomNguoiThan;
 
-use Validator;
+// Helper Functions
+use App\Helper\Util;
+use Carbon\Carbon;
 
 class BenhNhanServiceV2{
     
@@ -49,7 +54,7 @@ class BenhNhanServiceV2{
     private $dataNhomNguoiThan = null;
     
     private $dataQueue = [
-        'message_attribute' => [],
+        'message_attributes' => [],
         'message_body' => []
     ];
     private $dataLog = [];
@@ -84,7 +89,21 @@ class BenhNhanServiceV2{
         'cd_icd10_code', 'cd_icd10_text'
     ];
     
-    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository, PhongRepository $phongRepository, SttPhongKhamService $sttPhongKhamService)
+    public function __construct(
+        BenhNhanRepository $benhNhanRepository, 
+        HsbaRepository $hsbaRepository, 
+        HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, 
+        DanhMucTongHopRepository $danhMucTongHopRepository, 
+        BhytRepository $bhytRepository, 
+        VienPhiRepository $vienPhiRepository, 
+        DieuTriRepository $dieuTriRepository, 
+        PhieuYLenhRepository $phieuYLenhRepository, 
+        DanhMucDichVuRepository $danhMucDichVuRepository, 
+        YLenhRepository $yLenhRepository, 
+        PhongRepository $phongRepository, 
+        SttPhongKhamService $sttPhongKhamService,
+        HsbaKhoaPhongService $hsbaKhoaPhongService
+    )
     {
         $this->benhNhanRepository = $benhNhanRepository;
         $this->hsbaRepository = $hsbaRepository;
@@ -98,6 +117,7 @@ class BenhNhanServiceV2{
         $this->yLenhRepository = $yLenhRepository;
         $this->phongRepository = $phongRepository;
         $this->sttPhongKhamService = $sttPhongKhamService;
+        $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
     }
     
     public function registerBenhNhan(Request $request)
@@ -175,6 +195,7 @@ class BenhNhanServiceV2{
                 
                 $this->dataPhieuYLenh = $this->createPhieuYLenh();
                 $this->dataYLenh = $this->createYLenh();
+                $this->pushToHsbaKpQueue();
                 return $this->dataSttPk;
                 
             } catch (\Exception $ex) {
@@ -188,52 +209,31 @@ class BenhNhanServiceV2{
         return $result;
     }
     
-    private function setQueueAttribute() {
-
-        $ngayVaoVien = Carbon::now()->isoFormat('YYYY-MM-DD');
-        $messageAttributes = [
-            'benh_vien_id' => ['DataType' => "Number",
-                                'StringValue' => $this->dataHsba['benh_vien_id']
-                            ],
-            'khoa_id' => ['DataType' => "Number",
-                                'StringValue' => $this->dataHsba['khoa_id']
-                            ],
-            'phong_id' => ['DataType' => "Number",
-                                'StringValue' => $this->dataSttPk['phong_id']
-                            ],
-            'ngay_vao_vien' => ['DataType' => "String",
-                                'StringValue' => $ngayVaoVien
-                            ]                
-        ];
-        $this->dataQueue['message_attributes'] = $messageAttributes;
-
-    }
-    
-    private function setQueueBody() {
-        $messageBody = [
+    private function pushToHsbaKpQueue() {
+        
+        $benhVienId = $this->dataHsba['benh_vien_id'];
+        $khoaId = $this->dataHsba['khoa_id'];
+        $phongId = $this->dataSttPk['phong_id'];
+        $ngayVaoVien = Carbon::now()->toDateString();
+        $this->hsbaKhoaPhongService->setQueueAttribute($benhVienId, $khoaId, $phongId, $ngayVaoVien);
+        $this->hsbaKhoaPhongService->setQueueBody([
             'benh_vien_id' => $this->dataHsba['benh_vien_id'],
-            'hsba_id' => $this->dataHsba['hsba_id'], 
+            'hsba_id' => $this->dataHsba['id'], 
             'hsba_khoa_phong_id' => $this->dataHsbaKp['id'], 
             'ten_benh_nhan' => $this->dataBenhNhan['ho_va_ten'], 
             'nam_sinh' => $this->dataBenhNhan['nam_sinh'], 
             'ms_bhyt' => $this->dataBhyt['ms_bhyt'], 
             'trang_thai_hsba' => $this->dataHsba['trang_thai_hsba'],
-            'ngay_tao' => $this->dataHsba['ngay_tao'], // Modify repository
-            'ngay_ra_vien' => $this->dataHsba['ngay_ra_vien'], // Modify repository
+            'ngay_tao' => $this->dataHsba['ngay_tao'],
+            'ngay_ra_vien' => '',
             'thoi_gian_vao_vien' => $this->dataHsbaKp['thoi_gian_vao_vien'], 
             'thoi_gian_ra_vien' => '',
             'trang_thai_cls' => '', 
-            'ten_trang_thai_cls' => '', // TODO - get Ten Trang Thai CLS
+            'ten_trang_thai_cls' => '',
             'trang_thai' => $this->dataHsbaKp['trang_thai'], 
-            'ten_trang_thai' => '' // TODO - get Ten Trang Thai CLS
-        ];
-        $this->dataQueue['message_body'] = $messageBody;
-    }
-    
-    private function pushToQueue($messageAttributes,$messageBody) {
-        $this->sqsRepo->push(
-                $messageAttributes,$messageBody
-            );
+            'ten_trang_thai' => ''
+        ]);
+         $this->hsbaKhoaPhongService->pushToQueue();
     }
     
     private function createBhyt($params) {
