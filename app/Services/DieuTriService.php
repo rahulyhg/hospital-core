@@ -9,6 +9,7 @@ use App\Repositories\Hsba\HsbaKhoaPhongRepository;
 use App\Repositories\Hsba\HsbaRepository;
 use App\Repositories\VienPhi\VienPhiRepository;
 use App\Repositories\PhongRepository;
+use App\Repositories\RaVienRepository;
 use App\Services\SttPhongKhamService;
 
 class DieuTriService
@@ -19,6 +20,7 @@ class DieuTriService
     const XT_TRA_BN_KHONG_KHAM = 6;
     const XT_BO_VE = 7;
     const XT_CHUYEN_KHOA = 10;
+    const XT_RA_VIEN = 11;
     
     //trạng thái hsba khoa phòng
     const TT_KET_THUC_DIEU_TRI = 99;
@@ -54,7 +56,8 @@ class DieuTriService
         HsbaRepository $hsbaRepository, 
         VienPhiRepository $vienPhiRepository, 
         PhongRepository $phongRepository,
-        SttPhongKhamService $sttPhongKhamService
+        SttPhongKhamService $sttPhongKhamService,
+        RaVienRepository $raVienRepository
     )
     {
         $this->dieuTriRepository = $dieuTriRepository;
@@ -63,6 +66,7 @@ class DieuTriService
         $this->vienPhiRepository = $vienPhiRepository;
         $this->phongRepository = $phongRepository;
         $this->sttPhongKhamService = $sttPhongKhamService;
+        $this->raVienRepository = $raVienRepository;
     }
     
     public function updateInfoDieuTri(array $dieuTriParams)
@@ -102,6 +106,9 @@ class DieuTriService
             case self::XT_BO_VE:     
                 $this->createKetThucKham($request);
                 break;
+            case self::XT_RA_VIEN:     
+                $this->createRaVien($request);
+                break;            
         }
     }
     
@@ -217,6 +224,7 @@ class DieuTriService
     
     private function createKetThucKham(array $request)
     {
+        
         $result = DB::transaction(function () use ($request) {
             try {
                 $hsbaKp = $this->hsbaKhoaPhongRepository->getById($request['hsba_khoa_phong_id']);
@@ -236,6 +244,9 @@ class DieuTriService
                     case self::XT_BO_VE: 
                         $hinh_thuc_ra_vien = self::BO_VE;
                         break;
+                    case self::XT_RA_VIEN: 
+                        $hinh_thuc_ra_vien = self::RA_VIEN;
+                        break;                    
                 }
                 $request['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
                 $this->updateHsbaKhoaPhongByXuTri($hsbaKp['id'], $request, self::TT_KET_THUC_DIEU_TRI, $hinh_thuc_ra_vien);
@@ -262,6 +273,39 @@ class DieuTriService
             }
         });
         return $result;    
+    }
+    
+    private function createRaVien(array $request)
+    {
+        $result = DB::transaction(function () use ($request) {
+            try {
+                $raVienParams = null;
+                $raVienParams['hsba_khoa_phong_id']=$request['hsba_khoa_phong_id']?$request['hsba_khoa_phong_id']:'';
+                $raVienParams['benh_nhan_id']=$request['benh_nhan_id']?$request['benh_nhan_id']:'';
+                $raVienParams['thoi_gian_ra_vien']=$request['thoi_gian_ra_vien']?$request['thoi_gian_ra_vien']:'';
+                $raVienParams['tinh_trang']=$request['tinh_trang']?$request['tinh_trang']:'';
+                $raVienParams['phuong_phap_dieu_tri']=$request['phuong_phap_dieu_tri']?$request['phuong_phap_dieu_tri']:'';
+                $raVienParams['huong_dieu_tri_tiep_theo']=$request['huong_dieu_tri_tiep_theo']?$request['huong_dieu_tri_tiep_theo']:'';
+                $raVienParams['lich_hen']=$request['lich_hen']?$request['lich_hen']:'';
+                $raVienParams['loi_dan_bac_si']=$request['loi_dan_bac_si']?$request['benh_nhan_id']:'';
+                //1.Kiểm tra bệnh nhân có xử trí trước đó hay chưa
+                $raVien = $this->raVienRepository->getById($request['hsba_khoa_phong_id']);
+                if($raVien==null){
+                    $this->raVienRepository->createRaVien($raVienParams);
+                }
+                else{
+                    $this->raVienRepository->updateRaVien($raVien->id,$raVienParams);
+                }
+                //2.Update hsba khoa phòng & hsba & viện phí
+                //$request->array_except($request,['thoi_gian_ra_vien','tinh_trang', 'phuong_phap_dieu_tri','huong_dieu_tri_tiep_theo','lich_hen','loi_dan_bac_si']);
+                $this->createKetThucKham($request);
+                
+            }
+            catch (\Exception $ex) {
+                 throw $ex;
+            }
+        });
+        return $result;
     }
     
     public function getPhieuDieuTri(array $input)

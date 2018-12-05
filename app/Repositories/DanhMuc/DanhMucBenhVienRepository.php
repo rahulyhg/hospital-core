@@ -1,14 +1,19 @@
 <?php
 namespace App\Repositories\DanhMuc;
 use DB;
-use App\Repositories\BaseRepository;
+use App\Repositories\BaseRepositoryV2;
+use App\Models\DanhMucBenhVien;
 
-class DanhMucBenhVienRepository extends BaseRepository
+class DanhMucBenhVienRepository extends BaseRepositoryV2
 {
+    public function getModel()
+    {
+        return DanhMucBenhVien::class;
+    }    
 
     public function getDanhMucBenhVien()
     {
-        $dataSet = DB::table('danh_muc_benh_vien')
+        $dataSet = $this->model
                 ->orderBy('ma_kcbbd')
                 ->get();
         return $dataSet;    
