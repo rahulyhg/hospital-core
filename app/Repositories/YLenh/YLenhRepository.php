@@ -26,11 +26,6 @@ class YLenhRepository extends BaseRepositoryV2
     
     public function getLichSuYLenh(array $input)
     {
-        $where = [
-            ['y_lenh.khoa_id', '=', $input['khoa_id']],
-            ['y_lenh.phong_id', '=', $input['phong_id']]
-        ];
-        
         $column = [
             'y_lenh.id',
             'y_lenh.ten',
@@ -41,10 +36,11 @@ class YLenhRepository extends BaseRepositoryV2
             'y_lenh.thoi_gian_chi_dinh'
         ];
         
-        $data = $this->model->where($where)
-                            ->join('phieu_y_lenh', function($join) use ($input) {
+        $data = $this->model->join('phieu_y_lenh', function($join) use ($input) {
                                 $join->on('phieu_y_lenh.id', '=', 'y_lenh.phieu_y_lenh_id')
-                                    ->where('phieu_y_lenh.dieu_tri_id', '=', $input['dieu_tri_id']);
+                                    ->where('phieu_y_lenh.benh_nhan_id', '=', $input['benh_nhan_id'])
+                                    ->where('phieu_y_lenh.hsba_id', '=', $input['hsba_id'])
+                                    ->whereNotNull('thoi_gian_chi_dinh');
                             })
                             ->orderBy('y_lenh.id')
                             ->get($column);
