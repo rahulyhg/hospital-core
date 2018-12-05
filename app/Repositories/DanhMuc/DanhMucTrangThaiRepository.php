@@ -1,19 +1,12 @@
 <?php
 namespace App\Repositories\DanhMuc;
 use DB;
-use App\Repositories\BaseRepositoryV2;
-use App\Models\DanhMucTrangThai;
-
-class DanhMucTrangThaiRepository extends BaseRepositoryV2
+use App\Repositories\BaseRepository;
+class DanhMucTrangThaiRepository extends BaseRepository
 {
-    public function getModel()
-    {
-        return DanhMucTrangThai::class;
-    }    
-
     public function getListLoaiVienPhi()
     {
-        $dataSet = $this->model
+        $dataSet = DB::table('danh_muc_trang_thai')
                 ->where('khoa','loai_vien_phi')
                 ->get();
         return $dataSet;    
@@ -21,7 +14,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     
     public function getListDoiTuongBenhNhan()
     {
-        $dataSet = $this->model
+        $dataSet = DB::table('danh_muc_trang_thai')
                 ->where('khoa','doi_tuong_benh_nhan')
                 ->get();
         return $dataSet;    
@@ -29,7 +22,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     
     public function getListKetQuaDieuTri()
     {
-        $dataSet = $this->model
+        $dataSet = DB::table('danh_muc_trang_thai')
                 ->where('khoa','ket_qua_dieu_tri')
                 ->get();
         return $dataSet;    
@@ -37,7 +30,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     
     public function getListGiaiPhauBenh()
     {
-        $dataSet = $this->model
+        $dataSet = DB::table('danh_muc_trang_thai')
                 ->where('khoa','giai_phau_benh')
                 ->get();
         return $dataSet;    
@@ -45,7 +38,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     
     public function getListXuTri()
     {
-        $dataSet = $this->model
+        $dataSet = DB::table('danh_muc_trang_thai')
                 ->where('khoa','xu_tri')
                 ->get();
         return $dataSet;    

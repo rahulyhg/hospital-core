@@ -17,6 +17,7 @@ use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
 use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
+use App\Repositories\HanhChinhRepository;
 use App\Services\SttPhongKhamService;
 use App\Helper\Util;
 use Carbon\Carbon;
@@ -84,7 +85,7 @@ class BenhNhanServiceV2{
         'cd_icd10_code', 'cd_icd10_text'
     ];
     
-    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository, PhongRepository $phongRepository, SttPhongKhamService $sttPhongKhamService)
+    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository, PhongRepository $phongRepository, SttPhongKhamService $sttPhongKhamService,HanhChinhRepository $hanhChinhRepository)
     {
         $this->benhNhanRepository = $benhNhanRepository;
         $this->hsbaRepository = $hsbaRepository;
@@ -98,6 +99,7 @@ class BenhNhanServiceV2{
         $this->yLenhRepository = $yLenhRepository;
         $this->phongRepository = $phongRepository;
         $this->sttPhongKhamService = $sttPhongKhamService;
+        $this->hanhChinhRepository = $hanhChinhRepository;
     }
     
     public function registerBenhNhan(Request $request)
@@ -413,9 +415,9 @@ class BenhNhanServiceV2{
     
     private function setDataTHX($params) {
         $this->dataTenTHX = Util::getDataFromGooglePlace($this->dataTHX);
-        $this->dataTinh = $this->danhMucTongHopRepository->getDataTinh(mb_convert_case($this->dataTenTHX['ten_tinh_thanh_pho'], MB_CASE_UPPER, "UTF-8"));
-        $this->dataHuyen = $this->danhMucTongHopRepository->getDataHuyen($this->dataTinh['ma_tinh'], mb_convert_case($this->dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
-        $this->dataXa = $this->danhMucTongHopRepository->getDataXa($params['tinh_thanh_pho_id'], $params['quan_huyen_id'], $params['phuong_xa_id']);
+        $this->dataTinh = $this->hanhChinhRepository->getDataTinh(mb_convert_case($this->dataTenTHX['ten_tinh_thanh_pho'], MB_CASE_UPPER, "UTF-8"));
+        $this->dataHuyen = $this->hanhChinhRepository->getDataHuyen($this->dataTinh['ma_tinh'], mb_convert_case($this->dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
+        $this->dataXa = $this->hanhChinhRepository->getDataXa($params['tinh_thanh_pho_id'], $params['quan_huyen_id'], $params['phuong_xa_id']);
     }
     
 }
