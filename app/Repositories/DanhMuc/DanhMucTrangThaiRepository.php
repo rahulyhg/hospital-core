@@ -50,13 +50,12 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     
     public function createDanhMucTrangThai(array $input)
     {
-        $id = 0;
         $composite_unique_count = $this->model->where([
             ['khoa','=',$input['khoa']], 
             ['gia_tri','=',$input['gia_tri']]
             ])->count();
-        if($composite_unique_count == 0) $id = $this->model->create($input)->id;
-        return $id;
+        if($composite_unique_count == 0) return $this->model->create($input)->id;
+    
     }
     
     public function updateDanhMucTrangThai($dmttId, array $input)
@@ -67,9 +66,7 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
             ['khoa','=',$input['khoa']], 
             ['gia_tri','=',$input['gia_tri']]
             ])->count();
-        $result = [];
-		if($composite_unique_count == 0) $result = $dmtt->update($input);
-		return $result;
+		if($composite_unique_count == 0) $dmtt->update($input);
     }
     
     public function deleteDanhMucTrangThai($dmttId)
