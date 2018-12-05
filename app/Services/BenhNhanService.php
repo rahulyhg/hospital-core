@@ -9,12 +9,13 @@ use App\Repositories\Hsba\HsbaRepository;
 use App\Repositories\Hsba\HsbaKhoaPhongRepository; 
 use App\Repositories\Bhyt\BhytRepository; 
 use App\Repositories\VienPhi\VienPhiRepository; 
-use App\Repositories\DanhMucTongHopRepository;
+use App\Repositories\DanhMuc\DanhMucTongHopRepository;
 use App\Repositories\DieuTri\DieuTriRepository;
 use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
-use App\Repositories\DanhMucDichVuRepository;
+use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
+use App\Repositories\HanhChinhRepository;
 use App\Services\SttPhongKhamService;
 use App\Helper\Util;
 
@@ -22,7 +23,7 @@ use Validator;
 
 class BenhNhanService{
    
-    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository, PhongRepository $phongRepository, SttPhongKhamService $sttPhongKhamService)
+    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository, PhongRepository $phongRepository, SttPhongKhamService $sttPhongKhamService,HanhChinhRepository $hanhChinhRepository)
     {
         $this->benhNhanRepository = $benhNhanRepository;
         $this->hsbaRepository = $hsbaRepository;
@@ -36,6 +37,7 @@ class BenhNhanService{
         $this->yLenhRepository = $yLenhRepository;
         $this->phongRepository = $phongRepository;
         $this->sttPhongKhamService = $sttPhongKhamService;
+        $this->hanhChinhRepository = $hanhChinhRepository;
     }
     
     public function registerBenhNhan(Request $request)
@@ -58,9 +60,9 @@ class BenhNhanService{
         if($thxData)
         {
             $dataTenTHX = Util::getDataFromGooglePlace($request['thx_gplace_json']);
-            $dataTinh = $this->danhMucTongHopRepository->getDataTinh(mb_convert_case($dataTenTHX['ten_tinh_thanh_pho'], MB_CASE_UPPER, "UTF-8"));
-            $dataHuyen = $this->danhMucTongHopRepository->getDataHuyen($dataTinh['ma_tinh'], mb_convert_case($dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
-            $dataXa = $this->danhMucTongHopRepository->getDataXa($request['tinh_thanh_pho_id'], $request['quan_huyen_id'], $request['phuong_xa_id']);
+            $dataTinh = $this->hanhChinhRepository->getDataTinh(mb_convert_case($dataTenTHX['ten_tinh_thanh_pho'], MB_CASE_UPPER, "UTF-8"));
+            $dataHuyen = $this->hanhChinhRepository->getDataHuyen($dataTinh['ma_tinh'], mb_convert_case($dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
+            $dataXa = $this->hanhChinhRepository->getDataXa($request['tinh_thanh_pho_id'], $request['quan_huyen_id'], $request['phuong_xa_id']);
         }
         
         $array = ['loai_nguoi_than', 'ten_nguoi_than', 'dien_thoai_nguoi_than'];

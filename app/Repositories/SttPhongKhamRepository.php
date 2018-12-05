@@ -101,4 +101,75 @@ class SttPhongKhamRepository extends BaseRepositoryV2
                             
         return $data;
     }
+    
+    public function goiSttPhongKham(array $input)
+    {
+        $loaiStt = $input['loaiStt'];
+        $phongId = $input['phongId'];
+        $benhVienId = $input['benhVienId'];
+        $authUsersId = $input['authUsersId'];
+        $today = Carbon::today();
+        
+        $where = [
+            ['loai_stt', '=', $loaiStt],
+            ['trang_thai', '=', 1],
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId]
+        ];
+        
+        $result = $this->model->where($where)
+                            ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->orderBy('id', 'asc')
+                            ->first();
+                            
+        if($result) {
+            $id = $result['id'];
+                            
+            $attributes = ['trang_thai' => 2,
+                            'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
+                            'auth_users_id' => $authUsersId
+                        ];
+            
+            $this->model->where('id', '=', $id)->update($attributes);
+            
+            $data = $this->model->findOrFail($id);
+        } else {
+            $data = null;
+        }
+        
+        return $data;
+    }
+    
+    public function loadSttPhongKham(array $input)
+    {
+        $phongId = $input['phongId'];
+        $benhVienId = $input['benhVienId'];
+        $today = Carbon::today();
+        
+        $where = [
+            ['trang_thai', '>=', 2],
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId]
+        ];
+        
+        $result = $this->model->where($where)
+                            ->whereBetween('thoi_gian_goi', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->orderBy('thoi_gian_goi', 'desc')
+                            ->skip(0)
+                            ->take(5)
+                            ->get();
+                            
+        return $result;
+    }
+    
+    public function finishSttPhongKham($sttId)
+    {
+        $today = Carbon::today();
+        
+        $attributes = ['trang_thai' => 3,
+                        'thoi_gian_ket_thuc' => Carbon::now()->toDateTimeString()
+                    ];
+                    
+        $this->model->where('id', '=', $sttId)->update($attributes);
+    }
 }

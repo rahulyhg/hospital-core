@@ -17,8 +17,10 @@ use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
 use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
+use App\Repositories\HanhChinhRepository;
 use App\Services\SttPhongKhamService;
 use App\Helper\Util;
+use Carbon\Carbon;
 
 //Value objects
 use App\Models\ValueObjects\NhomNguoiThan;
@@ -46,6 +48,12 @@ class BenhNhanServiceV2{
     private $dataTHX = null;
     private $dataTenTHX = [];
     private $dataNhomNguoiThan = null;
+    
+    private $dataQueue = [
+        'message_attribute' => [],
+        'message_body' => []
+    ];
+    private $dataLog = [];
     
     private $benhNhanKeys = [
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
@@ -77,7 +85,7 @@ class BenhNhanServiceV2{
         'cd_icd10_code', 'cd_icd10_text'
     ];
     
-    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository, PhongRepository $phongRepository, SttPhongKhamService $sttPhongKhamService)
+    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository, PhongRepository $phongRepository, SttPhongKhamService $sttPhongKhamService,HanhChinhRepository $hanhChinhRepository)
     {
         $this->benhNhanRepository = $benhNhanRepository;
         $this->hsbaRepository = $hsbaRepository;
@@ -91,6 +99,7 @@ class BenhNhanServiceV2{
         $this->yLenhRepository = $yLenhRepository;
         $this->phongRepository = $phongRepository;
         $this->sttPhongKhamService = $sttPhongKhamService;
+        $this->hanhChinhRepository = $hanhChinhRepository;
     }
     
     public function registerBenhNhan(Request $request)
@@ -157,20 +166,22 @@ class BenhNhanServiceV2{
                 $this->dataSttPk = $this->getSttPhongKham($sttPhongKhamParams);
                 
                 $this->dataVienPhi = $this->createVienPhi();
-                $phongId = $this->dataVienPhi['phong_id'];
+                $phongId = $this->dataSttPk['phong_id'];
                 //update phong_id từ stt_phong_kham
                 //$this->hsbaRepository->updateHsba($idHsba, $thxData);
-                $this->hsbaRepository->updateHsba($this->dataHsba['id'], ['phong_id' => $phongId, 'thx_gplace_json' => $this->thxData]);
+                $this->hsbaRepository->updateHsba($this->dataHsba['id'], ['phong_id' => $phongId, 'thx_gplace_json' => $this->dataTHX]);
                 $this->hsbaKhoaPhongRepository->update($this->dataHsbaKp['id'], ['phong_hien_tai' => $phongId, 'vien_phi_id' => $this->dataVienPhi['id']]);
                 $this->vienPhiRepository->updateVienPhi($this->dataVienPhi['id'], ['phong_id' => $phongId]);
                 
-                $this->dataDieuTri = $this->dieuTriRepository->createDieuTri();
+                $this->dataDieuTri = $this->createDieuTri();
                 
                 $this->dataPhieuYLenh = $this->createPhieuYLenh();
                 $this->dataYLenh = $this->createYLenh();
                 return $this->dataSttPk;
                 
             } catch (\Exception $ex) {
+                var_dump($ex->getMessage());
+                echo "<br/>";
                 var_dump($ex->getLine());die;
                 throw $ex;
             }
@@ -179,26 +190,46 @@ class BenhNhanServiceV2{
         return $result;
     }
     
-    private function makeSQSAttribute() {
+    private function setQueueAttribute() {
+
+        $ngayVaoVien = Carbon::now()->isoFormat('YYYY-MM-DD');
         $messageAttributes = [
             'benh_vien_id' => ['DataType' => "Number",
-                                'StringValue' => $benhVienId
+                                'StringValue' => $this->dataHsba['benh_vien_id']
                             ],
             'khoa_id' => ['DataType' => "Number",
-                                'StringValue' => $khoaId
+                                'StringValue' => $this->dataHsba['khoa_id']
                             ],
             'phong_id' => ['DataType' => "Number",
-                                'StringValue' => $phongId
+                                'StringValue' => $this->dataSttPk['phong_id']
                             ],
             'ngay_vao_vien' => ['DataType' => "String",
                                 'StringValue' => $ngayVaoVien
                             ]                
         ];
-        return $messageAttributes;
+        $this->dataQueue['message_attributes'] = $messageAttributes;
+
     }
     
-    private function makeSQSBody($body) {
-        $messageBody = $body;
+    private function setQueueBody() {
+        $messageBody = [
+            'benh_vien_id' => $this->dataHsba['benh_vien_id'],
+            'hsba_id' => $this->dataHsba['hsba_id'], 
+            'hsba_khoa_phong_id' => $this->dataHsbaKp['id'], 
+            'ten_benh_nhan' => $this->dataBenhNhan['ho_va_ten'], 
+            'nam_sinh' => $this->dataBenhNhan['nam_sinh'], 
+            'ms_bhyt' => $this->dataBhyt['ms_bhyt'], 
+            'trang_thai_hsba' => $this->dataHsba['trang_thai_hsba'],
+            'ngay_tao' => $this->dataHsba['ngay_tao'], // Modify repository
+            'ngay_ra_vien' => $this->dataHsba['ngay_ra_vien'], // Modify repository
+            'thoi_gian_vao_vien' => $this->dataHsbaKp['thoi_gian_vao_vien'], 
+            'thoi_gian_ra_vien' => '',
+            'trang_thai_cls' => '', 
+            'ten_trang_thai_cls' => '', // TODO - get Ten Trang Thai CLS
+            'trang_thai' => $this->dataHsbaKp['trang_thai'], 
+            'ten_trang_thai' => '' // TODO - get Ten Trang Thai CLS
+        ];
+        $this->dataQueue['message_body'] = $messageBody;
     }
     
     private function pushToQueue($messageAttributes,$messageBody) {
@@ -264,6 +295,7 @@ class BenhNhanServiceV2{
         $dataHsba['phuong_xa_id'] = $this->dataXa['ma_xa']??null;
         $dataHsba['nam_sinh'] =  $this->dataBenhNhan['nam_sinh'];
         $dataHsba['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
+        $dataHsba['ngay_tao'] = Carbon::now()->toDateTimeString();
          //insert hsba
         $dataHsba['id'] = $this->hsbaRepository->createDataHsba($dataHsba);
         return $dataHsba;
@@ -276,15 +308,17 @@ class BenhNhanServiceV2{
         $dataHsbaKp['hsba_id'] = $this->dataHsba['id'];
         $dataHsbaKp['trang_thai'] = 0;// TODO - define constant
         $dataHsbaKp['loai_benh_an'] = 24;// TODO - define constant
-        $dataHsbaKp['benh_nhan_id'] = $this->dataBenhNHan['id'];
+        $dataHsbaKp['benh_nhan_id'] = $this->dataBenhNhan['id'];
         $dataHsbaKp['hinh_thuc_vao_vien_id'] = 2;// TODO - define constant
         $dataHsbaKp['bhyt_id'] = $this->dataBhyt['id'];
+        $dataHsbaKp['thoi_gian_vao_vien'] = Carbon::now()->toDateTimeString();
         //insert hsba_khoa_phong
         $dataHsbaKp['id'] = $this->hsbaKhoaPhongRepository->createData($dataHsbaKp);
         return $dataHsbaKp;
     }
     
-    private function getSttPhongKham() {
+    private function getSttPhongKham($params) {
+        $sttPhongKhamParams = $params;
         $sttPhongKhamParams['benh_nhan_id'] = $this->dataBenhNhan['id'];
         $sttPhongKhamParams['ten_benh_nhan'] = $this->dataBenhNhan['ho_va_ten'];
         $sttPhongKhamParams['gioi_tinh_id'] = $this->dataBenhNhan['gioi_tinh_id'];
@@ -295,7 +329,6 @@ class BenhNhanServiceV2{
         $sttPhongKhamParams['hsba_id'] = $this->dataHsba['id'];
         $sttPhongKhamParams['hsba_khoa_phong_id'] = $this->dataHsbaKp['id'];
         $dataSttPhongKham = $this->sttPhongKhamService->getSttPhongKham($sttPhongKhamParams);
-        var_dump($dataSttPhongKham);
         return $dataSttPhongKham;
     }
     
@@ -319,7 +352,7 @@ class BenhNhanServiceV2{
         $dataDieuTri['hsba_khoa_phong_id'] = $this->dataHsbaKp['id'];
         $dataDieuTri['hsba_id'] = $this->dataHsba['id'];
         $dataDieuTri['khoa_id'] = $this->dataHsba['khoa_id'];
-        $dataDieuTri['phong_id'] = $this->dataVienPhi['phong_id'];
+        $dataDieuTri['phong_id'] = $this->dataSttPk['phong_id'];
         $dataDieuTri['auth_users_id'] = $this->dataHsba['auth_users_id'];
         $dataDieuTri['benh_nhan_id'] =  $this->dataBenhNhan['id'];
         $dataDieuTri['ten_benh_nhan'] = $this->dataBenhNhan['ho_va_ten'];
@@ -337,7 +370,7 @@ class BenhNhanServiceV2{
         $dataPhieuYLenh['hsba_id'] = $this->dataHsba['id'];
         $dataPhieuYLenh['dieu_tri_id'] = $this->dataDieuTri['id'];
         $dataPhieuYLenh['khoa_id'] = $this->dataHsba['khoa_id'];
-        $dataPhieuYLenh['phong_id'] = $this->dataVienPhi['phong_id'];
+        $dataPhieuYLenh['phong_id'] = $this->dataSttPk['phong_id'];
         $dataPhieuYLenh['auth_users_id'] = $this->dataHsba['auth_users_id'];
         $dataPhieuYLenh['loai_phieu_y_lenh'] = 2; // TODO - define constant
         $dataPhieuYLenh['trang_thai'] = 0; // TODO - define constant
@@ -351,7 +384,7 @@ class BenhNhanServiceV2{
         $dataYLenh['phieu_y_lenh_id'] = $this->dataPhieuYLenh['id'];
         $dataYLenh['doi_tuong_benh_nhan'] = $this->dataHsbaKp['doi_tuong_benh_nhan'];
         $dataYLenh['khoa_id'] = $this->dataHsba['khoa_id'];
-        $dataYLenh['phong_id'] = $this->dataVienPhi['phong_id'];
+        $dataYLenh['phong_id'] = $this->dataSttPk['phong_id'];
         $dataYLenh['ma'] = $this->dataYeuCauKham['ma'];
         $dataYLenh['ten'] = $this->dataYeuCauKham['ten'];
         $dataYLenh['ten_nhan_dan'] = $this->dataYeuCauKham['ten_nhan_dan'];
@@ -362,7 +395,7 @@ class BenhNhanServiceV2{
         $dataYLenh['gia_nhan_dan'] = (double)$this->dataYeuCauKham['gia_nhan_dan'];
         $dataYLenh['gia_bhyt'] = (double)$this->dataYeuCauKham['gia_bhyt'];
         $dataYLenh['gia_nuoc_ngoai'] = (double)$this->dataYeuCauKham['gia_nuoc_ngoai'];
-        $dataYLenh['id']  = $this->yLenhRepository->createDataYLenh($yLenhParams);
+        $dataYLenh['id']  = $this->yLenhRepository->createDataYLenh($dataYLenh);
         return $dataYLenh;
     }
     
@@ -382,9 +415,9 @@ class BenhNhanServiceV2{
     
     private function setDataTHX($params) {
         $this->dataTenTHX = Util::getDataFromGooglePlace($this->dataTHX);
-        $this->dataTinh = $this->danhMucTongHopRepository->getDataTinh(mb_convert_case($this->dataTenTHX['ten_tinh_thanh_pho'], MB_CASE_UPPER, "UTF-8"));
-        $this->dataHuyen = $this->danhMucTongHopRepository->getDataHuyen($this->dataTinh['ma_tinh'], mb_convert_case($this->dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
-        $this->dataXa = $this->danhMucTongHopRepository->getDataXa($params['tinh_thanh_pho_id'], $params['quan_huyen_id'], $params['phuong_xa_id']);
+        $this->dataTinh = $this->hanhChinhRepository->getDataTinh(mb_convert_case($this->dataTenTHX['ten_tinh_thanh_pho'], MB_CASE_UPPER, "UTF-8"));
+        $this->dataHuyen = $this->hanhChinhRepository->getDataHuyen($this->dataTinh['ma_tinh'], mb_convert_case($this->dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
+        $this->dataXa = $this->hanhChinhRepository->getDataXa($params['tinh_thanh_pho_id'], $params['quan_huyen_id'], $params['phuong_xa_id']);
     }
     
 }

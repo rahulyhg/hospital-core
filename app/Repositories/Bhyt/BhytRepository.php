@@ -52,7 +52,7 @@ class BhytRepository extends BaseRepositoryV2
     
     public function getMaBhytTreEm($maTinh)
     {
-        $result = Bhyt::where('ms_bhyt', 'LIKE', 'TE1'.'%')
+        $result = $this->model->where('ms_bhyt', 'LIKE', 'TE1'.'%')
                         ->orderBy('ms_bhyt','desc')
                         ->first();
         if($result){
