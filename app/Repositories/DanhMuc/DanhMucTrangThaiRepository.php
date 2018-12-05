@@ -2,8 +2,10 @@
 namespace App\Repositories\DanhMuc;
 use DB;
 use App\Repositories\BaseRepository;
+
 class DanhMucTrangThaiRepository extends BaseRepository
 {
+
     public function getListLoaiVienPhi()
     {
         $dataSet = DB::table('danh_muc_trang_thai')
