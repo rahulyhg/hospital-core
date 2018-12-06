@@ -5,15 +5,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
+use App\Services\DanhMucTrangThaiService;
 use App\Http\Requests\DanhMucDichVuFormRequest;
 use App\Http\Requests\DanhMucTongHopFormRequest;
+use App\Http\Requests\DanhMucTrangThaiFormRequest;
 
 class DanhMucController extends APIController
 {
-    public function __construct(DanhMucDichVuService $dmdvService, DanhMucTongHopService $dmthService)
+    public function __construct(DanhMucDichVuService $dmdvService, DanhMucTongHopService $dmthService, DanhMucTrangThaiService $dmttService)
     {
         $this->dmdvService = $dmdvService;
         $this->dmthService = $dmthService;
+        $this->dmttService = $dmttService;
     }
     
     public function getListDanhMucDichVu(Request $request)
@@ -185,6 +188,90 @@ class DanhMucController extends APIController
     public function getAllKhoaDanhMucTongHop()
     {
         $data = $this->dmthService->getAllKhoa();
-        return $this->respond($data);       
+        return $this->respond($data);  
+    }
+    
+    public function getListDanhMucTrangThai(Request $request) {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        
+        $data = $this->dmttService->getListDanhMucTrangThai($limit, $page);
+        
+        if(empty($data)) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        return $this->respond($data);
+    }
+    
+    public function getListDanhMucTrangThaiByKhoa($khoa) {
+        if($khoa === null){
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+        $data = $this->dmttService->getListDanhMucTrangThaiByKhoa($khoa);
+        
+        if(empty($data)) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        return $this->respond($data);
+    }
+    
+    public function getDmttById($dmdvId)
+    {
+        $isNumericId = is_numeric($dmdvId);
+        
+        if($isNumericId) {
+            $data = $this->dmttService->getDanhMucTrangThaiById($dmdvId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function createDanhMucTrangThai(DanhMucTrangThaiFormRequest $request) {
+        $input = $request->all();
+        
+        $id = $this->dmttService->createDanhMucTrangThai($input);
+        if($id) {
+            $this->setStatusCode(201);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
+    }
+    
+    public function updateDanhMucTrangThai($dmttId, DanhMucTrangThaiFormRequest $request)
+    {
+        try {
+            $isNumericId = is_numeric($dmttId);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $this->dmttService->updateDanhMucTrangThai($dmttId, $input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    
+    public function deleteDanhMucTrangThai($dmttId)
+    {
+        $isNumericId = is_numeric($dmttId);
+        
+        if($isNumericId) {
+            $this->dmttService->deleteDanhMucTrangThai($dmttId);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);        
     }
 }

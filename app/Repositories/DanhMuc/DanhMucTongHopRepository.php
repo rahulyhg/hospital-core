@@ -11,7 +11,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     }
     public function getListNgheNghiep()
     {
-        $ngheNghiep = DB::table('danh_muc_tong_hop')
+        $ngheNghiep = $this->model
                 ->where('khoa','nghe_nghiep')
                 ->get();
         return $ngheNghiep;    
@@ -19,7 +19,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     
     public function getListBenhVien()
     {
-        $benhVien = DB::table('danh_muc_benh_vien')
+        $benhVien = $this->model
                 ->orderBy('id')
                 ->get();
         return $benhVien;    
@@ -27,7 +27,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     
     public function getListDanToc()
     {
-        $danToc = DB::table('danh_muc_tong_hop')
+        $danToc = $this->model
                 ->where('khoa','dan_toc')
                 ->get();
         return $danToc;    
@@ -35,19 +35,11 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     
     public function getListQuocTich()
     {
-        $quocTich = DB::table('danh_muc_tong_hop')
+        $quocTich = $this->model
                 ->where('khoa','quoc_tich')
                 ->orderBy('gia_tri')
                 ->get();
         return $quocTich;    
-    }
-    
-    public function getListTinh()
-    {
-        $tinh = DB::table('danh_muc_tong_hop')
-                ->where('khoa','tinh')
-                ->get();
-        return $tinh;    
     }
     
     public function getTenDanhMucTongHopByKhoaGiaTri($khoa, $gia_tri)
@@ -60,45 +52,9 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
             'danh_muc_tong_hop.gia_tri',
             'danh_muc_tong_hop.dien_giai'
         ];
-        $data = DB::table('danh_muc_tong_hop')
+        $data = $this->model
                 ->where($where)
                 ->get($column);
-        $array = json_decode($data, true);
-      
-        return collect($array)->first();  
-    }
-    
-    public function getDataTinh($value)
-    {
-        $data = DB::table('hanh_chinh')
-                ->whereRaw("upper(hanh_chinh.ten_tinh) like '%$value%'")
-                ->get();
-        $array = json_decode($data, true);
-      
-        return collect($array)->first();  
-    }
-  
-    public function getDataHuyen($huyen_matinh, $ten_huyen)
-    {
-        $data = DB::table('hanh_chinh')
-                ->where('hanh_chinh.huyen_matinh', '=', $huyen_matinh)
-                ->whereRaw("upper(hanh_chinh.ten_huyen) like '%$ten_huyen%'")
-                ->get();
-        $array = json_decode($data, true);
-      
-        return collect($array)->first(); 
-    }
-    
-    public function getDataXa($xa_matinh, $xa_mahuyen, $ten_xa)
-    {
-        $where = [
-                ['hanh_chinh.xa_matinh', '=', $xa_matinh],
-                ['hanh_chinh.xa_mahuyen', '=', $xa_mahuyen],
-            ];
-        $data = DB::table('hanh_chinh')
-                ->where($where)
-                ->whereRaw("upper(hanh_chinh.ten_xa) like '%$ten_xa%'")
-                ->get();
         $array = json_decode($data, true);
       
         return collect($array)->first();  
@@ -203,4 +159,5 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     
         return $data;
     }
+
 }

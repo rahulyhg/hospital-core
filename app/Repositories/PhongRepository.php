@@ -18,52 +18,48 @@ class PhongRepository extends BaseRepositoryV2
     
     public function getListPhong($loaiPhong,$khoaId)
     {
-        $phong = DB::table('phong')
-                ->where([
-                    'loai_phong'=>$loaiPhong,
-                    'khoa_id'=>$khoaId,
-                    'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
-                    'trang_thai'=>self::TRANG_THAI_HOAT_DONG
-                    ])
-                ->orderBy('ten_phong')
-                ->get();
+        $phong = $this->model->where([
+                                'loai_phong'=>$loaiPhong,
+                                'khoa_id'=>$khoaId,
+                                'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
+                                'trang_thai'=>self::TRANG_THAI_HOAT_DONG
+                            ])
+                            ->orderBy('ten_phong')
+                            ->get();
         return $phong;    
     }
     
     public function getNhomPhong($loaiPhong,$khoaId)
     {
-        $phong = DB::table('phong')
-                ->where([
-                    'loai_phong'=>$loaiPhong,
-                    'khoa_id'=>$khoaId,
-                    'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
-                    'trang_thai'=>self::TRANG_THAI_HOAT_DONG
-                    ])
-                ->orderBy('ten_nhom')
-                ->distinct()
-                ->get(['ten_nhom','ma_nhom']);
+        $phong = $this->model->where([
+                                'loai_phong'=>$loaiPhong,
+                                'khoa_id'=>$khoaId,
+                                'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
+                                'trang_thai'=>self::TRANG_THAI_HOAT_DONG
+                            ])
+                            ->orderBy('ten_nhom')
+                            ->distinct()
+                            ->get(['ten_nhom','ma_nhom']);
         return $phong;    
     }
     
     public function getDataById($id)
     {
-        $phong = DB::table('phong')
-                ->where(['id'=>$id])
-                ->get()
-                ->first();
+        $phong = $this->model->where(['id'=>$id])
+                            ->get()
+                            ->first();
         return $phong;
     }
     
     public function getPhongHanhChinhByKhoaID($khoaId)
     {
-        $phong = DB::table('phong')
-                ->where([
-                    ['khoa_id', '=', $khoaId],
-                    ['loai_phong', '=', self::PHONG_HANH_CHINH],
-                    ['loai_benh_an', '!=', self::BENH_AN_KHAM_BENH]
-                ])
-                ->get()
-                ->first();
+        $phong = $this->model->where([
+                                ['khoa_id', '=', $khoaId],
+                                ['loai_phong', '=', self::PHONG_HANH_CHINH],
+                                ['loai_benh_an', '!=', self::BENH_AN_KHAM_BENH]
+                            ])
+                            ->get()
+                            ->first();
         return $phong;
     }
 }

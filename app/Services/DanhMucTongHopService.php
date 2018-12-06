@@ -97,4 +97,5 @@ class DanhMucTongHopService {
         $data = $this->danhMucTongHopRepository->getAllKhoa();
         return $data;
     }
+
 }

@@ -4,6 +4,13 @@ namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use App\Services\SamplePatientService;
+use Illuminate\Support\Facades\Redis;
+use Predis\Client;
+use Aws\Sqs\SqsClient;
+use Aws\Exception\AwsException;
+use App\Repositories\Sqs\Hsba\HsbaKhoaPhongRepository as HsbaKhoaPhongSqsRepository;
+use App\Repositories\Redis\Hsba\HsbaKhoaPhongRepository as HsbaKhoaPhongRedisRepository;
+use Carbon\Carbon;
 
 class SamplePatientController extends APIController
 {
@@ -12,9 +19,12 @@ class SamplePatientController extends APIController
      *
      * @param SamplePatientService $service
      */
-    public function __construct(SamplePatientService $service)
+    public function __construct(SamplePatientService $service, HsbaKhoaPhongSqsRepository $sqsRepo, HsbaKhoaPhongRedisRepository $redisRepo)
     {
         $this->service = $service;
+        $this->sqsRepo = $sqsRepo;
+        $this->redisRepo = $redisRepo;
+        $this->redisRepo->_init('today:hsba_khoa_phong');
     }
     
     /**
@@ -26,9 +36,117 @@ class SamplePatientController extends APIController
      */
     public function index(Request $request)
     {
-        $data = $this->service->getDataPatient($request);
+        $list =  $this->redisRepo->getList(100, 1, '', '');
+        var_dump($list);
+        echo "<hr/>";
+        //return 200;
+        $messageAttributes = [
+            'benh_vien_id' => ['DataType' => "Number",
+                                'StringValue' => "1"
+                            ],
+            'khoa_id' => ['DataType' => "Number",
+                                'StringValue' => "10"
+                            ],
+            'phong_id' => ['DataType' => "Number",
+                                'StringValue' => "100"
+                            ]
+        ];
         
-        return $data;
+        $messageBody = [
+            'benh_vien_id' => 1,
+            'hsba_id' => 1001, 
+            'hsba_khoa_phong_id' => 10010, 
+            'ten_benh_nhan' => 'NNVN', 
+            'nam_sinh' => 1987, 
+            'ms_bhyt' => 'BBBBAAAXXXzzz', 
+            'trang_thai_hsba' => 1,
+            'ngay_tao' => '2018-03-14', 
+            'ngay_ra_vien' => '2018-05-14', 
+            'thoi_gian_vao_vien' => '2018-11-18 15:29:26', 
+            'thoi_gian_ra_vien' => '2018-11-19 15:29:26',
+            'trang_thai_cls' => 1, 
+            'ten_trang_thai_cls' => 'TEN_CLS', 
+            'trang_thai' => 1, 
+            'ten_trang_thai' => 'TRỐN TRẠI'
+        ];
+        
+        try {
+            // Push
+            
+            $this->sqsRepo->push(
+                $messageAttributes,$messageBody
+            );
+            
+            // Pop
+            
+            $messageObjects = $this->sqsRepo->pop(8);
+             
+            // foreach ($messageObjects as $k => $messageObject) {
+                
+                
+            //     $messageBody = $messageObject->getBody();
+            //     //echo "<hr/><br/>";
+            //     //var_dump($messageObject->message['Body']);
+            //     //var_dump($messageBody);
+            //     //continue;
+            //     $benhVienId = $messageBody['benh_vien_id'];
+            //     $khoaId = 10;
+            //     $phongId= 100;
+                
+                
+            //     $hsbaKPId = $messageBody['hsba_khoa_phong_id'];
+            //     $thoiGianVaoVienObject = Carbon::createFromFormat('Y-m-d H:i:s', $messageBody['thoi_gian_vao_vien']);
+            //     $ngayVaoVien = $thoiGianVaoVienObject->format('Y-m-d');
+            //     $suffix = $benhVienId.':'.$khoaId.':'.$phongId.':'.$ngayVaoVien.":".$hsbaKPId;
+            //     $this->redisRepo->hmset($suffix,$messageBody);
+                 
+            // }
+            
+            // echo "<pre>";
+            // var_dump ($messages);
+            // echo "</pre>";
+            
+        } catch ( \Exception $ex) {
+            echo $ex->getMessage();
+        }
+        
+        
+        /*
+        $queueConfig = config('queue.connections.sqs');
+        return var_dump($queueConfig);
+        $client = new SqsClient([
+            //'profile' => 'default',
+            'region' => $queueConfig['region'],
+            'version' => $queueConfig['version'],
+            'credentials' => [
+                'key' => $queueConfig['key'],
+                'secret' => $queueConfig['secret'],
+            ]
+        ]);
+        
+        $params = [
+            'DelaySeconds' => 10,
+            'MessageAttributes' => [
+            ],
+            'MessageBody' => "10101",
+            'QueueUrl' => $queueConfig['prefix'].'/'.'add-patient-hsba-to-cache-list'
+        ];
+        
+        try {
+            $result = $client->sendMessage($params);
+            var_dump($result);
+        } catch (AwsException $e) {
+            // output error message if fails
+            error_log($e->getMessage());
+        }
+                
+        */
+        //Redis::set('name', 'GS');
+        $name = Redis::get('naming');
+        return $name;
+        //$data = $this->service->getDataPatient($request);
+        
+        //return $data;
     }
     
     /**
