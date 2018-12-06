@@ -36,27 +36,6 @@ class DanhMucTongHopService {
         );
     }
     
-    public function getListTinh()
-    {
-        return HanhChinhResource::collection(
-           $this->danhMucTongHopRepository->getListTinh()
-        );
-    }
-    
-    public function getListHuyen($maTinh)
-    {
-        return HanhChinhResource::collection(
-           $this->danhMucTongHopRepository->getListHuyen($maTinh)
-        );
-    }
-    
-    public function getListXa($maHuyen,$maTinh)
-    {
-        return HanhChinhResource::collection(
-           $this->danhMucTongHopRepository->getListXa($maHuyen,$maTinh)
-        );
-    }
-    
     public function getListDanhMucTongHop($limit, $page)
     {
         $data = $this->danhMucTongHopRepository->getListDanhMucTongHop($limit, $page);
@@ -92,4 +71,5 @@ class DanhMucTongHopService {
     {
         $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
     }
+    
 }
