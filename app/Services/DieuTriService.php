@@ -238,7 +238,7 @@ class DieuTriService
                     case self::XT_KET_THUC_KHAM: 
                         $hinh_thuc_ra_vien = self::RA_VIEN;
                         break;
-                    case self::XT_TRA_BN_KHONG_KHAM:    //??? hỏi bác sỹ
+                    case self::XT_TRA_BN_KHONG_KHAM:    
                         $hinh_thuc_ra_vien = self::RA_VIEN;
                         break;
                     case self::XT_BO_VE: 
