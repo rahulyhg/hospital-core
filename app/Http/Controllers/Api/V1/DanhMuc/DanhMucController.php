@@ -104,8 +104,10 @@ class DanhMucController extends APIController
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
+        $dienGiai = $request->query('dien_giai', '');
+        $khoa = $request->query('khoa', '');
         
-        $data = $this->dmthService->getListDanhMucTongHop($limit, $page);
+        $data = $this->dmthService->getListDanhMucTongHop($limit, $page, $dienGiai, $khoa);
         return $this->respond($data);
     }
     
@@ -181,6 +183,12 @@ class DanhMucController extends APIController
         }
         
         return $this->respond([]);        
+    }
+    
+    public function getAllKhoaDanhMucTongHop()
+    {
+        $data = $this->dmthService->getAllKhoa();
+        return $this->respond($data);  
     }
     
     public function getListDanhMucTrangThai(Request $request) {
