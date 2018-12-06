@@ -109,9 +109,16 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
         
     }
     
-    public function getListDanhMucTongHop($limit = 100, $page = 1) {
+    public function getListDanhMucTongHop($limit = 100, $page = 1, $dienGiai = '', $khoa = '') {
         $offset = ($page - 1) * $limit;
-        $query = $this->model->where('id', '>', 0);
+        
+        $query = $this->model
+                ->where('dien_giai', 'like', '%' . $dienGiai . '%');
+                
+        if($khoa != "") {
+            $query->where('khoa', $khoa);
+        }        
+        
         $totalRecord = $query->count();
         
         if($totalRecord) {
@@ -188,5 +195,12 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     public function deleteDanhMucTongHop($dmthId)
     {
         $this->model->destroy($dmthId);
+    }
+    
+    public function getAllKhoa()
+    {
+        $data = $this->model->select('khoa')->distinct()->get();
+    
+        return $data;
     }
 }

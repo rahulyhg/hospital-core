@@ -57,10 +57,9 @@ class DanhMucTongHopService {
         );
     }
     
-    public function getListDanhMucTongHop($limit, $page)
+    public function getListDanhMucTongHop($limit, $page, $dienGiai, $khoa)
     {
-        $data = $this->danhMucTongHopRepository->getListDanhMucTongHop($limit, $page);
-        
+        $data = $this->danhMucTongHopRepository->getListDanhMucTongHop($limit, $page, $dienGiai, $khoa);
         return $data;
     }
     
@@ -91,5 +90,11 @@ class DanhMucTongHopService {
     public function deleteDanhMucTongHop($dmthId)
     {
         $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
+    }
+    
+    public function getAllKhoa()
+    {
+        $data = $this->danhMucTongHopRepository->getAllKhoa();
+        return $data;
     }
 }
