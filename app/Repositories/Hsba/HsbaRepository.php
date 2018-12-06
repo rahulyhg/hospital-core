@@ -20,6 +20,7 @@ class HsbaRepository extends BaseRepositoryV2
     {
         $column = [
             'hsba.id as hsba_id',
+            'hsba.benh_nhan_id',
             'hsba.ten_benh_nhan as ho_va_ten',
             'hsba.ten_benh_nhan',
             'hsba.gioi_tinh_id as gioi_tinh',
@@ -41,9 +42,10 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.email_benh_nhan',
             'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
-            'hsba.loai_nguoi_than',
-            'hsba.ten_nguoi_than',
-            'hsba.dien_thoai_nguoi_than',
+            // 'hsba.loai_nguoi_than',
+            // 'hsba.ten_nguoi_than',
+            // 'hsba.dien_thoai_nguoi_than',
+            'hsba.nguoi_than',
             'hsba.loai_benh_an',
             'hsba.trang_thai_hsba',
             'hsba.is_dang_ky_truoc',
@@ -165,7 +167,7 @@ class HsbaRepository extends BaseRepositoryV2
             'sttpk.stt_don_tiep_id',
         ];
         
-        $query = DB::table('hsba')
+        $query = $this->model
                 ->leftJoin('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'hsba_khoa_phong.loai_benh_an')
@@ -194,7 +196,7 @@ class HsbaRepository extends BaseRepositoryV2
   
     public function createDataHsba(array $input)
     {
-        $id = Hsba::create($input)->id;
+        $id = $this->model->create($input)->id;
         return $id;
     }
     
@@ -214,7 +216,7 @@ class HsbaRepository extends BaseRepositoryV2
             $input['ten_tinh_thanh_pho'] = $data['ten_tinh_thanh_pho'];
         }
         
-        $hsba = Hsba::findOrFail($hsbaId);
+        $hsba = $this->model->findOrFail($hsbaId);
 		$hsba->update($input);
     }
     

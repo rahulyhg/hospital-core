@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories;
+namespace App\Repositories\DanhMuc;
 
 use DB;
 use App\Repositories\BaseRepositoryV2;
@@ -29,7 +29,7 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
             $oderBy = "ASC";
         else
             $oderBy = "DESC";
-        $data = DB::table('danh_muc_dich_vu')
+        $data = $this->model
                 ->where('loai_nhom', $input['loai_nhom'])
                 ->orderBy('ngoai_gio',$oderBy)
                 ->orderBy('ten')
@@ -69,7 +69,7 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
             'thoi_gian_cap_nhat'
         ];
         
-        $query = DB::table('danh_muc_dich_vu')
+        $query = $this->model
             ->leftJoin('danh_muc_tong_hop as dmth', function($join) {
                 $join->on(DB::raw('cast(dmth.gia_tri as integer)'), '=', 'danh_muc_dich_vu.loai_nhom')
                     ->where('dmth.khoa', '=', 'loai_nhom_dich_vu');
@@ -103,19 +103,19 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
     
     public function createDanhMucDichVu(array $input)
     {
-        $id = DanhMucDichVu::create($input)->id;
+        $id = $this->create($input)->id;
         return $id;
     }
     
     public function updateDanhMucDichVu($dmdvId, array $input)
     {
-        $dmdv = DanhMucDichVu::findOrFail($dmdvId);
+        $dmdv = $this->model->findOrFail($dmdvId);
 		$dmdv->update($input);
     }
     
     public function deleteDanhMucDichVu($dmdvId)
     {
-        DanhMucDichVu::destroy($dmdvId);
+        $this->model->destroy($dmdvId);
     }
     
     public function getYLenhByLoaiNhom($loaiNhom)
@@ -168,6 +168,7 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
                     if($itemChildren->ten_nhom == $itemParent->ma) {
                         $itemChildren['key'] = $itemChildren->id;
                         $itemChildren['parent'] = $itemParent->id;
+                        $itemChildren['so_luong'] = 1;
                         return $itemChildren;
                     }
                 })->values()->all();

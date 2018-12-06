@@ -147,7 +147,7 @@ class SttDonTiepController extends APIController
         return $this->respond($data);
     }
     
-    public function checkExistParam($phongId, $benhVienId)
+    private function checkExistParam($phongId, $benhVienId)
     {
         if($phongId === null || $benhVienId === null)
             return false;

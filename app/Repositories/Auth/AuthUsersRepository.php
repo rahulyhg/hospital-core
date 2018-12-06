@@ -1,11 +1,11 @@
 <?php
-namespace App\Repositories;
+namespace App\Repositories\Auth;
 use DB;
-use App\Repositories\BaseRepository;
+use App\Repositories\BaseRepositoryV2;
 use App\Models\Auth\AuthUsers;
 use Carbon\Carbon;
 
-class AuthUsersRepository extends BaseRepository
+class AuthUsersRepository extends BaseRepositoryV2
 {
     public function getModel()
     {
@@ -19,6 +19,8 @@ class AuthUsersRepository extends BaseRepository
                 ->first();
         if($data)
             return $data;
+        else 
+            return null;
     }
     
     public function getUserNameByEmail($email)
@@ -112,13 +114,11 @@ class AuthUsersRepository extends BaseRepository
     
     public function checkEmailbyEmail($email)
     {
-        $data = DB::table('auth_users')
+        $data = $this->model
                 ->where('email', $email)
                 ->first();
         if($data)
-            return true;
-        else
-            return false;
+            return $data;
     }
     
     public function updateAuthUsers($id, array $input)
@@ -130,5 +130,4 @@ class AuthUsersRepository extends BaseRepository
         $update = AuthUsers::findOrFail($id);
 		$update->update($input);
     }    
-    
 }
