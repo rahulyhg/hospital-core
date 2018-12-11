@@ -90,11 +90,6 @@ class PhongKhamController extends APIController
         $input = $request->all();
         $data = $this->dieuTriService->xuTriBenhNhan($input);
         
-        if(!$data) {
-            $this->setStatusCode(400);
-            $data = [];
-        }
-        
         return $this->respond($data);
     }
     

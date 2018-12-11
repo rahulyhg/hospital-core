@@ -65,20 +65,20 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     ->where('tt2.tablename', '=', 'patientstatus');
             });
             
-        // if($phongId != $phongDonTiepID) {
-        //     $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
-        //         $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
-        //             ->where('sttpk.phong_id', '=', $phongId);
-        //     });
+        if($phongId != $phongDonTiepID) {
+            $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
+                $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
+                    ->where('sttpk.phong_id', '=', $phongId);
+            });
             
-        //     $arrayColumn = [
-        //         'sttpk.loai_stt',
-        //         'sttpk.so_thu_tu',
-        //         'sttpk.stt_don_tiep_id',
-        //     ];
+            $arrayColumn = [
+                'sttpk.loai_stt',
+                'sttpk.so_thu_tu',
+                'sttpk.stt_don_tiep_id',
+            ];
             
-        //     $column = array_merge($column, $arrayColumn);
-        // }
+            $column = array_merge($column, $arrayColumn);
+        }
             
         $query = $query->where($where);
         
@@ -125,6 +125,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         
             $data->each(function ($item, $key) {
                 $item->hsba_id = sprintf('%012d', $item->hsba_id);
+                $item->so_thu_tu = sprintf('%03d', $item->so_thu_tu);
             });
         } else {
             $totalPage = 0;

@@ -199,7 +199,7 @@ class DieuTriService
                         $hsbaKpParams['trang_thai'] = $phong->loai_phong == self::PHONG_DIEU_TRI_NOI_TRU || $phong->loai_phong == self::PHONG_DIEU_TRI_NGOAI_TRU ? self::TT_DANG_DIEU_TRI : self::TT_CHO_DIEU_TRI; 
                         $idHsbaKp = $this->hsbaKhoaPhongRepository->createData($hsbaKpParams);
                         
-                        return 'OK';
+                        return "OK";
                     break;
                 }
             }
@@ -267,6 +267,8 @@ class DieuTriService
                 $vienPhiParams = null;
                 $vienPhiParams['trang_thai'] = self::VP_TRANG_THAI;
                 $this->vienPhiRepository->updateVienPhi($hsbaKp['vien_phi_id'], $vienPhiParams);
+                
+                return "OK";
             }
             catch (\Exception $ex) {
                  throw $ex;
