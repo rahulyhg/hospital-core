@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\V1\DanhMuc;
 
 use Illuminate\Http\Request;
+use DB;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
