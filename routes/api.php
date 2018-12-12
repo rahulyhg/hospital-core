@@ -57,6 +57,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
         Route::post('register','DonTiep\DonTiepController@register');
+        Route::get('getListPhieuKham','DonTiep\DonTiepController@getListPhieuKham');
+        Route::get('getListYLenhByPhieuKham/{phieuKhamId}','DonTiep\DonTiepController@getListYLenhByPhieuKham');
     });
     
     Route::group(['prefix' => 'setting'], function () {
@@ -86,6 +88,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('getLichSuKhamDieuTri/{benhNhanId}','DangKyKhamBenh\DangKyKhamBenhController@getLichSuKhamDieuTriByBenhNhanId');
     	Route::get('getListIcd10ByCode/{icd10Code}','DangKyKhamBenh\DangKyKhamBenhController@getListIcd10ByCode');
     	Route::get('bhytTreEm/{maTinh}','DangKyKhamBenh\DangKyKhamBenhController@getBhytTreEm');
+    	
     });
     
     Route::group(['prefix' => 'phongkham'], function () {

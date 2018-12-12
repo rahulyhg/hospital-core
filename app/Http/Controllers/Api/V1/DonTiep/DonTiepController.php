@@ -10,6 +10,7 @@ use App\Services\HsbaService;
 use App\Services\BenhNhanServiceV2;
 use App\Services\BhytService;
 use App\Services\PhongService;
+use App\Services\PhieuKhamService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 //use Illuminate\Support\Facades\Redis;
@@ -22,7 +23,8 @@ class DonTiepController extends APIController
         HsbaService $hsbaService, 
         BenhNhanServiceV2 $benhNhanService, 
         BhytService $bhytService,
-        PhongService $phongService
+        PhongService $phongService,
+        PhieuKhamService $phieuKhamService
     )
     {
         $this->sttDonTiepService = $sttDonTiepService;
@@ -31,6 +33,7 @@ class DonTiepController extends APIController
         $this->benhNhanService = $benhNhanService;
         $this->bhytService = $bhytService;
         $this->phongService = $phongService;
+        $this->phieuKhamService = $phieuKhamService;
     }
     
     public function getListPatientByKhoaPhong($phongId = 0, $benhVienId, Request $request)
@@ -121,5 +124,19 @@ class DonTiepController extends APIController
         } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
         }
+    }
+    
+    public function getListPhieuKham(Request $request) {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $result = $this->phieuKhamService->getListPhieuKham($limit, $page);
+        return $this->respond($result);
+    }
+    
+    public function getListYLenhByPhieuKham($phieuKhamId, Request $request) {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $result = $this->phieuKhamService->getListYLenhByPhieuKham($phieuKhamId, $limit, $page);
+        return $this->respond($result);
     }
 }
