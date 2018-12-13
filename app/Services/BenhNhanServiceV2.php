@@ -260,9 +260,9 @@ class BenhNhanServiceV2{
         $dataBenhNhan['nghe_nghiep_id'] = ($this->dataNgheNghiep['gia_tri'])??null;
         $dataBenhNhan['dan_toc_id'] = $this->dataDanToc['gia_tri']??null;
         $dataBenhNhan['quoc_tich_id'] = $this->dataQuocTich['gia_tri']??null;
-        $dataBenhNhan['tinh_thanh_pho_id'] = isset($this->dataTinh['ma_tinh'])??null;
-        $dataBenhNhan['quan_huyen_id'] = isset($this->dataHuyen['ma_huyen'])??null;
-        $dataBenhNhan['phuong_xa_id'] = isset($this->dataXa['ma_xa'])??null;
+        $dataBenhNhan['tinh_thanh_pho_id'] = $this->dataTinh['ma_tinh']??null;
+        $dataBenhNhan['quan_huyen_id'] = $this->dataHuyen['ma_huyen']??null;
+        $dataBenhNhan['phuong_xa_id'] = $this->dataXa['ma_xa']??null;
         $dataBenhNhan['nam_sinh'] =  str_limit($dataBenhNhan['ngay_sinh'], 4,'');// TODO - define constant
         //$dataBenhNhan['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
         $dataBenhNhan['nguoi_than'] = '';
@@ -293,9 +293,9 @@ class BenhNhanServiceV2{
         $dataHsba['dan_toc_id'] = $this->dataDanToc['gia_tri']??null;
         $dataHsba['quoc_tich_id'] = $this->dataQuocTich['gia_tri']??null;
         //chưa xử id
-        $dataHsba['tinh_thanh_pho_id'] = $this->dataTinh['ma_tinh']?? null;
-        $dataHsba['quan_huyen_id'] = $this->dataHuyen['ma_huyen'] ??null;
-        $dataHsba['phuong_xa_id'] = $this->dataXa['ma_xa'] ??null;
+        $dataHsba['tinh_thanh_pho_id'] = $this->dataTinh['ma_tinh']??null;
+        $dataHsba['quan_huyen_id'] = $this->dataHuyen['ma_huyen']??null;
+        $dataHsba['phuong_xa_id'] = $this->dataXa['ma_xa']??null;
         $dataHsba['nam_sinh'] =  $this->dataBenhNhan['nam_sinh'];
         //$dataHsba['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
         $dataHsba['nguoi_than'] = '';
