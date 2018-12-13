@@ -65,9 +65,7 @@ class YLenhRepository extends BaseRepositoryV2
             $type = null;
             
             foreach($data as $item) {
-                //$type = self::Y_LENH_TEXT_YEU_CAU_KHAM;
                 if($item->loai_y_lenh == self::Y_LENH_CODE_YEU_CAU_KHAM) {
-                    $itemXetNghiem++;
                     $type = self::Y_LENH_TEXT_YEU_CAU_KHAM;
                 }
                 if($item->loai_y_lenh == self::Y_LENH_CODE_XET_NGHIEM) {
