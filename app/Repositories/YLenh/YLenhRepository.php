@@ -8,10 +8,15 @@ use Carbon\Carbon;
 
 class YLenhRepository extends BaseRepositoryV2
 {
-    const Y_LENH_YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
-    const Y_LENH_XET_NGHIEM = 'XÉT NGHIỆM';
-    const Y_LENH_CHAN_DOAN_HINH_ANH = 'CHẨN ĐOÁN HÌNH ẢNH';
-    const Y_LENH_CHUYEN_KHOA = 'CHUYÊN KHOA';
+    const Y_LENH_CODE_YEU_CAU_KHAM = 1;
+    const Y_LENH_CODE_XET_NGHIEM = 2;
+    const Y_LENH_CODE_CHAN_DOAN_HINH_ANH = 3;
+    const Y_LENH_CODE_CHUYEN_KHOA = 4;
+    
+    const Y_LENH_TEXT_YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
+    const Y_LENH_TEXT_XET_NGHIEM = 'XÉT NGHIỆM';
+    const Y_LENH_TEXT_CHAN_DOAN_HINH_ANH = 'CHẨN ĐOÁN HÌNH ẢNH';
+    const Y_LENH_TEXT_CHUYEN_KHOA = 'CHUYÊN KHOA';
     
     public function getModel()
     {
@@ -60,19 +65,22 @@ class YLenhRepository extends BaseRepositoryV2
             $type = null;
             
             foreach($data as $item) {
-                $type = self::Y_LENH_YEU_CAU_KHAM;
-                
-                if($item->loai_y_lenh == 2) {
+                //$type = self::Y_LENH_TEXT_YEU_CAU_KHAM;
+                if($item->loai_y_lenh == self::Y_LENH_CODE_YEU_CAU_KHAM) {
                     $itemXetNghiem++;
-                    $type = self::Y_LENH_XET_NGHIEM;
+                    $type = self::Y_LENH_TEXT_YEU_CAU_KHAM;
                 }
-                if($item->loai_y_lenh == 3) {
+                if($item->loai_y_lenh == self::Y_LENH_CODE_XET_NGHIEM) {
+                    $itemXetNghiem++;
+                    $type = self::Y_LENH_TEXT_XET_NGHIEM;
+                }
+                if($item->loai_y_lenh == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
                     $itemChanDoanHinhAnh++;
-                    $type = self::Y_LENH_CHAN_DOAN_HINH_ANH;
+                    $type = self::Y_LENH_TEXT_CHAN_DOAN_HINH_ANH;
                 }
-                if($item->loai_y_lenh == 4) {
+                if($item->loai_y_lenh == self::Y_LENH_CODE_CHUYEN_KHOA) {
                     $itemChuyenKhoa++;
-                    $type = self::Y_LENH_CHUYEN_KHOA;
+                    $type = self::Y_LENH_TEXT_CHUYEN_KHOA;
                 }
                     
                 // $date = Carbon::parse($item->thoi_gian_chi_dinh)->format('d/m/Y');
