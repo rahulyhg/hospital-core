@@ -77,7 +77,8 @@ class SttPhongKhamRepository extends BaseRepositoryV2
                         'hsba_khoa_phong_id' => $params['hsba_khoa_phong_id'],
                         'auth_users_id' => null,
                         'stt_don_tiep_id' => $params['stt_don_tiep_id'],
-                        'ten_phong' => $params['ten_phong']
+                        'ten_phong' => $params['ten_phong'],
+                        'ma_phong' => $params['ma_phong']
                     ];
                     
         $this->model->create($attributes);
@@ -93,7 +94,8 @@ class SttPhongKhamRepository extends BaseRepositoryV2
             'hsba_id',
             'hsba_khoa_phong_id',
             'phong_id',
-            'ten_phong'
+            'ten_phong',
+            'ma_phong'
         ];
         
         $data = $this->model->where('hsba_id', '=', $hsbaId)
