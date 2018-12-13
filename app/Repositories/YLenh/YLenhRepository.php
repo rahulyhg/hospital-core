@@ -8,10 +8,10 @@ use Carbon\Carbon;
 
 class YLenhRepository extends BaseRepositoryV2
 {
-    const YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
-    const XET_NGHIEM = 'XÉT NGHIỆM';
-    const CHAN_DOAN_HINH_ANH = 'CHẨN ĐOÁN HÌNH ẢNH';
-    const CHUYEN_KHOA = 'CHUYÊN KHOA';
+    const Y_LENH_YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
+    const Y_LENH_XET_NGHIEM = 'XÉT NGHIỆM';
+    const Y_LENH_CHAN_DOAN_HINH_ANH = 'CHẨN ĐOÁN HÌNH ẢNH';
+    const Y_LENH_CHUYEN_KHOA = 'CHUYÊN KHOA';
     
     public function getModel()
     {
@@ -60,19 +60,19 @@ class YLenhRepository extends BaseRepositoryV2
             $type = null;
             
             foreach($data as $item) {
-                $type = self::YEU_CAU_KHAM;
+                $type = self::Y_LENH_YEU_CAU_KHAM;
                 
                 if($item->loai_y_lenh == 2) {
                     $itemXetNghiem++;
-                    $type = self::XET_NGHIEM;
+                    $type = self::Y_LENH_XET_NGHIEM;
                 }
                 if($item->loai_y_lenh == 3) {
                     $itemChanDoanHinhAnh++;
-                    $type = self::CHAN_DOAN_HINH_ANH;
+                    $type = self::Y_LENH_CHAN_DOAN_HINH_ANH;
                 }
                 if($item->loai_y_lenh == 4) {
                     $itemChuyenKhoa++;
-                    $type = self::CHUYEN_KHOA;
+                    $type = self::Y_LENH_CHUYEN_KHOA;
                 }
                     
                 // $date = Carbon::parse($item->thoi_gian_chi_dinh)->format('d/m/Y');
