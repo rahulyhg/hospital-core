@@ -8,6 +8,11 @@ use Carbon\Carbon;
 
 class YLenhRepository extends BaseRepositoryV2
 {
+    const YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
+    const XET_NGHIEM = 'XÉT NGHIỆM';
+    const CHAN_DOAN_HINH_ANH = 'CHẨN ĐOÁN HÌNH ẢNH';
+    const CHUYEN_KHOA = 'CHUYÊN KHOA';
+    
     public function getModel()
     {
         return YLenh::class;
@@ -55,19 +60,19 @@ class YLenhRepository extends BaseRepositoryV2
             $type = null;
             
             foreach($data as $item) {
-                $type = "YÊU CẦU KHÁM";
+                $type = self::YEU_CAU_KHAM;
                 
                 if($item->loai_y_lenh == 2) {
                     $itemXetNghiem++;
-                    $type = 'XÉT NGHIỆM';
+                    $type = self::XET_NGHIEM;
                 }
                 if($item->loai_y_lenh == 3) {
                     $itemChanDoanHinhAnh++;
-                    $type = 'CHẨN ĐOÁN HÌNH ẢNH';
+                    $type = self::CHAN_DOAN_HINH_ANH;
                 }
                 if($item->loai_y_lenh == 4) {
                     $itemChuyenKhoa++;
-                    $type = 'CHUYÊN KHOA';
+                    $type = self::CHUYEN_KHOA;
                 }
                     
                 // $date = Carbon::parse($item->thoi_gian_chi_dinh)->format('d/m/Y');

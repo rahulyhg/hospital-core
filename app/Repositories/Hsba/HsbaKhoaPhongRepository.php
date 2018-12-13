@@ -315,5 +315,10 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                             ->where($where)
                             ->get($column);
         return $result;
-    }    
+    }  
+    
+    public function batDauKham($hsbaKhoaPhongId)
+    {
+		$this->model->where('id', '=', $hsbaKhoaPhongId)->update(['thoi_gian_vao_vien' => Carbon::now()->toDateTimeString()]);
+    }
 }

@@ -154,4 +154,16 @@ class PhongKhamController extends APIController
         
         return $this->respond($data);
     }
+    
+    public function batDauKham($hsbaKhoaPhongId)
+    {
+        if(is_numeric($hsbaKhoaPhongId)) {
+            $this->hsbaKhoaPhongService->batDauKham($hsbaKhoaPhongId);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
+    }
 }
