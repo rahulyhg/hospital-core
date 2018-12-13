@@ -198,8 +198,6 @@ class DieuTriService
                         //kiểm tra phòng chuyển đến có phải là phòng điều trị -> nếu đúng -> lấy trạng thái = 2: đang điều trị ngược lại 0: đang chờ điều trị
                         $hsbaKpParams['trang_thai'] = $phong->loai_phong == self::PHONG_DIEU_TRI_NOI_TRU || $phong->loai_phong == self::PHONG_DIEU_TRI_NGOAI_TRU ? self::TT_DANG_DIEU_TRI : self::TT_CHO_DIEU_TRI; 
                         $idHsbaKp = $this->hsbaKhoaPhongRepository->createData($hsbaKpParams);
-                        
-                        return 'OK';
                     break;
                 }
             }

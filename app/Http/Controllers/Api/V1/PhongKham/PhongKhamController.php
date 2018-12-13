@@ -90,11 +90,6 @@ class PhongKhamController extends APIController
         $input = $request->all();
         $data = $this->dieuTriService->xuTriBenhNhan($input);
         
-        if(!$data) {
-            $this->setStatusCode(400);
-            $data = [];
-        }
-        
         return $this->respond($data);
     }
     
@@ -158,5 +153,17 @@ class PhongKhamController extends APIController
         }
         
         return $this->respond($data);
+    }
+    
+    public function batDauKham($hsbaKhoaPhongId)
+    {
+        if(is_numeric($hsbaKhoaPhongId)) {
+            $this->hsbaKhoaPhongService->batDauKham($hsbaKhoaPhongId);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
     }
 }
