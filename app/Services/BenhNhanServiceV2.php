@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use DB;
 
+// Repositories
 use App\Repositories\BenhNhan\BenhNhanRepository;
 use App\Repositories\Hsba\HsbaRepository;
 use App\Repositories\Hsba\HsbaKhoaPhongRepository; 
@@ -18,7 +19,12 @@ use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
 use App\Repositories\HanhChinhRepository;
+use App\Repositories\Sqs\Hsba\HsbaKhoaPhongRepository as HsbaKhoaPhongSqsRepository;
+
+// Service
 use App\Services\SttPhongKhamService;
+
+// Others
 use App\Helper\Util;
 use Carbon\Carbon;
 
@@ -84,7 +90,23 @@ class BenhNhanServiceV2{
         'cd_icd10_code', 'cd_icd10_text'
     ];
     
-    public function __construct(BenhNhanRepository $benhNhanRepository, HsbaRepository $hsbaRepository, HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, DanhMucTongHopRepository $danhMucTongHopRepository, BhytRepository $bhytRepository, VienPhiRepository $vienPhiRepository, DieuTriRepository $dieuTriRepository, PhieuYLenhRepository $phieuYLenhRepository, DanhMucDichVuRepository $danhMucDichVuRepository, YLenhRepository $yLenhRepository, PhongRepository $phongRepository, SttPhongKhamService $sttPhongKhamService,HanhChinhRepository $hanhChinhRepository)
+    public function __construct
+    (
+        BenhNhanRepository $benhNhanRepository, 
+        HsbaRepository $hsbaRepository, 
+        HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, 
+        DanhMucTongHopRepository $danhMucTongHopRepository, 
+        BhytRepository $bhytRepository, 
+        VienPhiRepository $vienPhiRepository, 
+        DieuTriRepository $dieuTriRepository, 
+        PhieuYLenhRepository $phieuYLenhRepository, 
+        DanhMucDichVuRepository $danhMucDichVuRepository, 
+        YLenhRepository $yLenhRepository, 
+        PhongRepository $phongRepository, 
+        SttPhongKhamService $sttPhongKhamService,
+        HanhChinhRepository $hanhChinhRepository, 
+        HsbaKhoaPhongSqsRepository $hsbaKhoaPhongSqsRepository
+    )
     {
         $this->benhNhanRepository = $benhNhanRepository;
         $this->hsbaRepository = $hsbaRepository;
@@ -99,6 +121,7 @@ class BenhNhanServiceV2{
         $this->phongRepository = $phongRepository;
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->hanhChinhRepository = $hanhChinhRepository;
+        $this->sqsRepo = $hsbaKhoaPhongSqsRepository;
     }
     
     public function registerBenhNhan(Request $request)
@@ -132,12 +155,6 @@ class BenhNhanServiceV2{
                 $this->dataQuocTich
             ]
         );
-        
-        // $this->dataTHX = !empty($request['thx_gplace_json']) ??null;
-        // if(!empty($this->dataTHX))
-        // {
-        //     $this->setDataTHX($request);
-        // }
         
         $this->dataNhomNguoiThan = new NhomNguoiThan($arrayRequest['loai_nguoi_than'], $arrayRequest['ten_nguoi_than'], $arrayRequest['dien_thoai_nguoi_than']);
         
@@ -189,7 +206,7 @@ class BenhNhanServiceV2{
      * Derive Queue Attributes from dataHsba, dataSttPk
      */
     private function makeQueueAttribute() {
-        $ngayVaoVien = Carbon::now()->isoFormat('YYYY-MM-DD');
+        $ngayVaoVien = Carbon::now()->toDateString();
         $messageAttributes = [
             'benh_vien_id' => ['DataType' => "Number",
                                 'StringValue' => $this->dataHsba['benh_vien_id']
@@ -214,14 +231,14 @@ class BenhNhanServiceV2{
     private function makeQueueBody() {
         $messageBody = [
             'benh_vien_id' => $this->dataHsba['benh_vien_id'],
-            'hsba_id' => $this->dataHsba['hsba_id'], 
+            'hsba_id' => $this->dataHsba['id'], 
             'hsba_khoa_phong_id' => $this->dataHsbaKp['id'], 
             'ten_benh_nhan' => $this->dataBenhNhan['ho_va_ten'], 
             'nam_sinh' => $this->dataBenhNhan['nam_sinh'], 
             'ms_bhyt' => $this->dataBhyt['ms_bhyt'], 
             'trang_thai_hsba' => $this->dataHsba['trang_thai_hsba'],
             'ngay_tao' => $this->dataHsba['ngay_tao'], // Modify repository
-            'ngay_ra_vien' => $this->dataHsba['ngay_ra_vien'], // Modify repository
+            'ngay_ra_vien' => '', // Modify repository
             'thoi_gian_vao_vien' => $this->dataHsbaKp['thoi_gian_vao_vien'], 
             'thoi_gian_ra_vien' => '',
             'trang_thai_cls' => '', 
@@ -252,7 +269,8 @@ class BenhNhanServiceV2{
             $dataBhyt = $params;
             $dataBhyt['id'] = $this->bhytRepository->createDataBhyt($params);
         } else {
-            $dataBhyt['id'] = null; 
+            $dataBhyt['id'] = null;
+            $dataBhyt['ms_bhyt'] = null;
         }
         $this->dataBhyt = $dataBhyt;
         return $this;
@@ -340,7 +358,7 @@ class BenhNhanServiceV2{
         $sttPhongKhamParams['hsba_id'] = $this->dataHsba['id'];
         $sttPhongKhamParams['hsba_khoa_phong_id'] = $this->dataHsbaKp['id'];
         $dataSttPhongKham = $this->sttPhongKhamService->getSttPhongKham($sttPhongKhamParams);
-        $this->dataSttPhongKham = $dataSttPhongKham;
+        $this->dataSttPk = $dataSttPhongKham;
         return $this;
     }
     
@@ -412,7 +430,6 @@ class BenhNhanServiceV2{
         $dataYLenh['gia_nuoc_ngoai'] = (double)$this->dataYeuCauKham['gia_nuoc_ngoai'];
         $dataYLenh['id']  = $this->yLenhRepository->createDataYLenh($dataYLenh);
         $dataYLenh['loai_y_lenh'] = 1; // TODO - define constant
-        return $dataYLenh;
         $this->dataYLenh = $dataYLenh;
         return $this;
     }
