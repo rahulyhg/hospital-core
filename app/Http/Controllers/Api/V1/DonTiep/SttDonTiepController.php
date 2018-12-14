@@ -5,6 +5,9 @@ use Illuminate\Http\Request;
 use App\Services\SttDonTiepService;
 use App\Services\AuthService;
 use App\Http\Controllers\Api\V1\APIController;
+use App\Models\Notify;
+use App\Notifications\NotifyToSlackChannel;
+
 
 class SttDonTiepController extends APIController
 {
@@ -112,6 +115,16 @@ class SttDonTiepController extends APIController
         
         if($isExistParam) {
             $data = $this->service->loadSttDonTiep($input);
+            if($data && sizeof($data) > 0) {
+                $stt_array = [];
+                $tmp = null;
+                foreach($data as $obj) {
+                   $tmp = $obj;
+                   break;
+                }
+                $string = json_encode($tmp);
+                
+            }
         } else {
             $data = null;
             $this->setStatusCode(400);
