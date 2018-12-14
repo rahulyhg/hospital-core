@@ -57,7 +57,7 @@ class SttDonTiepService
     
     public function loadSttDonTiep(array $input)
     {
-        $stt = $this->sttDonTiepRepository->loadSttDonTiep($request);
+        $stt = $this->sttDonTiepRepository->loadSttDonTiep($input);
         
         return SttDonTiepResource::collection($stt);
     }
@@ -69,7 +69,7 @@ class SttDonTiepService
     
     public function countSttDonTiep(array $input)
     {
-        $data = $this->sttDonTiepRepository->countSttDonTiep($request);
+        $data = $this->sttDonTiepRepository->countSttDonTiep($input);
         
         return $data;
     }
