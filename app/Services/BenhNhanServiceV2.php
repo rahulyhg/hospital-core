@@ -49,7 +49,7 @@ class BenhNhanServiceV2{
     private $dataTinh = [];
     private $dataHuyen = [];
     private $dataXa = [];
-    private $dataTHX = null;
+    //private $dataTHX = null;
     private $dataTenTHX = [];
     private $dataNhomNguoiThan = null;
     
@@ -448,12 +448,12 @@ class BenhNhanServiceV2{
         return strlen($value) == 15;
     }
     
-    private function setDataTHX($params) {
-        $this->dataTenTHX = Util::getDataFromGooglePlace($this->dataTHX);
-        $this->dataTinh = $this->hanhChinhRepository->getDataTinh(mb_convert_case($this->dataTenTHX['ten_tinh_thanh_pho'], MB_CASE_UPPER, "UTF-8"));
-        $this->dataHuyen = $this->hanhChinhRepository->getDataHuyen($this->dataTinh['ma_tinh'], mb_convert_case($this->dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
-        $this->dataXa = $this->hanhChinhRepository->getDataXa($params['tinh_thanh_pho_id'], $params['quan_huyen_id'], $params['phuong_xa_id']);
-    }
+    // private function setDataTHX($params) {
+    //     $this->dataTenTHX = Util::getDataFromGooglePlace($this->dataTHX);
+    //     $this->dataTinh = $this->hanhChinhRepository->getDataTinh(mb_convert_case($this->dataTenTHX['ten_tinh_thanh_pho'], MB_CASE_UPPER, "UTF-8"));
+    //     $this->dataHuyen = $this->hanhChinhRepository->getDataHuyen($this->dataTinh['ma_tinh'], mb_convert_case($this->dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
+    //     $this->dataXa = $this->hanhChinhRepository->getDataXa($params['tinh_thanh_pho_id'], $params['quan_huyen_id'], $params['phuong_xa_id']);
+    // }
     
     private function getDataYeucauKham(){
          $this->dataYeuCauKham = $this->danhMucDichVuRepository->getDataDanhMucDichVuById($this->dataHsbaKp['yeu_cau_kham_id']);
@@ -463,7 +463,7 @@ class BenhNhanServiceV2{
     private function updateHsba(){
         //update phong_id từ stt_phong_kham
         //$this->hsbaRepository->updateHsba($idHsba, $thxData);
-        $this->hsbaRepository->updateHsba($this->dataHsba['id'], ['phong_id' => $this->dataSttPk['phong_id'], 'thx_gplace_json' => $this->dataTHX]);
+        $this->hsbaRepository->updateHsba($this->dataHsba['id'], ['phong_id' => $this->dataSttPk['phong_id']]);
         return $this;
     }
     
