@@ -108,7 +108,7 @@ abstract class BaseModel
         
         try {
             $result = $this->client->sendMessage($params);
-            var_dump($result);
+            //var_dump($result);
             if ($result) {
                 return true;
             }
@@ -170,7 +170,7 @@ abstract class BaseModel
     
     public function getBody() {
         echo "getting body:::";
-        var_dump($this->message['Body']);
+        //var_dump($this->message['Body']);
         return json_decode($this->message['Body'],true);
     }
     
