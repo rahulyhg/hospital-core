@@ -41,6 +41,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::delete('patient/{id}', 'SamplePatientController@delete');
     
     Route::post('getpostreq', 'SlackController@getPostReq');
+    Route::post('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');
 
     
     Route::group(['prefix' => 'dontiep'], function () {

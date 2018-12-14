@@ -110,26 +110,27 @@ class SttDonTiepController extends APIController
     
     public function loadSttDonTiep(Request $request)
     {
+        $splits = explode(" ", $request->get('text'));
+        $result = sizeof($splits) > 1 ? 'benhVienId=' . $splits[0] . ' phongId=' . $splits[1] : '';
+        
         $isExistParam = $this->checkExistParam($request['phongId'], $request['benhVienId']);
         $input = $request->all();
+        $isExistParam = true;
+        
+        $input = [
+            'benhVienId' => $splits[0],
+            'phongId' => $splits[1]
+        ];
+        
         
         if($isExistParam) {
             $data = $this->service->loadSttDonTiep($input);
-            if($data && sizeof($data) > 0) {
-                $stt_array = [];
-                $tmp = null;
-                foreach($data as $obj) {
-                   $tmp = $obj;
-                   break;
-                }
-                $string = json_encode($tmp);
-                
-            }
+            //$result = $request->get('text');
+            (new Notify())->notify(new NotifyToSlackChannel($result));
         } else {
             $data = null;
             $this->setStatusCode(400);
         }
-        
         return $this->respond($data);
     }
     

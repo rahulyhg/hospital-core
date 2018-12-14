@@ -45,8 +45,9 @@ class NotifyToSlackChannel extends Notification
 	 
 	 public function toSlack($notifiable)
     {
+        $string = " sent at " . Carbon::now()->toDateTimeString();
         return (new SlackMessage)
-            ->content($this->notification . " sent at " . Carbon::now()->toDateTimeString());
+            ->content($this->notification);
     }
 
     /**
