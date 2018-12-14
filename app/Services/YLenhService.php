@@ -11,6 +11,8 @@ use DB;
 use Carbon\Carbon;
 
 class YLenhService {
+    const PHIEU_DIEU_TRI = 3;
+    
     public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository)
     {
         $this->yLenhRepository = $yLenhRepository;
@@ -26,7 +28,7 @@ class YLenhService {
                 //insert table phieu_y_lenh
                 $phieuYLenhParams = $input;
                 $phieuYLenhParams = array_except($phieuYLenhParams, ['hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan']);
-                $phieuYLenhParams['loai_phieu_y_lenh'] = 2;
+                $phieuYLenhParams['loai_phieu_y_lenh'] = self::PHIEU_DIEU_TRI;
                 $phieuYLenhParams['trang_thai'] = 0;
                 $phieuYLenhId = $this->phieuYLenhRepository->getPhieuYLenhId($phieuYLenhParams);
                 

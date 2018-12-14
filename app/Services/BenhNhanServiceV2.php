@@ -59,6 +59,7 @@ class BenhNhanServiceV2{
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id'
     ];
     
     private $hsbaKeys = [
@@ -67,6 +68,7 @@ class BenhNhanServiceV2{
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
         , 'ms_bhyt', 'benh_vien_id'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id'
     ];
     
     private $hsbaKpKeys = [
@@ -135,12 +137,11 @@ class BenhNhanServiceV2{
             ]
         );
         
-        $this->dataTHX = !empty($request['thx_gplace_json']) ??null;
-        //var_dump( $this->dataTHX ); die;
-        if(!empty($this->dataTHX))
-        {
-            $this->setDataTHX($request);
-        }
+        // $this->dataTHX = !empty($request['thx_gplace_json']) ??null;
+        // if(!empty($this->dataTHX))
+        // {
+        //     $this->setDataTHX($request);
+        // }
         
         $this->dataNhomNguoiThan = new NhomNguoiThan($arrayRequest['loai_nguoi_than'], $arrayRequest['ten_nguoi_than'], $arrayRequest['dien_thoai_nguoi_than']);
         

@@ -39,6 +39,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient', 'SamplePatientController@store');
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
+    
+    Route::post('checkslack', 'SlackIntegration\SlackIntegrationController@checkSlack');
         
 
     
@@ -114,6 +116,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu');
     	Route::get('getYLenhByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getYLenhByLoaiNhom');
     	Route::get('getListDanhMucTongHop','DanhMuc\DanhMucController@getListDanhMucTongHop');
+    	Route::get('getAllKhoaDanhMucTongHop','DanhMuc\DanhMucController@getAllKhoaDanhMucTongHop');
 		Route::get('getDmthById/{dmthId}','DanhMuc\DanhMucController@getDmthById');
     	Route::get('getDanhMucTongHopTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTongHopTheoKhoa');
     	Route::post('createDanhMucTongHop','DanhMuc\DanhMucController@createDanhMucTongHop');
