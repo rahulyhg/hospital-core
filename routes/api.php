@@ -95,7 +95,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('goiSttPhongKham','PhongKham\SttPhongKhamController@goiSttPhongKham');
         Route::get('loadSttPhongKham','PhongKham\SttPhongKhamController@loadSttPhongKham');
         Route::get('finishSttPhongKham/{sttId}','PhongKham\SttPhongKhamController@finishSttPhongKham');
-        
+        Route::get('batDauKham/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@batDauKham');
 		Route::post('updateHsbaKhoaPhong/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@update');
 		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getById');
 		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri');
@@ -114,6 +114,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu');
     	Route::get('getYLenhByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getYLenhByLoaiNhom');
     	Route::get('getListDanhMucTongHop','DanhMuc\DanhMucController@getListDanhMucTongHop');
+    	Route::get('getAllKhoaDanhMucTongHop','DanhMuc\DanhMucController@getAllKhoaDanhMucTongHop');
 		Route::get('getDmthById/{dmthId}','DanhMuc\DanhMucController@getDmthById');
     	Route::get('getDanhMucTongHopTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTongHopTheoKhoa');
     	Route::post('createDanhMucTongHop','DanhMuc\DanhMucController@createDanhMucTongHop');

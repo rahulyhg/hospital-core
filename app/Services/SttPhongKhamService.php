@@ -25,6 +25,7 @@ class SttPhongKhamService
         if($phongKham) {
             $params['phong_id'] = $phongKham->id;
             $params['ten_phong'] = $phongKham->ten_phong;
+            $params['ma_phong'] = $phongKham->ma_nhom;
             $params['so_phong'] = $phongKham->so_phong;
             
             $stt = $this->sttPhongKhamRepository->createSttPhongKham($params);

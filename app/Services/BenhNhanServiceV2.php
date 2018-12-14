@@ -59,6 +59,7 @@ class BenhNhanServiceV2{
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'thong_tin_chuyen_tuyen'
     ];
     
     private $hsbaKeys = [
@@ -67,6 +68,7 @@ class BenhNhanServiceV2{
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
         , 'ms_bhyt', 'benh_vien_id'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'thong_tin_chuyen_tuyen'
     ];
     
     private $hsbaKpKeys = [
@@ -114,9 +116,8 @@ class BenhNhanServiceV2{
         $arrayRequest = $request->all();
         
         $this->dataNgheNghiep = $this->danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('nghe_nghiep', $request['nghe_nghiep_id']);
-        $this->dataDantoc =  $this->danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('dan_toc', $request['dan_toc_id']);
+        $this->dataDanToc =  $this->danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('dan_toc', $request['dan_toc_id']);
         $this->dataQuocTich =  $this->danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('quoc_tich', $request['quoc_tich_id']);
-        
         
         array_map(
             function ($k,$data) { 
@@ -126,21 +127,20 @@ class BenhNhanServiceV2{
                 }
             },
             [
-                'dataNgheNghiep','dataDantoc','dataQuocTich'
+                'dataNgheNghiep','dataDanToc','dataQuocTich'
             ],
             [
                 $this->dataNgheNghiep,
-                $this->dataDantoc,
+                $this->dataDanToc,
                 $this->dataQuocTich
             ]
         );
         
-        $this->dataTHX = !empty($request['thx_gplace_json']) ??null;
-        //var_dump( $this->dataTHX ); die;
-        if(!empty($this->dataTHX))
-        {
-            $this->setDataTHX($request);
-        }
+        // $this->dataTHX = !empty($request['thx_gplace_json']) ??null;
+        // if(!empty($this->dataTHX))
+        // {
+        //     $this->setDataTHX($request);
+        // }
         
         $this->dataNhomNguoiThan = new NhomNguoiThan($arrayRequest['loai_nguoi_than'], $arrayRequest['ten_nguoi_than'], $arrayRequest['dien_thoai_nguoi_than']);
         
@@ -181,6 +181,8 @@ class BenhNhanServiceV2{
                 
             } catch (\Exception $ex) {
                 var_dump($ex->getMessage());
+                echo "<br/>";
+                var_dump($ex->getFile());
                 echo "<br/>";
                 var_dump($ex->getLine());die;
                 throw $ex;
@@ -262,8 +264,9 @@ class BenhNhanServiceV2{
         $dataBenhNhan['quan_huyen_id'] = $this->dataHuyen['ma_huyen']??null;
         $dataBenhNhan['phuong_xa_id'] = $this->dataXa['ma_xa']??null;
         $dataBenhNhan['nam_sinh'] =  str_limit($dataBenhNhan['ngay_sinh'], 4,'');// TODO - define constant
-        $dataBenhNhan['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
-        
+        //$dataBenhNhan['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
+        $dataBenhNhan['nguoi_than'] = '';
+        $dataBenhNhan['thong_tin_chuyen_tuyen'] = json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']);
         $bhyt = $this->checkBhytFromScanner($scan);
         if ($bhyt['benh_nhan_id']) {
             $dataBenhNhan['id'] = $bhyt['benh_nhan_id'];
@@ -294,9 +297,10 @@ class BenhNhanServiceV2{
         $dataHsba['quan_huyen_id'] = $this->dataHuyen['ma_huyen']??null;
         $dataHsba['phuong_xa_id'] = $this->dataXa['ma_xa']??null;
         $dataHsba['nam_sinh'] =  $this->dataBenhNhan['nam_sinh'];
-        $dataHsba['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
+        //$dataHsba['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
+        $dataHsba['nguoi_than'] = '';
         $dataHsba['ngay_tao'] = Carbon::now()->toDateTimeString();
-         //insert hsba
+        $dataHsba['thong_tin_chuyen_tuyen'] = json_encode($dataHsba['thong_tin_chuyen_tuyen']);
         $dataHsba['id'] = $this->hsbaRepository->createDataHsba($dataHsba);
         return $dataHsba;
     }
@@ -419,5 +423,4 @@ class BenhNhanServiceV2{
         $this->dataHuyen = $this->hanhChinhRepository->getDataHuyen($this->dataTinh['ma_tinh'], mb_convert_case($this->dataTenTHX['ten_quan_huyen'], MB_CASE_UPPER, "UTF-8"));
         $this->dataXa = $this->hanhChinhRepository->getDataXa($params['tinh_thanh_pho_id'], $params['quan_huyen_id'], $params['phuong_xa_id']);
     }
-    
 }
