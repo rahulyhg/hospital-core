@@ -24,7 +24,7 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         ];
         
         $data = DB::table('phong')
-                    ->select('phong.id', 'phong.ten_phong', 'phong.so_phong', DB::raw('count(sttpk.id) as total'))
+                    ->select('phong.id', 'phong.ten_phong', 'phong.so_phong', 'phong.ma_nhom', DB::raw('count(sttpk.id) as total'))
                     ->leftJoin('stt_phong_kham as sttpk', function($join) use ($today) {
                         $join->on('sttpk.phong_id', '=', 'phong.id')
                             ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()]);
