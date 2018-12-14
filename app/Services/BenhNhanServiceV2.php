@@ -28,7 +28,6 @@ use App\Models\ValueObjects\NhomNguoiThan;
 use Validator;
 
 class BenhNhanServiceV2{
-    
     private $dataBenhNhan = [];
     private $dataHsba = [];
     private $dataHsbaKp = [];
@@ -38,7 +37,6 @@ class BenhNhanServiceV2{
     private $dataDieuTri = [];
     private $dataPhieuYLenh = [];
     private $dataYLenh = [];
-    
     private $dataNgheNghiep = [];
     private $dataDanToc = [];
     private $dataQuocTich = [];
@@ -75,7 +73,6 @@ class BenhNhanServiceV2{
         'auth_users_id', 'doi_tuong_benh_nhan', 'yeu_cau_kham_id', 'cdtd_icd10_text', 'cdtd_icd10_code'
         ,'benh_vien_id'
     ];
-    
     
     private $bhytKeys = ['ms_bhyt', 'ma_cskcbbd', 'tu_ngay', 'den_ngay', 'ma_noi_song', 'du5nam6thangluongcoban', 'dtcbh_luyke6thang', 'tuyen_bhyt'];
     
@@ -144,7 +141,6 @@ class BenhNhanServiceV2{
         
         $this->dataNhomNguoiThan = new NhomNguoiThan($arrayRequest['loai_nguoi_than'], $arrayRequest['ten_nguoi_than'], $arrayRequest['dien_thoai_nguoi_than']);
         
-        
         //set params benh_nhan 
         $benhNhanParams = $request->only(...$this->benhNhanKeys);
         $hsbaParams = $request->only(...$this->hsbaKeys);
@@ -152,8 +148,8 @@ class BenhNhanServiceV2{
         $bhytParams = $request->only(...$this->bhytKeys);
         
         $bhytParams['image_url'] = $request->only('image_url_bhyt')['image_url_bhyt'];     
-        $dieuTriParams = $request ->only (...$this->dieuTriKeys);        
-        $sttPhongKhamParams =  $request ->only (...$this->sttPkKeys);
+        $dieuTriParams = $request->only(...$this->dieuTriKeys);        
+        $sttPhongKhamParams =  $request->only(...$this->sttPkKeys);
         $result = DB::transaction(function () use ($scan, $benhNhanParams, $hsbaParams, $hsbaKpParams, $bhytParams, $dieuTriParams, $sttPhongKhamParams) {
             try {
                 // TODO - implement try catch log inside each function carefully
@@ -193,7 +189,6 @@ class BenhNhanServiceV2{
      * Derive Queue Attributes from dataHsba, dataSttPk
      */
     private function makeQueueAttribute() {
-
         $ngayVaoVien = Carbon::now()->isoFormat('YYYY-MM-DD');
         $messageAttributes = [
             'benh_vien_id' => ['DataType' => "Number",
@@ -211,7 +206,6 @@ class BenhNhanServiceV2{
         ];
         $this->dataQueue['message_attributes'] = $messageAttributes;
         return $this;
-
     }
     
     /**
@@ -265,11 +259,8 @@ class BenhNhanServiceV2{
     }
     
     private function checkOrCreateBenhNhan($scan,$params) {
-         
         $tenBenhNhanInHoa = mb_convert_case($params['ho_va_ten'], MB_CASE_UPPER, "UTF-8");
-        
         $dataBenhNhan = $params;
-                
         $dataBenhNhan['ho_va_ten'] = $tenBenhNhanInHoa;
         $dataBenhNhan['nghe_nghiep_id'] = ($this->dataNgheNghiep['gia_tri'])??null;
         $dataBenhNhan['dan_toc_id'] = $this->dataDanToc['gia_tri']??null;
@@ -287,7 +278,6 @@ class BenhNhanServiceV2{
         } else {
             $dataBenhNhan['id'] =  $this->benhNhanRepository->createDataBenhNhan($dataBenhNhan);
         }
-        
         $this->dataBenhNhan = $dataBenhNhan;
         return $this;
     }
@@ -421,6 +411,7 @@ class BenhNhanServiceV2{
         $dataYLenh['gia_bhyt'] = (double)$this->dataYeuCauKham['gia_bhyt'];
         $dataYLenh['gia_nuoc_ngoai'] = (double)$this->dataYeuCauKham['gia_nuoc_ngoai'];
         $dataYLenh['id']  = $this->yLenhRepository->createDataYLenh($dataYLenh);
+        $dataYLenh['loai_y_lenh'] = 1; // TODO - define constant
         return $dataYLenh;
         $this->dataYLenh = $dataYLenh;
         return $this;
