@@ -110,6 +110,21 @@ class SttDonTiepController extends APIController
     
     public function loadSttDonTiep(Request $request)
     {
+        $isExistParam = $this->checkExistParam($request['phongId'], $request['benhVienId']);
+        $input = $request->all();
+        
+        if($isExistParam) {
+            $data = $this->service->loadSttDonTiep($input);
+        } else {
+            $data = null;
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function loadSttDonTiepToSlack(Request $request)
+    {
         $splits = explode(" ", $request->get('text'));
         $result = sizeof($splits) > 1 ? 'benhVienId=' . $splits[0] . ' phongId=' . $splits[1] : '';
         
@@ -122,11 +137,9 @@ class SttDonTiepController extends APIController
             'phongId' => $splits[1]
         ];
         
-        
         if($isExistParam) {
             $data = $this->service->loadSttDonTiep($input);
-            //$result = $request->get('text');
-            (new Notify())->notify(new NotifyToSlackChannel($result));
+            //(new Notify())->notify(new NotifyToSlackChannel($result));
         } else {
             $data = null;
             $this->setStatusCode(400);

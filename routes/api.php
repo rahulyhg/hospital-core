@@ -40,8 +40,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
     
-    Route::post('getpostreq', 'SlackController@getPostReq');
-    Route::post('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');
+    //Route::post('getpostreq', 'SlackController@getPostReq');
+    Route::post('slack/loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiepToSlack');
 
     
     Route::group(['prefix' => 'dontiep'], function () {
