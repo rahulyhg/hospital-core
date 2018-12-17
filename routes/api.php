@@ -39,7 +39,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient', 'SamplePatientController@store');
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
-        
 
     
     Route::group(['prefix' => 'dontiep'], function () {
