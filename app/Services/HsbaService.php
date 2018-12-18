@@ -4,13 +4,15 @@ namespace App\Services;
 use App\Http\Resources\HsbaResource;
 use App\Http\Resources\PatientResource;
 use App\Repositories\Hsba\HsbaRepository;
+use App\Repositories\HanhChinhRepository;
 use Validator;
 
 class HsbaService
 {
-    public function __construct(HsbaRepository $hsbaRepository)
+    public function __construct(HsbaRepository $hsbaRepository,HanhChinhRepository $hanhChinhRepository)
     {
         $this->hsbaRepository = $hsbaRepository;
+        $this->hanhChinhRepository = $hanhChinhRepository;
     }
     
     public function getHsbaByBenhNhanId($benhNhanId)
@@ -29,6 +31,18 @@ class HsbaService
     
     public function updateHsba($hsbaId, array $input)
     {
+        if(isset($input['tinh_thanh_pho_id']) && isset($input['quan_huyen_id']) && isset($input['phuong_xa_id'])){
+            try{
+                $tinh=$this->hanhChinhRepository->getDataTinhById($input['tinh_thanh_pho_id']);
+                $huyen=$this->hanhChinhRepository->getDataHuyenById($input['tinh_thanh_pho_id'],$input['quan_huyen_id']);
+                $xa=$this->hanhChinhRepository->getDataXaById($input['tinh_thanh_pho_id'],$input['quan_huyen_id'],$input['phuong_xa_id']);
+                $input['ten_tinh_thanh_pho']=$tinh->ten_tinh;
+                $input['ten_quan_huyen']=$huyen->ten_huyen;
+                $input['ten_phuong_xa']=$xa->ten_xa;
+            } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+            }
+        }
         $this->hsbaRepository->updateHsba($hsbaId, $input);
     }
     

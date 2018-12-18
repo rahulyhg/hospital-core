@@ -100,7 +100,7 @@ class DonTiepController extends APIController
     {
         try {
             if(is_numeric($hsbaId)) {
-                $input = $request->except('location');
+                $input = $request->except('location','tinh_key','huyen_key','xa_key','thx_name','thx_key');
                 $this->hsbaService->updateHsba($hsbaId, $input);
 
             } else {

@@ -20,6 +20,15 @@ class HanhChinhRepository extends BaseRepositoryV2
     
       return collect($array)->first();  
   }
+  
+  public function getDataTinhById($id)
+  {
+      $data = $this->model
+              ->where('ma_tinh','<>',0)
+              ->where('ma_tinh',$id)
+              ->first();
+      return $data;
+  }  
 
   public function getDataHuyen($huyen_matinh, $ten_huyen)
   {
@@ -31,6 +40,15 @@ class HanhChinhRepository extends BaseRepositoryV2
     
       return collect($array)->first(); 
   }
+  
+  public function getDataHuyenById($huyen_matinh, $ma_huyen)
+  {
+      $data = $this->model
+              ->where('hanh_chinh.huyen_matinh', '=', $huyen_matinh)
+              ->where('hanh_chinh.ma_huyen', '=', $ma_huyen)
+              ->first();
+      return $data; 
+  }  
   
   public function getDataXa($xa_matinh, $xa_mahuyen, $ten_xa)
   {
@@ -45,6 +63,20 @@ class HanhChinhRepository extends BaseRepositoryV2
       $array = json_decode($data, true);
     
       return collect($array)->first();  
+  }
+  
+  public function getDataXaById($xa_matinh, $xa_mahuyen,$ma_xa)
+  {
+      $where = [
+              ['hanh_chinh.ma_xa', '<>', 0],
+              ['hanh_chinh.ma_xa', '=', $ma_xa],
+              ['hanh_chinh.xa_matinh', '=', $xa_matinh],
+              ['hanh_chinh.xa_mahuyen', '=', $xa_mahuyen],
+          ];
+      $data = $this->model
+              ->where($where)
+              ->first();
+      return $data;  
   }  
   
   public function getListTinh()
