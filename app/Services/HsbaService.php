@@ -32,12 +32,16 @@ class HsbaService
     public function updateHsba($hsbaId, array $input)
     {
         if(isset($input['tinh_thanh_pho_id']) && isset($input['quan_huyen_id']) && isset($input['phuong_xa_id'])){
-            $tenTinh=$this->hanhChinhRepository->getDataTinhById($input['tinh_thanh_pho_id']);
-            $tenHuyen=$this->hanhChinhRepository->getDataHuyenById($input['tinh_thanh_pho_id'],$input['quan_huyen_id']);
-            $tenXa=$this->hanhChinhRepository->getDataXaById($input['tinh_thanh_pho_id'],$input['quan_huyen_id'],$input['phuong_xa_id']);
-            $input['ten_tinh_thanh_pho']=$tenTinh->ten_tinh;
-            $input['ten_quan_huyen']=$tenHuyen->ten_huyen;
-            $input['ten_phuong_xa']=$tenXa->ten_xa;
+            try{
+                $tinh=$this->hanhChinhRepository->getDataTinhById($input['tinh_thanh_pho_id']);
+                $huyen=$this->hanhChinhRepository->getDataHuyenById($input['tinh_thanh_pho_id'],$input['quan_huyen_id']);
+                $xa=$this->hanhChinhRepository->getDataXaById($input['tinh_thanh_pho_id'],$input['quan_huyen_id'],$input['phuong_xa_id']);
+                $input['ten_tinh_thanh_pho']=$tinh->ten_tinh;
+                $input['ten_quan_huyen']=$huyen->ten_huyen;
+                $input['ten_phuong_xa']=$xa->ten_xa;
+            } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+            }
         }
         $this->hsbaRepository->updateHsba($hsbaId, $input);
     }
