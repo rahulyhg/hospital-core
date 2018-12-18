@@ -105,6 +105,7 @@ class DieuTriService
             case self::XT_TRA_BN_KHONG_KHAM:
             case self::XT_BO_VE:     
                 $this->createKetThucKham($request);
+                return [];
                 break;
             case self::XT_RA_VIEN:     
                 $this->createRaVien($request);
