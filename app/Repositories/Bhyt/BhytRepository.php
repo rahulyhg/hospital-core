@@ -52,16 +52,24 @@ class BhytRepository extends BaseRepositoryV2
     
     public function getMaBhytTreEm($maTinh)
     {
-        $result = Bhyt::where('ms_bhyt', 'LIKE', 'TE1'.'%')
-                        ->orderBy('ms_bhyt','desc')
-                        ->first();
-        if($result){
-            $result = substr($result->ms_bhyt,7,8);
-            $code = $result+1;
-            $bhytCode = 'TE-1'.'-'.$maTinh.'-'.'KT'.'-'.sprintf('%08d',$code);
+        // $result = $this->model->where('ms_bhyt', 'LIKE', 'TE1'.'%')
+        //                 ->orderBy('ms_bhyt','desc')
+        //                 ->first();
+        $data = $this->model->where('ms_bhyt', 'LIKE', 'TE1'.'%')
+                        ->get();
+        $array = [];
+        if($data){
+            foreach ($data as $item){
+                $array[] = substr($item->ms_bhyt,7,8);
+            }
+        }
+        $maxValue = max($array);
+        if($maxValue){
+            //$result = substr($result->ms_bhyt,7,8)+1;
+            $bhytCode = 'TE1'.sprintf('%02d',$maTinh).'KT'.sprintf('%08d',$maxValue+=1);
         }
         else
-            $bhytCode = 'TE-1'.'-'.$maTinh.'-'.'KT'.'-'.'00000001';
+            $bhytCode = 'TE1'.sprintf('%02d',$maTinh).'KT'.'00000001';
 		return $bhytCode;
     }    
 }

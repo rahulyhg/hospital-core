@@ -7,15 +7,24 @@ use App\Services\HsbaKhoaPhongService;
 use App\Services\SttPhongKhamService;
 use App\Services\DieuTriService;
 use App\Services\Icd10Service;
+use App\Services\YLenhService;
 
 class PhongKhamController extends APIController
 {
-    public function __construct(HsbaKhoaPhongService $hsbaKhoaPhongService, SttPhongKhamService $sttPhongKhamService, DieuTriService $dieuTriService, Icd10Service $icd10Service)
+    public function __construct
+    (
+        HsbaKhoaPhongService $hsbaKhoaPhongService, 
+        SttPhongKhamService $sttPhongKhamService, 
+        DieuTriService $dieuTriService, 
+        Icd10Service $icd10Service,
+        YLenhService $yLenhService
+    )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->dieuTriService = $dieuTriService;
         $this->icd10Service = $icd10Service;
+        $this->yLenhService = $yLenhService;
     }
     
     public function update($hsbaKhoaPhongId, Request $request)
@@ -81,11 +90,6 @@ class PhongKhamController extends APIController
         $input = $request->all();
         $data = $this->dieuTriService->xuTriBenhNhan($input);
         
-        if(!$data) {
-            $this->setStatusCode(400);
-            $data = [];
-        }
-        
         return $this->respond($data);
     }
     
@@ -112,5 +116,54 @@ class PhongKhamController extends APIController
         }
         
         return $this->respond($data);
+    }
+    
+    public function saveYLenh(Request $request)
+    {
+        $input = $request->all();
+        $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
+        
+        if($phieuDieuTri) {
+            $input['dieu_tri_id'] = $phieuDieuTri->id;
+            $bool = $this->yLenhService->saveYLenh($input);
+            
+            if($bool) {
+                $this->setStatusCode(201);
+            } else {
+                $this->setStatusCode(400);
+            }
+        
+            return $this->respond($bool);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+    }
+    
+    public function getLichSuYLenh(Request $request)
+    {
+        $input = $request->all();
+        if(!$input['dieu_tri_id'])
+            $input['dieu_tri_id'] = $this->dieuTriService->getPhieuDieuTri($input);
+            
+        $data = $this->yLenhService->getLichSuYLenh($input);
+        if(!$data) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function batDauKham($hsbaKhoaPhongId)
+    {
+        if(is_numeric($hsbaKhoaPhongId)) {
+            $this->hsbaKhoaPhongService->batDauKham($hsbaKhoaPhongId);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
     }
 }

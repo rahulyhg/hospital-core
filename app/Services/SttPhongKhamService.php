@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\SttPhongKham;
+use App\Http\Resources\SttPhongKhamResource;
 use App\Repositories\SttPhongKhamRepository;
 use App\Services\HsbaKhoaPhongService;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class SttPhongKhamService
         if($phongKham) {
             $params['phong_id'] = $phongKham->id;
             $params['ten_phong'] = $phongKham->ten_phong;
+            $params['ma_phong'] = $phongKham->ma_nhom;
             $params['so_phong'] = $phongKham->so_phong;
             
             $stt = $this->sttPhongKhamRepository->createSttPhongKham($params);
@@ -56,5 +58,27 @@ class SttPhongKhamService
         $data = $this->sttPhongKhamRepository->getListPhongKham($hsbaId);
         
         return $data;
+    }
+    
+    public function goiSttPhongKham(array $input)
+    {
+        $data = $this->sttPhongKhamRepository->goiSttPhongKham($input);
+        
+        if($data !== null) 
+            return new SttPhongKhamResource($data);
+        else 
+            return $data;
+    }
+    
+    public function loadSttPhongKham(array $input)
+    {
+        $stt = $this->sttPhongKhamRepository->loadSttPhongKham($request);
+        
+        return SttPhongKhamResource::collection($stt);
+    }
+    
+    public function finishSttPhongKham($sttId)
+    {
+        $this->sttPhongKhamRepository->finishSttPhongKham($sttId);
     }
 }

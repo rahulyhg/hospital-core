@@ -57,10 +57,23 @@ class DanhMucTongHopService {
         );
     }
     
+    public function getListDanhMucTongHop($limit, $page, $dienGiai, $khoa)
+    {
+        $data = $this->danhMucTongHopRepository->getListDanhMucTongHop($limit, $page, $dienGiai, $khoa);
+        return $data;
+    }
+    
+    public function getDmthById($dmthId)
+    {
+        $data = $this->danhMucTongHopRepository->getDataDanhMucTongHopById($dmthId);
+        
+        return $data;
+    }
+    
     public function getDanhMucTongHopTheoKhoa($khoa, $limit, $page) {
-        return DanhMucTongHopResource::collection(
-           $this->danhMucTongHopRepository->getDanhMucTongHopTheoKhoa($khoa, $limit, $page)
-        );
+        $data = $this->danhMucTongHopRepository->getDanhMucTongHopTheoKhoa($khoa, $limit, $page);
+        
+        return $data;
     }
     
     public function createDanhMucTongHop(array $input)
@@ -78,4 +91,11 @@ class DanhMucTongHopService {
     {
         $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
     }
+    
+    public function getAllKhoa()
+    {
+        $data = $this->danhMucTongHopRepository->getAllKhoa();
+        return $data;
+    }
+
 }

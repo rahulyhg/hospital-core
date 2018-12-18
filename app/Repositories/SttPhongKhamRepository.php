@@ -24,7 +24,7 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         ];
         
         $data = DB::table('phong')
-                    ->select('phong.id', 'phong.ten_phong', 'phong.so_phong', DB::raw('count(sttpk.id) as total'))
+                    ->select('phong.id', 'phong.ten_phong', 'phong.so_phong', 'phong.ma_nhom', DB::raw('count(sttpk.id) as total'))
                     ->leftJoin('stt_phong_kham as sttpk', function($join) use ($today) {
                         $join->on('sttpk.phong_id', '=', 'phong.id')
                             ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()]);
@@ -77,7 +77,8 @@ class SttPhongKhamRepository extends BaseRepositoryV2
                         'hsba_khoa_phong_id' => $params['hsba_khoa_phong_id'],
                         'auth_users_id' => null,
                         'stt_don_tiep_id' => $params['stt_don_tiep_id'],
-                        'ten_phong' => $params['ten_phong']
+                        'ten_phong' => $params['ten_phong'],
+                        'ma_phong' => $params['ma_phong']
                     ];
                     
         $this->model->create($attributes);
@@ -93,12 +94,84 @@ class SttPhongKhamRepository extends BaseRepositoryV2
             'hsba_id',
             'hsba_khoa_phong_id',
             'phong_id',
-            'ten_phong'
+            'ten_phong',
+            'ma_phong'
         ];
         
         $data = $this->model->where('hsba_id', '=', $hsbaId)
                             ->get($column);
                             
         return $data;
+    }
+    
+    public function goiSttPhongKham(array $input)
+    {
+        $loaiStt = $input['loaiStt'];
+        $phongId = $input['phongId'];
+        $benhVienId = $input['benhVienId'];
+        $authUsersId = $input['authUsersId'];
+        $today = Carbon::today();
+        
+        $where = [
+            ['loai_stt', '=', $loaiStt],
+            ['trang_thai', '=', 1],
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId]
+        ];
+        
+        $result = $this->model->where($where)
+                            ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->orderBy('id', 'asc')
+                            ->first();
+                            
+        if($result) {
+            $id = $result['id'];
+                            
+            $attributes = ['trang_thai' => 2,
+                            'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
+                            'auth_users_id' => $authUsersId
+                        ];
+            
+            $this->model->where('id', '=', $id)->update($attributes);
+            
+            $data = $this->model->findOrFail($id);
+        } else {
+            $data = null;
+        }
+        
+        return $data;
+    }
+    
+    public function loadSttPhongKham(array $input)
+    {
+        $phongId = $input['phongId'];
+        $benhVienId = $input['benhVienId'];
+        $today = Carbon::today();
+        
+        $where = [
+            ['trang_thai', '>=', 2],
+            ['phong_id', '=', $phongId],
+            ['benh_vien_id', '=', $benhVienId]
+        ];
+        
+        $result = $this->model->where($where)
+                            ->whereBetween('thoi_gian_goi', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
+                            ->orderBy('thoi_gian_goi', 'desc')
+                            ->skip(0)
+                            ->take(5)
+                            ->get();
+                            
+        return $result;
+    }
+    
+    public function finishSttPhongKham($sttId)
+    {
+        $today = Carbon::today();
+        
+        $attributes = ['trang_thai' => 3,
+                        'thoi_gian_ket_thuc' => Carbon::now()->toDateTimeString()
+                    ];
+                    
+        $this->model->where('id', '=', $sttId)->update($attributes);
     }
 }

@@ -118,4 +118,8 @@ class HsbaKhoaPhongService
         return true;
     }
     
+    public function batDauKham($hsbaKhoaPhongId)
+    {
+        $this->hsbaKhoaPhongRepository->batDauKham($hsbaKhoaPhongId);
+    }
 }

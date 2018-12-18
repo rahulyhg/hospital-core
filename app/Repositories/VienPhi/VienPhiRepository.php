@@ -15,13 +15,13 @@ class VienPhiRepository extends BaseRepositoryV2
 
     public function createDataVienPhi(array $input)
     {
-        $id = VienPhi::create($input)->id;
+        $id = $this->model->create($input)->id;
         return $id;
     }
     
     public function updateVienPhi($vienPhiId, $params)
     {
-        $vienPhi = VienPhi::findOrFail($vienPhiId);
+        $vienPhi = $this->model->findOrFail($vienPhiId);
 		$vienPhi->update($params);
     }
  

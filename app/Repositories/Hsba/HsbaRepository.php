@@ -42,9 +42,10 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.email_benh_nhan',
             'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
-            'hsba.loai_nguoi_than',
-            'hsba.ten_nguoi_than',
-            'hsba.dien_thoai_nguoi_than',
+            // 'hsba.loai_nguoi_than',
+            // 'hsba.ten_nguoi_than',
+            // 'hsba.dien_thoai_nguoi_than',
+            'hsba.nguoi_than',
             'hsba.loai_benh_an',
             'hsba.trang_thai_hsba',
             'hsba.is_dang_ky_truoc',
@@ -166,7 +167,7 @@ class HsbaRepository extends BaseRepositoryV2
             'sttpk.stt_don_tiep_id',
         ];
         
-        $query = DB::table('hsba')
+        $query = $this->model
                 ->leftJoin('hsba_khoa_phong', 'hsba_khoa_phong.hsba_id', '=', 'hsba.id')
                 ->leftJoin('red_trangthai as tt1', function($join) {
                     $join->on('tt1.giatri', '=', 'hsba_khoa_phong.loai_benh_an')
@@ -195,27 +196,29 @@ class HsbaRepository extends BaseRepositoryV2
   
     public function createDataHsba(array $input)
     {
-        $id = Hsba::create($input)->id;
+        $id = $this->model->create($input)->id;
         return $id;
     }
     
     public function updateHsba($hsbaId, $input)
     {
-        $thxData = isset($input['thx_gplace_json']) ? $input['thx_gplace_json'] : null;
+        //$thxData = isset($input['thx_gplace_json']) ? $input['thx_gplace_json'] : null;
         //$input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
         // $input['ten_phuong_xa'] = null;
         // $input['ten_quan_huyen'] = null;
         // $input['ten_tinh_thanh_pho'] = null;
         
-        if($thxData) {
-            $input['thx_gplace_json'] = json_encode($thxData);
-            $data = Util::getDataFromGooglePlace($thxData);
-            $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
-            $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
-            $input['ten_tinh_thanh_pho'] = $data['ten_tinh_thanh_pho'];
-        }
-        
-        $hsba = Hsba::findOrFail($hsbaId);
+        // if($thxData) {
+        //     $input['thx_gplace_json'] = json_encode($thxData);
+        //     $data = Util::getDataFromGooglePlace($thxData);
+        //     $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
+        //     $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
+        //     $input['ten_tinh_thanh_pho'] = $data['ten_tinh_thanh_pho'];
+        // }
+        // $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
+        // $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
+        // $input['ten_tinh_thanh_pho'] = $data['ten_tinh_thanh_pho'];
+        $hsba = $this->model->findOrFail($hsbaId);
 		$hsba->update($input);
     }
     
