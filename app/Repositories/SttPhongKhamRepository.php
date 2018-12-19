@@ -24,7 +24,7 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         ];
         
         $data = DB::table('phong')
-                    ->select('phong.id', 'phong.ten_phong', 'phong.so_phong', DB::raw('count(sttpk.id) as total'))
+                    ->select('phong.id', 'phong.ten_phong', 'phong.so_phong', 'phong.ma_nhom', DB::raw('count(sttpk.id) as total'))
                     ->leftJoin('stt_phong_kham as sttpk', function($join) use ($today) {
                         $join->on('sttpk.phong_id', '=', 'phong.id')
                             ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()]);
@@ -77,7 +77,8 @@ class SttPhongKhamRepository extends BaseRepositoryV2
                         'hsba_khoa_phong_id' => $params['hsba_khoa_phong_id'],
                         'auth_users_id' => null,
                         'stt_don_tiep_id' => $params['stt_don_tiep_id'],
-                        'ten_phong' => $params['ten_phong']
+                        'ten_phong' => $params['ten_phong'],
+                        'ma_phong' => $params['ma_phong']
                     ];
                     
         $this->model->create($attributes);
@@ -93,7 +94,8 @@ class SttPhongKhamRepository extends BaseRepositoryV2
             'hsba_id',
             'hsba_khoa_phong_id',
             'phong_id',
-            'ten_phong'
+            'ten_phong',
+            'ma_phong'
         ];
         
         $data = $this->model->where('hsba_id', '=', $hsbaId)

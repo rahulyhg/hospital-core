@@ -52,4 +52,9 @@ class HsbaKhoaPhongService
         $data = $this->benhVienRepository->getBenhVienThietLap($id);
         return $data;
     }
+    
+    public function batDauKham($hsbaKhoaPhongId)
+    {
+        $this->hsbaKhoaPhongRepository->batDauKham($hsbaKhoaPhongId);
+    }
 }

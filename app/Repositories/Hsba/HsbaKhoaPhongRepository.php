@@ -65,20 +65,20 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     ->where('tt2.tablename', '=', 'patientstatus');
             });
             
-        // if($phongId != $phongDonTiepID) {
-        //     $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
-        //         $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
-        //             ->where('sttpk.phong_id', '=', $phongId);
-        //     });
+        if($phongId != $phongDonTiepID) {
+            $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) use ($phongId) {
+                $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
+                    ->where('sttpk.phong_id', '=', $phongId);
+            });
             
-        //     $arrayColumn = [
-        //         'sttpk.loai_stt',
-        //         'sttpk.so_thu_tu',
-        //         'sttpk.stt_don_tiep_id',
-        //     ];
+            $arrayColumn = [
+                'sttpk.loai_stt',
+                'sttpk.so_thu_tu',
+                'sttpk.stt_don_tiep_id',
+            ];
             
-        //     $column = array_merge($column, $arrayColumn);
-        // }
+            $column = array_merge($column, $arrayColumn);
+        }
             
         $query = $query->where($where);
         
@@ -125,6 +125,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                         
             $data->each(function ($item, $key) {
                 $item->hsba_id = sprintf('%012d', $item->hsba_id);
+                $item->so_thu_tu = sprintf('%03d', $item->so_thu_tu);
             });
         } else {
             $totalPage = 0;
@@ -202,9 +203,10 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'hsba.email_benh_nhan',
             'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
-            'hsba.loai_nguoi_than',
-            'hsba.ten_nguoi_than',
-            'hsba.dien_thoai_nguoi_than',
+            // 'hsba.loai_nguoi_than',
+            // 'hsba.ten_nguoi_than',
+            // 'hsba.dien_thoai_nguoi_than',
+            'hsba.nguoi_than',
             'hsba.ms_bhyt',
             'hsba.thx_gplace_json',
             'bhyt.ma_cskcbbd',
@@ -314,5 +316,10 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                             ->where($where)
                             ->get($column);
         return $result;
-    }    
+    }  
+    
+    public function batDauKham($hsbaKhoaPhongId)
+    {
+		$this->model->where('id', '=', $hsbaKhoaPhongId)->update(['thoi_gian_vao_vien' => Carbon::now()->toDateTimeString()]);
+    }
 }
