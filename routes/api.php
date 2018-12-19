@@ -134,6 +134,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateAuthUsers/{id}','AuthUser\AuthUserController@updateAuthUsers');
      	Route::delete('deleteAuthUsers/{id}','AuthUser\AuthUserController@deleteAuthUsers');
      	Route::get('checkEmail/{email}','AuthUser\AuthUserController@checkEmailbyEmail');
+    });
+    
+    Route::group(['prefix' => 'thungan'], function () {
+		Route::post('createSoThuNgan','ThuNgan\ThuNganController@createSoThuNgan');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
