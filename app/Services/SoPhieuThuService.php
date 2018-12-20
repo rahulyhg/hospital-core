@@ -21,8 +21,15 @@ class SoPhieuThuService {
         return $id;
     }
     
-    public function getListSoPhieuThu($maSo, $loaiSo) {
-        $data = $this->soPhieuThuRepository->getListSoPhieuThu($maSo, $loaiSo);
+    public function getListSoPhieuThu($maSo, $trangThai) {
+        $data = $this->soPhieuThuRepository->getListSoPhieuThu($maSo, $trangThai);
+        return $data;
+    }
+    
+    public function getSoPhieuThuById($id)
+    {
+        $data = $this->soPhieuThuRepository->getSoPhieuThuById($id);
+        
         return $data;
     }
     

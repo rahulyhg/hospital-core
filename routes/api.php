@@ -140,6 +140,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'phieuthu'], function () {
         Route::get('getListSoPhieuThu','PhieuThu\PhieuThuController@getListSoPhieuThu');
+        Route::get('getSoPhieuThuById/{id}','PhieuThu\PhieuThuController@getSoPhieuThuById');
         Route::post('createSoPhieuThu','PhieuThu\PhieuThuController@createSoPhieuThu');
         Route::post('updateSoPhieuThu/{id}','PhieuThu\PhieuThuController@updateSoPhieuThu');
     	Route::delete('deleteSoPhieuThu/{id}','PhieuThu\PhieuThuController@deleteSoPhieuThu');

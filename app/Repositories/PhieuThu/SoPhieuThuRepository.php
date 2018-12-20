@@ -11,15 +11,36 @@ class SoPhieuThuRepository extends BaseRepositoryV2
         return SoPhieuThu::class;
     }
     
-    public function getListSoPhieuThu($maSo, $loaiSo) {
-        $query = $this->model->where('ma_so', 'like', '%' . $maSo . '%');
-        if($loaiSo != "") {
-            $loaiSoWhere = explode(",", $loaiSo);
-            $query->whereIn('loai_so', $loaiSoWhere);
-        }
+    public function getListSoPhieuThu($maSo, $trangThai) {
+        $column = [
+            'so_phieu_thu.id',
+            'auth_users.fullname',
+            'so_phieu_thu.ma_so',
+            'so_phieu_thu.ngay_tao',
+            'so_phieu_thu.loai_so',
+            'so_phieu_thu.tong_so_phieu',
+            'so_phieu_thu.so_phieu_su_dung',
+            //'so_phieu_thu.deleted_at',
+        ];
         
+        $query = $this->model->where('ma_so', 'like', '%' . $maSo . '%');
+        if($trangThai != "") {
+            $trangThaiWhere = explode(",", $trangThai);
+            $query->whereIn('trang_thai', $trangThaiWhere);
+        }
+        $query->join('auth_users', 'so_phieu_thu.auth_users_id', '=', 'auth_users.id');
+        $query->select($column);
         $data = $query->get();
-        return $data;
+        $result = [
+            'data'          => $data
+        ];
+        return $result;
+    }
+    
+    public function getSoPhieuThuById($id)
+    {
+        $result = $this->model->find($id); 
+        return $result;
     }
   
     public function createDataSoPhieuThu(array $input)
@@ -36,6 +57,6 @@ class SoPhieuThuRepository extends BaseRepositoryV2
     
     public function deleteSoPhieuThu($id)
     {
-        $this->model->destroy($id);
+        $this->model->where('id', $id)->delete();
     }
 }

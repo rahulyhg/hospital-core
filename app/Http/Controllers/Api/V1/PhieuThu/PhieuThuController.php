@@ -17,9 +17,20 @@ class PhieuThuController extends APIController {
     
     public function getListSoPhieuThu(Request $request) {
         $maSo = $request->query('ma_so', '');
-        $loaiSo = $request->query('loai_so', '');
+        $trangThai = $request->query('trang_thai', '');
         
-        $data = $this->soPhieuThuService->getListSoPhieuThu($maSo, $loaiSo);
+        $data = $this->soPhieuThuService->getListSoPhieuThu($maSo, $trangThai);
+        return $this->respond($data);
+    }
+    
+    public function getSoPhieuThuById($id) {
+        $isNumericId = is_numeric($id);
+        if($isNumericId) {
+            $data = $this->soPhieuThuService->getSoPhieuThuById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
         return $this->respond($data);
     }
     
