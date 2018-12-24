@@ -15,7 +15,8 @@ class TrangThaiController extends APIController
         $this->service = $service;
     }
     
-    public function chuyenTTBNSangBatDauKham($hsbakpId) {
+    public function batDauKhamBN($hsbakpId) {
+        //set hsba_khoa_phong.trang_thai = 1
         $tableModel = app()->make(HsbaKhoaPhong::class);
         $extraUpdate = [
             'thoi_gian_vao_vien' => Carbon::now()->toDateTimeString()
@@ -28,5 +29,8 @@ class TrangThaiController extends APIController
             'extraUpdate' => $extraUpdate
         ];
         $this->service->changeToState($tableModel, $attributes);
+        
+        $data = $tableModel->findOrFail($hsbakpId);
+        $this->respond($data);
     } 
 }
