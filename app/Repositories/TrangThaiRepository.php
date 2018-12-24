@@ -4,12 +4,14 @@ namespace App\Repositories;
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\SttPhongKham;
+use App\Models\HsbaKhoaPhong;
 use Carbon\Carbon;
 
 class TrangThaiRepository extends BaseRepositoryV2
 {
-    public function getModel() {}
-    public function setModel() {}
+    public function getModel() {
+        return HsbaKhoaPhong::class;
+    }
     
     public function changeToState($tableModel, $attributes) {
         if(sizeof($attributes) > 0) 
