@@ -94,7 +94,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('goiSttPhongKham','PhongKham\SttPhongKhamController@goiSttPhongKham');
         Route::get('loadSttPhongKham','PhongKham\SttPhongKhamController@loadSttPhongKham');
         Route::get('finishSttPhongKham/{sttId}','PhongKham\SttPhongKhamController@finishSttPhongKham');
-        Route::get('batDauKhamBN/{sttId}','TrangThaiController@chuyenTTBNSangBatDauKham');
+        Route::get('batDauKhamBN/{hsbakpId}','TrangThaiController@chuyenTTBNSangBatDauKham');
         Route::get('batDauKham/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@batDauKham');
 		Route::post('updateHsbaKhoaPhong/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@update');
 		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getById');

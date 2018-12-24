@@ -8,12 +8,12 @@ use Carbon\Carbon;
 
 class TrangThaiService
 {
-    public function __construct(TrangThaiRepository $repo)
+    public function __construct(TrangThaiRepository $repository)
     {
-        $this->repo = $repo;
+        $this->repository = $repository;
     }
     
     public function changeToState($tableModel, $attributes) {
-        $this->repo->changeToState($tableModel, $attributes);
+        $this->repository->changeToState($tableModel, $attributes);
     } 
 }

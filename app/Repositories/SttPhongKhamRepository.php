@@ -177,20 +177,4 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         $this->model->where('id', '=', $sttId)->update($attributes);
     }
     
-    public function batDauKham($sttId)
-    {
-        //$hsbakp = app()->make(HsbaKhoaPhong::class);
-        $currentDateTimeString = Carbon::now()->toDateTimeString();
-        
-        
-        $this->model->where('id', '=', $sttId)->update(['trang_thai' => 2,
-                        'thoi_gian_goi' => $currentDateTimeString
-                      ]);
-        
-        
-        //return $this->model->where('id', '=', $sttId)->first();
-                      
-        //return $this->model->findOrFail($sttId);
-    }
-    
 }

@@ -83,11 +83,6 @@ class SttPhongKhamService
         $this->sttPhongKhamRepository->finishSttPhongKham($sttId);
     }
     
-    public function batDauKham($sttId) 
-    {
-        $data = $this->sttPhongKhamRepository->batDauKham($sttId);
-        //return $data;
-    }
     
     
 }
