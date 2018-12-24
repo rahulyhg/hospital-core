@@ -426,8 +426,8 @@ class BenhNhanServiceV2{
         $dataYLenh['gia_nhan_dan'] = (double)$this->dataYeuCauKham['gia_nhan_dan'];
         $dataYLenh['gia_bhyt'] = (double)$this->dataYeuCauKham['gia_bhyt'];
         $dataYLenh['gia_nuoc_ngoai'] = (double)$this->dataYeuCauKham['gia_nuoc_ngoai'];
-        $dataYLenh['id']  = $this->yLenhRepository->createDataYLenh($dataYLenh);
         $dataYLenh['loai_y_lenh'] = 1; // TODO - define constant
+        $dataYLenh['id'] = $this->yLenhRepository->createDataYLenh($dataYLenh);
         $this->dataYLenh = $dataYLenh;
         return $this;
     }
