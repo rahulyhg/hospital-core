@@ -5,6 +5,7 @@ use App\Models\SttPhongKham;
 use App\Http\Resources\SttPhongKhamResource;
 use App\Repositories\SttPhongKhamRepository;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\TrangThaiService;
 use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
@@ -81,4 +82,12 @@ class SttPhongKhamService
     {
         $this->sttPhongKhamRepository->finishSttPhongKham($sttId);
     }
+    
+    public function batDauKham($sttId) 
+    {
+        $data = $this->sttPhongKhamRepository->batDauKham($sttId);
+        //return $data;
+    }
+    
+    
 }

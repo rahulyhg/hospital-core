@@ -237,4 +237,8 @@ class SttDonTiepService
         return $loaiStt;
     }
     
+    public function chuyenTTBatDauKham($benhNhanId) 
+    {
+        
+    }
 }

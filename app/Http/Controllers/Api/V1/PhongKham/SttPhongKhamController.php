@@ -4,16 +4,20 @@ namespace App\Http\Controllers\Api\V1\PhongKham;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\SttPhongKhamService;
+use App\Services\TrangThaiService;
 use App\Services\AuthService;
+use App\Models\SttPhongKham;
+use Carbon\Carbon;
 
 class SttPhongKhamController extends APIController
 {
     const LOAI_STT = ['A', 'B', 'C'];
     
-    public function __construct(SttPhongKhamService $sttPhongKhamService, AuthService $authService)
+    public function __construct(SttPhongKhamService $sttPhongKhamService, AuthService $authService, TrangThaiService $trangThaiService)
     {
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->authService = $authService;
+        $this->trangThaiService = $trangThaiService;
     }
     
     private function checkExistParam($phongId, $benhVienId)
@@ -84,5 +88,35 @@ class SttPhongKhamController extends APIController
         }
         
         return $this->respond([]);
+    }
+    
+    /*
+    public function batDauKham($sttId) {
+        $data = null;
+        if(is_numeric($sttId)) {
+            $this->sttPhongKhamService->batDauKham($sttId);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond($data);
+    }
+    */
+    
+    public function batDauKham($sttId, $newStatus) {
+        $tableModel = app()->make(SttPhongKham::class);
+        $extraUpdate = [
+            'thoi_gian_goi' => Carbon::now()->toDateTimeString()
+            ];
+        $attributes = [
+            'statusColumn' => 'trang_thai',
+            'newStatus' => $newStatus,
+            'idColumn' => 'id',
+            'idValue' => $sttId,
+            'extraUpdate' => $extraUpdate
+        ];
+        //$this->trangThaiService->changeToState($tableModel, $attributes['statusColumn'], $attributes['newStatus'], $attributes['idColumn'], $attributes['idValues'], $attributes['extraUpdate']);
+        $this->trangThaiService->changeToState($tableModel, $attributes);
     }
 }
