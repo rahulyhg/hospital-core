@@ -202,25 +202,7 @@ class HsbaRepository extends BaseRepositoryV2
     
     public function updateHsba($hsbaId, $input)
     {
-        //$thxData = isset($input['thx_gplace_json']) ? $input['thx_gplace_json'] : null;
-        //$input['thx_gplace_json'] = $thxData ? json_encode($thxData) : null;
-        // $input['ten_phuong_xa'] = null;
-        // $input['ten_quan_huyen'] = null;
-        // $input['ten_tinh_thanh_pho'] = null;
-        
-        // if($thxData) {
-        //     $input['thx_gplace_json'] = json_encode($thxData);
-        //     $data = Util::getDataFromGooglePlace($thxData);
-        //     $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
-        //     $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
-        //     $input['ten_tinh_thanh_pho'] = $data['ten_tinh_thanh_pho'];
-        // }
-        // $input['ten_phuong_xa'] = $data['ten_phuong_xa'];
-        // $input['ten_quan_huyen'] = $data['ten_quan_huyen'];
-        // $input['ten_tinh_thanh_pho'] = $data['ten_tinh_thanh_pho'];
         $hsba = $this->model->findOrFail($hsbaId);
-        echo "<pre>";
-        var_dump($input);
 		$hsba->update($input);
     }
     
