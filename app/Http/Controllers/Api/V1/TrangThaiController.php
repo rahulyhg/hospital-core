@@ -16,14 +16,14 @@ class TrangThaiController extends APIController
     }
     
     public function batDauKhamBN($hsbakpId) {
-        //set hsba_khoa_phong.trang_thai = 1
+        $trang_thai_bat_dau_kham = 1;
         $tableModel = app()->make(HsbaKhoaPhong::class);
         $extraUpdate = [
             'thoi_gian_vao_vien' => Carbon::now()->toDateTimeString()
             ];
         $attributes = [
             'statusColumn' => 'trang_thai',
-            'newStatus' => 1,
+            'newStatus' => $trang_thai_bat_dau_kham,
             'idColumn' => 'id',
             'idValue' => $hsbakpId,
             'extraUpdate' => $extraUpdate

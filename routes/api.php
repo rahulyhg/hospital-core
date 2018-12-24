@@ -94,7 +94,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('goiSttPhongKham','PhongKham\SttPhongKhamController@goiSttPhongKham');
         Route::get('loadSttPhongKham','PhongKham\SttPhongKhamController@loadSttPhongKham');
         Route::get('finishSttPhongKham/{sttId}','PhongKham\SttPhongKhamController@finishSttPhongKham');
-        Route::get('batDauKhamBN/{hsbakpId}','TrangThaiController@batDauKhamBN');
         Route::get('batDauKham/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@batDauKham');
 		Route::post('updateHsbaKhoaPhong/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@update');
 		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getById');
@@ -104,6 +103,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
+    });
+    
+    Route::group(['prefix' => 'chuyentrangthai'], function () {
+        Route::get('batDauKhamBN/{hsbakpId}','TrangThaiController@batDauKhamBN');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
