@@ -51,4 +51,16 @@ class PhacDoDieuTriController extends APIController
             return $ex;
         }
     }
+    
+    public function getPddtByCode($icd10Code)
+    {
+        if($icd10Code) {
+            $data = $this->pddtService->getPddtByCode($icd10Code);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }

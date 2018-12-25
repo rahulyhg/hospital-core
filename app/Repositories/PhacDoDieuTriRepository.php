@@ -108,4 +108,10 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $pddt = $this->model->findOrFail($pddtId);
 		$pddt->update($dataPddt);
     }
+    
+    public function getDataPddtByCode($icd10Code)
+    {
+        $result = $this->model->where('icd10code', $icd10Code)->first(); 
+        return $result;
+    }
 }
