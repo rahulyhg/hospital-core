@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1\PhongKham;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\SttPhongKhamService;
-use App\Services\TrangThaiService;
 use App\Services\AuthService;
 use App\Models\SttPhongKham;
 use Carbon\Carbon;
@@ -13,11 +12,10 @@ class SttPhongKhamController extends APIController
 {
     const LOAI_STT = ['A', 'B', 'C'];
     
-    public function __construct(SttPhongKhamService $sttPhongKhamService, AuthService $authService, TrangThaiService $trangThaiService)
+    public function __construct(SttPhongKhamService $sttPhongKhamService, AuthService $authService)
     {
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->authService = $authService;
-        $this->trangThaiService = $trangThaiService;
     }
     
     private function checkExistParam($phongId, $benhVienId)
