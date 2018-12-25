@@ -139,10 +139,4 @@ class DonTiepController extends APIController
         $result = $this->phieuKhamService->getListYLenhByPhieuKham($phieuKhamId, $limit, $page);
         return $this->respond($result);
     }
-    
-    public function chuyenTTBatDauKham(Request $request) {
-        $benhNhanId = $request->query('benhNhanId');
-        $trangThaiBN = $this->sttDonTiepService->chuyenTTBatDauKham($benhNhanId);
-        return $this->respond([ "trangThaiBN" => $trangThaiBN ]);
-    }
 }
