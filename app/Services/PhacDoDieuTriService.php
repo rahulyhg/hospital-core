@@ -30,4 +30,10 @@ class PhacDoDieuTriService
         $this->pddtRepository->savePhacDoDieuTri($pddtId, $input);
     }
     
+    public function getPddtByCode($icd10Code)
+    {
+        $data = $this->pddtRepository->getDataPddtByCode($icd10Code);
+        
+        return new PddtResource($data);
+    }
 }
