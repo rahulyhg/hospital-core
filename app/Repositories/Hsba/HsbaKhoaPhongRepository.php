@@ -4,11 +4,14 @@ namespace App\Repositories\Hsba;
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\HsbaKhoaPhong;
+use App\Services\TrangThaiService;
 use Carbon\Carbon;
 
 class HsbaKhoaPhongRepository extends BaseRepositoryV2
 {
     const BENH_AN_KHAM_BENH = 24;
+    
+    const TRANG_THAI_BAT_DAU_KHAM = 1;
     
     public function getModel()
     {
@@ -318,8 +321,28 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $result;
     }  
     
-    public function batDauKham($hsbaKhoaPhongId)
-    {
-		$this->model->where('id', '=', $hsbaKhoaPhongId)->update(['thoi_gian_vao_vien' => Carbon::now()->toDateTimeString()]);
-    }
+    public function changeToState($tableModel, $attributes) {
+        if(sizeof($attributes) > 0) 
+        {
+            $updateAttributes = [ $attributes['statusColumn'] => $attributes['newStatus'] ];
+            $extraUpdate = $attributes['extraUpdate'];
+            if(sizeof($extraUpdate) > 0) $updateAttributes = array_merge($updateAttributes, $extraUpdate);
+            $tableModel->where($attributes['idColumn'], '=', $attributes['idValue'])->update($updateAttributes);
+        }
+    } 
+    
+    public function batDauKham($hsbaKhoaPhongId) {
+        $extraUpdate = [
+            'thoi_gian_vao_vien' => Carbon::now()->toDateTimeString()
+            ];
+        $attributes = [
+            'statusColumn' => 'trang_thai',
+            'newStatus' => self::TRANG_THAI_BAT_DAU_KHAM,
+            'idColumn' => 'id',
+            'idValue' => $hsbaKhoaPhongId,
+            'extraUpdate' => $extraUpdate
+        ];
+        $this->changeToState($this->model, $attributes);
+    } 
+    
 }

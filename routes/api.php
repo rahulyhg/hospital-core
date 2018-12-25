@@ -105,10 +105,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
     });
     
-    Route::group(['prefix' => 'chuyentrangthai'], function () {
-        Route::get('batDauKhamBN/{hsbakpId}','TrangThaiController@batDauKhamBN');
-    });
-    
     Route::group(['prefix' => 'danhmuc'], function () {
 		Route::get('getListDanhMucDichVu','DanhMuc\DanhMucController@getListDanhMucDichVu');
 		Route::get('getDmdvById/{dmdvId}','DanhMuc\DanhMucController@getDmdvById');
