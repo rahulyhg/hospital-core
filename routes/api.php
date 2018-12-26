@@ -147,6 +147,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getListPhieuThuBySoPhieuThuId/{soPhieuThuId}','PhieuThu\PhieuThuController@getListPhieuThuBySoPhieuThuId');
     });
     
+    Route::group(['prefix' => 'phacdodieutri'], function () {
+		Route::get('getListPhacDoDieuTri','PhacDoDieuTri\PhacDoDieuTriController@getListPhacDoDieuTri');
+		Route::get('getPddtById/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@getPddtById');
+		Route::post('savePddt/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@savePddt');
+		Route::get('getPddtByCode/{icd10Code}','PhacDoDieuTri\PhacDoDieuTriController@getPddtByCode');
+    });
+    
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');
