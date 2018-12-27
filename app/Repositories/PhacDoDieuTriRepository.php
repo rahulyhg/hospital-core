@@ -83,18 +83,20 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $arrChuyenKhoa = [];
         $dataPddt = [];
         
-        foreach($input as $item) {
+        foreach($input['data'] as $item) {
             $arrTemp = explode('---', $item);
             $arr = explode('--', $arrTemp[1]);
             
-            if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
-                $arrXetNghiem[$arr[0]] = $arr[1];
-            }
-            if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
-                $arrChanDoanHinhAnh[$arr[0]] = $arr[1];
-            }
-            if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
-                $arrChuyenKhoa[$arr[0]] = $arr[1];
+            if(!in_array($arr[0], $input['remove'])) {
+                if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
+                    $arrXetNghiem[$arr[0]] = $arr[1];
+                }
+                if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
+                    $arrChanDoanHinhAnh[$arr[0]] = $arr[1];
+                }
+                if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
+                    $arrChuyenKhoa[$arr[0]] = $arr[1];
+                }
             }
         }
         
