@@ -21,6 +21,7 @@ class PddtResource extends Resource
             'vat_tu'                    => json_decode($this->vat_tu),
             'thuoc'                     => json_decode($this->thuoc),
             'khac'                      => json_decode($this->khac),
+            'giai_trinh'                => json_decode($this->giai_trinh),
         ];
     }
 }

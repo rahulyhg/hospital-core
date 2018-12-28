@@ -36,4 +36,16 @@ class PhacDoDieuTriService
         
         return new PddtResource($data);
     }
+    
+    public function getPddtByIcd10Code($icd10Code)
+    {
+        $data = $this->pddtRepository->getPddtByIcd10Code($icd10Code);
+        
+        return $data;
+    }
+    
+    public function saveGiaiTrinhPddt(array $input)
+    {
+        $this->pddtRepository->saveGiaiTrinhPddt($input);
+    }
 }
