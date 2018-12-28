@@ -78,4 +78,9 @@ class YLenhService {
                             
         return $result;
     }
+    
+    public function getYLenhByHsbaId($hsbaId) {
+        $result = $this->yLenhRepository->getYLenhByHsbaId($hsbaId);
+        return $result;
+    }
 }
