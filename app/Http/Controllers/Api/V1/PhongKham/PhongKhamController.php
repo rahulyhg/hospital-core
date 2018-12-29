@@ -8,6 +8,7 @@ use App\Services\SttPhongKhamService;
 use App\Services\DieuTriService;
 use App\Services\Icd10Service;
 use App\Services\YLenhService;
+use App\Services\PhacDoDieuTriService;
 
 class PhongKhamController extends APIController
 {
@@ -17,7 +18,8 @@ class PhongKhamController extends APIController
         SttPhongKhamService $sttPhongKhamService, 
         DieuTriService $dieuTriService, 
         Icd10Service $icd10Service,
-        YLenhService $yLenhService
+        YLenhService $yLenhService,
+        PhacDoDieuTriService $pddtService
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
@@ -25,6 +27,7 @@ class PhongKhamController extends APIController
         $this->dieuTriService = $dieuTriService;
         $this->icd10Service = $icd10Service;
         $this->yLenhService = $yLenhService;
+        $this->pddtService = $pddtService;
     }
     
     public function update($hsbaKhoaPhongId, Request $request)
@@ -165,5 +168,17 @@ class PhongKhamController extends APIController
         }
         
         return $this->respond([]);
+    }
+    
+    public function getPddtByIcd10Code($icd10Code)
+    {
+        $data = $this->pddtService->getPddtByIcd10Code($icd10Code);
+        
+        if(!$data) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
     }
 }

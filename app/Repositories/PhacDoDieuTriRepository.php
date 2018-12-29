@@ -4,6 +4,7 @@ namespace App\Repositories;
 use DB;
 use App\Models\PhacDoDieuTri;
 use App\Repositories\BaseRepositoryV2;
+use Carbon\Carbon;
 
 class PhacDoDieuTriRepository extends BaseRepositoryV2
 {
@@ -83,18 +84,20 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $arrChuyenKhoa = [];
         $dataPddt = [];
         
-        foreach($input as $item) {
+        foreach($input['data'] as $item) {
             $arrTemp = explode('---', $item);
             $arr = explode('--', $arrTemp[1]);
             
-            if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
-                $arrXetNghiem[$arr[0]] = $arr[1];
-            }
-            if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
-                $arrChanDoanHinhAnh[$arr[0]] = $arr[1];
-            }
-            if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
-                $arrChuyenKhoa[$arr[0]] = $arr[1];
+            if(!in_array($arr[0], $input['remove'])) {
+                if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
+                    $arrXetNghiem[$arr[0]] = $arr[1];
+                }
+                if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
+                    $arrChanDoanHinhAnh[$arr[0]] = $arr[1];
+                }
+                if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
+                    $arrChuyenKhoa[$arr[0]] = $arr[1];
+                }
             }
         }
         
@@ -113,5 +116,41 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
     {
         $result = $this->model->where('icd10code', $icd10Code)->first(); 
         return $result;
+    }
+    
+    public function getPddtByIcd10Code($icd10Code)
+    {
+        $icd10Code = str_replace(' ', '', $icd10Code);
+        $arrIcd10 = explode(',', $icd10Code);
+        $result = $this->model->whereIn('icd10code', $arrIcd10)
+                                ->orderBy('id', 'asc')
+                                ->get(); 
+        return $result;
+    }
+    
+    public function saveGiaiTrinhPddt(array $input)
+    {
+        $arr = [];
+        foreach($input['icd10code'] as $item) {
+            $str = explode('-', $item);
+            
+            foreach($input['dataYLenh'] as $yLenh) {
+                if($yLenh['id'] == $str[1]) {
+                    $arr[$str[0]][$yLenh['id']] = $yLenh['loai_nhom'] . '---' . $yLenh['id'] . '--' . $yLenh['ten'] . '|' . $input['username'] . '|' . Carbon::now()->toDateTimeString();
+                    break;
+                }
+            }
+        }
+        
+        foreach($arr as $id=>$item) {
+            $pddt = $this->model->findOrFail($id);
+            $data = json_decode($pddt->giai_trinh, true);
+            if($data)
+                $data = array_merge($data, $item);
+            else
+                $data = $item;
+            $params['giai_trinh'] = json_encode($data);
+		    $pddt->update($params);
+        }
     }
 }
