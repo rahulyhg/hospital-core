@@ -19,7 +19,6 @@ use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
 use App\Repositories\HanhChinhRepository;
-use App\Repositories\Sqs\Hsba\HsbaKhoaPhongRepository as HsbaKhoaPhongSqsRepository;
 
 // Service
 use App\Services\SttPhongKhamService;
@@ -34,7 +33,8 @@ use App\Models\ValueObjects\NhomNguoiThan;
 
 use Validator;
 
-class BenhNhanServiceV2{
+class BenhNhanServiceV2 {
+    
     private $dataBenhNhan = [];
     private $dataHsba = [];
     private $dataHsbaKp = [];
@@ -54,10 +54,6 @@ class BenhNhanServiceV2{
     private $dataTenTHX = [];
     private $dataNhomNguoiThan = null;
     
-    private $dataQueue = [
-        'message_attributes' => [],
-        'message_body' => []
-    ];
     private $dataLog = [];
     
     private $benhNhanKeys = [
@@ -107,13 +103,13 @@ class BenhNhanServiceV2{
         DanhMucDichVuRepository $danhMucDichVuRepository, 
         YLenhRepository $yLenhRepository, 
         PhongRepository $phongRepository, 
-        HanhChinhRepository $hanhChinhRepository, 
-        HsbaKhoaPhongSqsRepository $hsbaKhoaPhongSqsRepository
+        HanhChinhRepository $hanhChinhRepository
     )
     {
         // Services
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        
         // Repositories
         $this->benhNhanRepository = $benhNhanRepository;
         $this->hsbaRepository = $hsbaRepository;
@@ -127,7 +123,6 @@ class BenhNhanServiceV2{
         $this->yLenhRepository = $yLenhRepository;
         $this->phongRepository = $phongRepository;
         $this->hanhChinhRepository = $hanhChinhRepository;
-        $this->sqsRepo = $hsbaKhoaPhongSqsRepository;
     }
     
     public function registerBenhNhan(Request $request)
@@ -192,8 +187,6 @@ class BenhNhanServiceV2{
                     ->createDieuTri()
                     ->createPhieuYLenh()
                     ->createYLenh()
-                    ->makeQueueAttribute()
-                    ->makeQueueBody()
                     ->pushToHsbaKpQueue();
                 
                 return $this->dataSttPk;
@@ -209,68 +202,6 @@ class BenhNhanServiceV2{
         });
         
         return $result;
-    }
-    
-    /**
-     * Derive Queue Attributes from dataHsba, dataSttPk
-     */
-    private function makeQueueAttribute() {
-        $ngayVaoVien = Carbon::now()->toDateString();
-        $messageAttributes = [
-            'benh_vien_id' => ['DataType' => "Number",
-                                'StringValue' => $this->dataHsba['benh_vien_id']
-                            ],
-            'khoa_id' => ['DataType' => "Number",
-                                'StringValue' => $this->dataHsba['khoa_id']
-                            ],
-            'phong_id' => ['DataType' => "Number",
-                                'StringValue' => $this->dataSttPk['phong_id']
-                            ],
-            'ngay_vao_vien' => ['DataType' => "String",
-                                'StringValue' => $ngayVaoVien
-                            ]                
-        ];
-        $this->dataQueue['message_attributes'] = $messageAttributes;
-        return $this;
-    }
-    
-    /**
-     * Derive Queue Body from dataBenhNhan, dataHsba, dataHsbaKp, dataBhyt
-     */
-    private function makeQueueBody() {
-        $messageBody = [
-            'benh_vien_id' => $this->dataHsba['benh_vien_id'],
-            'hsba_id' => $this->dataHsba['id'], 
-            'hsba_khoa_phong_id' => $this->dataHsbaKp['id'], 
-            'ten_benh_nhan' => $this->dataBenhNhan['ho_va_ten'], 
-            'nam_sinh' => $this->dataBenhNhan['nam_sinh'], 
-            'ms_bhyt' => $this->dataBhyt['ms_bhyt'], 
-            'trang_thai_hsba' => $this->dataHsba['trang_thai_hsba'],
-            'ngay_tao' => $this->dataHsba['ngay_tao'], // Modify repository
-            'ngay_ra_vien' => '', // Modify repository
-            'thoi_gian_vao_vien' => $this->dataHsbaKp['thoi_gian_vao_vien'], 
-            'thoi_gian_ra_vien' => '',
-            'trang_thai_cls' => '', 
-            'ten_trang_thai_cls' => '', // TODO - get Ten Trang Thai CLS
-            'trang_thai' => $this->dataHsbaKp['trang_thai'], 
-            'ten_trang_thai' => '' // TODO - get Ten Trang Thai CLS
-        ];
-        $this->dataQueue['message_body'] = $messageBody;
-        return $this;
-    }
-    
-    /**
-     * push to Queue from derived dataQueue
-     */
-    private function pushToQueue() {
-        if (empty($this->dataQueue['message_attributes']) || empty($this->dataQueue['message_body'])){
-            throw new \InvalidArgumentException('message_attributes or message_body must be set');
-        }
-        
-        $this->sqsRepo->push(
-            $this->dataQueue['message_attributes'], $this->dataQueue['message_body']
-        );
-        
     }
     
     private function createBhyt($params) {
