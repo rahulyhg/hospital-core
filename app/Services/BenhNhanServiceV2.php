@@ -23,6 +23,7 @@ use App\Repositories\Sqs\Hsba\HsbaKhoaPhongRepository as HsbaKhoaPhongSqsReposit
 
 // Service
 use App\Services\SttPhongKhamService;
+use App\Services\HsbaKhoaPhongService;
 
 // Others
 use App\Helper\Util;
@@ -54,7 +55,7 @@ class BenhNhanServiceV2{
     private $dataNhomNguoiThan = null;
     
     private $dataQueue = [
-        'message_attribute' => [],
+        'message_attributes' => [],
         'message_body' => []
     ];
     private $dataLog = [];
@@ -92,6 +93,9 @@ class BenhNhanServiceV2{
     
     public function __construct
     (
+        HsbaKhoaPhongService $hsbaKhoaPhongService,
+        SttPhongKhamService $sttPhongKhamService,
+        
         BenhNhanRepository $benhNhanRepository, 
         HsbaRepository $hsbaRepository, 
         HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, 
@@ -103,11 +107,14 @@ class BenhNhanServiceV2{
         DanhMucDichVuRepository $danhMucDichVuRepository, 
         YLenhRepository $yLenhRepository, 
         PhongRepository $phongRepository, 
-        SttPhongKhamService $sttPhongKhamService,
         HanhChinhRepository $hanhChinhRepository, 
         HsbaKhoaPhongSqsRepository $hsbaKhoaPhongSqsRepository
     )
     {
+        // Services
+        $this->sttPhongKhamService = $sttPhongKhamService;
+        $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        // Repositories
         $this->benhNhanRepository = $benhNhanRepository;
         $this->hsbaRepository = $hsbaRepository;
         $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
@@ -119,7 +126,6 @@ class BenhNhanServiceV2{
         $this->danhMucDichVuRepository = $danhMucDichVuRepository;
         $this->yLenhRepository = $yLenhRepository;
         $this->phongRepository = $phongRepository;
-        $this->sttPhongKhamService = $sttPhongKhamService;
         $this->hanhChinhRepository = $hanhChinhRepository;
         $this->sqsRepo = $hsbaKhoaPhongSqsRepository;
     }
@@ -188,7 +194,7 @@ class BenhNhanServiceV2{
                     ->createYLenh()
                     ->makeQueueAttribute()
                     ->makeQueueBody()
-                    ->pushToQueue();
+                    ->pushToHsbaKpQueue();
                 
                 return $this->dataSttPk;
                 
@@ -445,6 +451,34 @@ class BenhNhanServiceV2{
     private function isBHYTNumber($value) {
         return strlen($value) == 15;
     }
+    
+    private function pushToHsbaKpQueue() {
+        
+        $benhVienId = $this->dataHsba['benh_vien_id'];
+        $khoaId = $this->dataHsba['khoa_id'];
+        $phongId = $this->dataSttPk['phong_id'];
+        $ngayVaoVien = Carbon::now()->toDateString();
+        $this->hsbaKhoaPhongService ->setQueueAttribute($benhVienId, $khoaId, $phongId, $ngayVaoVien)
+                                    ->setQueueBody([
+                                            'benh_vien_id' => $this->dataHsba['benh_vien_id'],
+                                            'hsba_id' => $this->dataHsba['id'], 
+                                            'hsba_khoa_phong_id' => $this->dataHsbaKp['id'], 
+                                            'ten_benh_nhan' => $this->dataBenhNhan['ho_va_ten'], 
+                                            'nam_sinh' => $this->dataBenhNhan['nam_sinh'], 
+                                            'ms_bhyt' => $this->dataBhyt['ms_bhyt'], 
+                                            'trang_thai_hsba' => $this->dataHsba['trang_thai_hsba'],
+                                            'ngay_tao' => $this->dataHsba['ngay_tao'], // Modify repository
+                                            'ngay_ra_vien' => '', // Modify repository
+                                            'thoi_gian_vao_vien' => $this->dataHsbaKp['thoi_gian_vao_vien'], 
+                                            'thoi_gian_ra_vien' => '',
+                                            'trang_thai_cls' => '', 
+                                            'ten_trang_thai_cls' => '',
+                                            'trang_thai' => $this->dataHsbaKp['trang_thai'], 
+                                            'ten_trang_thai' => '' // TODO - get Ten Trang Thai CLS
+                                        ])
+                                    ->pushToQueue();
+        return $this;
+    }    
     
     // private function setDataTHX($params) {
     //     $this->dataTenTHX = Util::getDataFromGooglePlace($this->dataTHX);

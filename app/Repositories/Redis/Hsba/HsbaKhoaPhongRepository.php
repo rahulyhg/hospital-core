@@ -12,7 +12,7 @@ class HsbaKhoaPhongRepository extends BaseRedisRepository
         
     }
     
-    public function _init($type){
+    public function _init(){
         $prefix = 'hsba_khoa_phong';
         parent::init(HsbaKhoaPhongRedis::class, HsbaKhoaPhongRedis::HASH_TYPE, $prefix);
     }
