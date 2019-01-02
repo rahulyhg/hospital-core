@@ -122,4 +122,34 @@ class DonTiepController extends APIController
             return $this->respondInternalError($ex->getMessage());
         }
     }
+    
+    public function pushToRedisFromQueue(Request $request) {
+        try 
+        {
+            /*
+           {
+            	"benh_vien_id": 1,
+            	"hsba_khoa_phong_id": 10004,
+            	"ten_benh_nhan": "NVF",
+            	"thoi_gian_vao_vien": "2018-11-18 15:29:26",
+            	"thoi_gian_ra_vien": "",
+            	"trang_thai_cls": 1,
+            	"ten_trang_thai_cls": "TEN_CLS",
+            	"trang_thai": 1,
+            	"ten_trang_thai": "TRỐN TRẠI"
+            }
+            */
+            $params = $request->only('message_id','message_attributes','message_body');
+            $messageAttributes = json_decode($params['message_attributes'],true);
+            $messageBody = json_decode($params['message_body'],true);
+            //var_dump($messageBody);die;
+            
+            $result = $this->hsbaKhoaPhongService->addToCache($params['message_id'],$messageAttributes,$messageBody);
+            $this->setStatusCode(201);
+            return $this->respond(true);
+        } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        }    
+        
+    }
 }
