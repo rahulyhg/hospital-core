@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Auth;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +13,8 @@ class AuthUsersGroups extends Model
     /**
      * @var array
      */
-    protected $fillable = ['group_id', 'user_id'];
+    protected $table='auth_users_groups';
+    protected $fillable = ['group_id', 'user_id','khoa_id','phong_id'];
+    public $timestamps = false;
 
 }
