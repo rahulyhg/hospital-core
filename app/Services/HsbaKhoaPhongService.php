@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use Storage;
 use Exception;
+use App\Helper\AwsS3;
 
 // Models
 use App\Models\HsbaKhoaPhong;
@@ -48,14 +49,7 @@ class HsbaKhoaPhongService
     {
         $fileUpload = [];
         // Config S3
-        $s3 = new \Aws\S3\S3Client([
-        	'region'  => config('filesystems.disks.s3.region'),
-        	'version' => 'latest',
-        	'credentials' => [
-        	    'key'    => config('filesystems.disks.s3.key'),
-        	    'secret' => config('filesystems.disks.s3.secret'),
-        	]
-        ]);
+        $s3 = new AwsS3();
         
         // GET OLD FILE
         $item = $this->hsbaKhoaPhongRepository->getById($hsbaKhoaPhongId);
@@ -66,10 +60,7 @@ class HsbaKhoaPhongService
         if(!empty($params['oldFiles'])) {
             foreach($fileItem as $file) {
                 if(!in_array($file, $params['oldFiles'])) {
-                    $s3->deleteObject([
-                        'Bucket' => config('filesystems.disks.s3.bucket'),
-                        'Key'    => $file
-                    ]);
+                    $s3->deleteObject($file);
                 }
                 else {
                     $fileUpload[] = $file;
@@ -78,11 +69,10 @@ class HsbaKhoaPhongService
             unset($params['oldFiles']);
         }
         else {
-            foreach($fileItem as $file) {
-                $s3->deleteObject([
-                    'Bucket' => config('filesystems.disks.s3.bucket'),
-                    'Key'    => $file
-                ]);
+            if(!empty($fileItem)) {
+                foreach($fileItem as $file) {
+                    $s3->deleteObject($file);
+                }
             }
         }
         
@@ -94,25 +84,14 @@ class HsbaKhoaPhongService
                 }
             }
             
-            if (!is_dir('upload/hsbakp/hoibenh')) {
-                mkdir('upload/hsbakp/hoibenh', 0777, true);
-            }
-        
-            if(!empty($params['files'])) {
-                foreach ($params['files'] as $file) {
-                    $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
-                    //$move = $file->move('upload/hsbakp/hoibenh', $imageFileName);
-                    $fileUpload[] = $imageFileName;
-                    
-                    $result = $s3->putObject([
-                    	'Bucket' => config('filesystems.disks.s3.bucket'),
-                    	'Key'    => $imageFileName,
-                    	'SourceFile' => $file->getPathName(),
-                    	'ContentType' => $file->getMimeType()
-                    ]);
-                }
+            foreach ($params['files'] as $file) {
+                $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
+                //$move = $file->move('upload/hsbakp/hoibenh', $imageFileName);
+                $fileUpload[] = $imageFileName;
                 
+                $result = $s3->putObject($imageFileName, $file);
             }
+                
             if(!empty($fileUpload)) {
                 $params['upload_file_hoi_benh'] = json_encode($fileUpload);
             }
