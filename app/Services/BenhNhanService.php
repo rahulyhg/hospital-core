@@ -228,12 +228,10 @@ class BenhNhanService{
                 $yLenhParams['phong_id'] = $phongId;
                 $yLenhParams['ma'] = $yeuCauKham['ma'];
                 $yLenhParams['ten'] = $yeuCauKham['ten'];
-                $yLenhParams['ten_nhan_dan'] = $yeuCauKham['ten_nhan_dan'];
                 $yLenhParams['ten_bhyt'] = $yeuCauKham['ten_bhyt'];
                 $yLenhParams['ten_nuoc_ngoai'] = $yeuCauKham['ten_nuoc_ngoai'];
                 $yLenhParams['trang_thai'] = 0;
                 $yLenhParams['gia'] = (double)$yeuCauKham['gia'];
-                $yLenhParams['gia_nhan_dan'] = (double)$yeuCauKham['gia_nhan_dan'];
                 $yLenhParams['gia_bhyt'] = (double)$yeuCauKham['gia_bhyt'];
                 $yLenhParams['gia_nuoc_ngoai'] = (double)$yeuCauKham['gia_nuoc_ngoai'];
                 $idYLenh = $this->yLenhRepository->createDataYLenh($yLenhParams);

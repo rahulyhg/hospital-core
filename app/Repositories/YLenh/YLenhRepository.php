@@ -39,7 +39,6 @@ class YLenhRepository extends BaseRepositoryV2
         $column = [
             'y_lenh.id',
             'y_lenh.ten',
-            // 'y_lenh.ten_nhan_dan',
             // 'y_lenh.ten_bhyt',
             // 'y_lenh.ten_nuoc_ngoai',
             'y_lenh.loai_y_lenh',

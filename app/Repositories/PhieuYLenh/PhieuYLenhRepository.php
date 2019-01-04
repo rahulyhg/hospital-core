@@ -32,7 +32,8 @@ class PhieuYLenhRepository extends BaseRepositoryV2
         
         if($result)
             return $result->id;
-        else
+        else {
             return $this->createDataPhieuYLenh($input);
+        }
     }
 }
