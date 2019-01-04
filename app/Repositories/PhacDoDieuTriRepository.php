@@ -73,7 +73,16 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
     
     public function getDataPhacDoDieuTriById($pddtId)
     {
-        $result = $this->model->where('id', $pddtId)->first(); 
+        $obj = $this->model->where('id', $pddtId)->first(); 
+        $listId = [];
+        if($obj) {
+           $arrXetNghiem = $obj->xet_nghiem ? json_decode($obj->xet_nghiem) : []; 
+           $arrChanDoanHinhAnh = $obj->chan_doan_hinh_anh ? json_decode($obj->chan_doan_hinh_anh) : [];
+           $arrChuyenKhoa = $obj->chuyen_khoa ? json_decode($obj->chuyen_khoa) : [];
+           $listId = array_merge($arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa);
+        }
+        
+        $result = array_map('intval', $listId);
         return $result;
     }
     
@@ -90,13 +99,13 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
             
             if(!in_array($arr[0], $input['remove'])) {
                 if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
-                    $arrXetNghiem[$arr[0]] = $arr[1];
+                    $arrXetNghiem[] = $arr[0];
                 }
                 if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
-                    $arrChanDoanHinhAnh[$arr[0]] = $arr[1];
+                    $arrChanDoanHinhAnh[] = $arr[0];
                 }
                 if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
-                    $arrChuyenKhoa[$arr[0]] = $arr[1];
+                    $arrChuyenKhoa[] = $arr[0];
                 }
             }
         }
@@ -125,7 +134,19 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $result = $this->model->whereIn('icd10code', $arrIcd10)
                                 ->orderBy('id', 'asc')
                                 ->get(); 
-        return $result;
+        $listId = [];
+        $data['list'] = $result;
+        if($result) {
+            foreach($result as $obj) {
+                $arrXetNghiem = $obj->xet_nghiem ? json_decode($obj->xet_nghiem) : []; 
+                $arrChanDoanHinhAnh = $obj->chan_doan_hinh_anh ? json_decode($obj->chan_doan_hinh_anh) : [];
+                $arrChuyenKhoa = $obj->chuyen_khoa ? json_decode($obj->chuyen_khoa) : [];
+                $listId = array_merge($listId, $arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa);
+            }
+            $data['listId'] = array_map('intval', $listId);
+        }
+        
+        return $data;
     }
     
     public function saveGiaiTrinhPddt(array $input)
