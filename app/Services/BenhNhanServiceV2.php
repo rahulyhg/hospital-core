@@ -362,6 +362,7 @@ class BenhNhanServiceV2 {
         $dataYLenh['gia_bhyt'] = (double)$this->dataYeuCauKham['gia_bhyt'];
         $dataYLenh['gia_nuoc_ngoai'] = (double)$this->dataYeuCauKham['gia_nuoc_ngoai'];
         $dataYLenh['loai_y_lenh'] = 1; // TODO - define constant
+        $dataYLenh['thoi_gian_chi_dinh'] = Carbon::now()->toDateTimeString();
         $dataYLenh['id'] = $this->yLenhRepository->createDataYLenh($dataYLenh);
         $this->dataYLenh = $dataYLenh;
         return $this;
