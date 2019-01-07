@@ -43,7 +43,7 @@ class AuthUsersRepository extends BaseRepositoryV2
             return false;
     }
     
-    public function getListNguoiDung($limit = 100, $page = 1)
+    public function getListNguoiDung($limit = 100, $page = 1, $keyWords ='')
     {
         $offset = ($page - 1) * $limit;
         
@@ -59,6 +59,10 @@ class AuthUsersRepository extends BaseRepositoryV2
         ];
         
         $query = DB::table('auth_users');
+        if($keyWords!=""){
+           $query->where('fullname', 'like', '%' . strtolower($keyWords) . '%')
+                 ->orWhere('email', 'like', '%' . strtolower($keyWords) . '%');
+        }
             
         $totalRecord = $query->count();
         if($totalRecord) {
@@ -114,11 +118,10 @@ class AuthUsersRepository extends BaseRepositoryV2
     
     public function checkEmailbyEmail($email)
     {
-        $data = $this->model
+        $data = DB::table('auth_users')
                 ->where('email', $email)
                 ->first();
-        if($data)
-            return $data;
+        return $data;
     }
     
     public function updateAuthUsers($id, array $input)

@@ -74,4 +74,11 @@ class YLenhService {
                             
         return $result;
     }
+    
+    public function getDetailPhieuYLenh($phieuYLenhId,$type)
+    {
+        $result = $this->yLenhRepository->getDetailPhieuYLenh($phieuYLenhId,$type);
+                            
+        return $result;
+    }    
 }

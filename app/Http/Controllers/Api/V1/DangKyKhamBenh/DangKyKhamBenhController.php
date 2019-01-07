@@ -154,6 +154,12 @@ class DangKyKhamBenhController extends APIController
         return $data;
     }
     
+    public function listKhoaByBenhVienId($benhVienId)
+    {
+        $data = $this->khoaService->listKhoaByBenhVienId($benhVienId);
+        return $data;
+    }    
+    
     public function getLichSuKhamDieuTriByBenhNhanId(Request $request)
     {
         $data = $this->hsbaKhoaPhongService->getLichSuKhamDieuTri($request->benhNhanId);

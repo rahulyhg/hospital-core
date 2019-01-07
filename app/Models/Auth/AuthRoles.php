@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Auth;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +14,8 @@ class AuthRoles extends Model
     /**
      * @var array
      */
+     protected $table='auth_roles'; 
     protected $fillable = ['id', 'name', 'description'];
+    public $timestamps = false;
 
 }

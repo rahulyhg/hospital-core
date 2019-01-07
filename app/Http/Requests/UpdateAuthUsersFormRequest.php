@@ -23,7 +23,7 @@ class UpdateAuthUsersFormRequest extends ApiFormRequest
     {
         return [
             'fullname'              => 'required|string',
-            'email'                 => 'required|unique:auth_users|email',
+            'email'                 => 'required|email',
             'khoa'                  => 'required|string',
             'chuc_vu'               => 'required|string'
         ];
