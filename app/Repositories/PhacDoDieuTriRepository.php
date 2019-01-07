@@ -75,14 +75,26 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
     {
         $obj = $this->model->where('id', $pddtId)->first(); 
         $listId = [];
+        $giaiTrinh = [];
         if($obj) {
            $arrXetNghiem = $obj->xet_nghiem ? json_decode($obj->xet_nghiem) : []; 
            $arrChanDoanHinhAnh = $obj->chan_doan_hinh_anh ? json_decode($obj->chan_doan_hinh_anh) : [];
            $arrChuyenKhoa = $obj->chuyen_khoa ? json_decode($obj->chuyen_khoa) : [];
            $listId = array_merge($arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa);
+           
+           $arrData = $obj->giai_trinh ? json_decode($obj->giai_trinh) : [];
+           if($arrData) {
+               foreach($arrData as $item) {
+                   $temp = explode('|', $item);
+                   $arr = explode('---', $temp[0]);
+                   $str = explode('--', $arr[1]);
+                   $giaiTrinh[$temp[1]][$temp[2]][$arr[0].'---'.$str[0]] = $str[1];
+               }
+           }
         }
         
-        $result = array_map('intval', $listId);
+        $result['listId'] = array_map('intval', $listId);
+        $result['giaiTrinh'] = $giaiTrinh;
         return $result;
     }
     
@@ -149,7 +161,7 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function saveGiaiTrinhPddt(array $input)
+    public function saveYLenhGiaiTrinh(array $input)
     {
         $arr = [];
         foreach($input['icd10code'] as $item) {
@@ -172,6 +184,15 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
                 $data = $item;
             $params['giai_trinh'] = json_encode($data);
 		    $pddt->update($params);
+        }
+    }
+    
+    public function confirmGiaiTrinh(array $input)
+    {
+        $pddt = $this->model->findOrFail($input['id']);
+        $data = json_decode($pddt->giai_trinh, true);
+        if($input['type'] == 'remove') {
+            
         }
     }
 }

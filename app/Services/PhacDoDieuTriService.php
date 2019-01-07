@@ -22,9 +22,10 @@ class PhacDoDieuTriService
     
     public function getPddtById($pddtId)
     {
-        $listId = $this->pddtRepository->getDataPhacDoDieuTriById($pddtId);
-        if($listId) {
-            $data = $this->dmdvRepository->getYLenhByListId($listId);
+        $result = $this->pddtRepository->getDataPhacDoDieuTriById($pddtId);
+        if($result['listId']) {
+            $data['pddt'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
+            $data['giaiTrinh'] = $result['giaiTrinh']; 
             return $data;
         } else {
             return [];
@@ -53,8 +54,13 @@ class PhacDoDieuTriService
         return $result;
     }
     
-    public function saveGiaiTrinhPddt(array $input)
+    public function saveYLenhGiaiTrinh(array $input)
     {
-        $this->pddtRepository->saveGiaiTrinhPddt($input);
+        $this->pddtRepository->saveYLenhGiaiTrinh($input);
+    }
+    
+    public function confirmGiaiTrinh(array $input)
+    {
+        $this->pddtRepository->confirmGiaiTrinh($input);
     }
 }

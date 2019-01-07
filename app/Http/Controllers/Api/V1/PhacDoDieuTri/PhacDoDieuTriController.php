@@ -64,11 +64,22 @@ class PhacDoDieuTriController extends APIController
         return $this->respond($data);
     }
     
-    public function saveGiaiTrinhPddt(Request $request)
+    public function saveYLenhGiaiTrinh(Request $request)
     {
         try {
             $input = $request->all();
-            $this->pddtService->saveGiaiTrinhPddt($input);
+            $this->pddtService->saveYLenhGiaiTrinh($input);
+        } catch (\Exception $ex) {
+            $this->setStatusCode(400);
+            return $ex;
+        }
+    }
+    
+    public function confirmGiaiTrinh(Request $request)
+    {
+        try {
+            $input = $request->all();
+            $this->pddtService->confirmGiaiTrinh($input);
         } catch (\Exception $ex) {
             $this->setStatusCode(400);
             return $ex;

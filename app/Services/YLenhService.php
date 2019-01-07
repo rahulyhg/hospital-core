@@ -26,6 +26,8 @@ class YLenhService {
         $result = DB::transaction(function() use ($input, $array) {
             try {
                 //insert table phieu_y_lenh
+                if(isset($input['dataYLenh']))
+                    $input = array_except($input, ['dataYLenh', 'username', 'icd10code']);
                 $phieuYLenhParams = $input;
                 $phieuYLenhParams = array_except($phieuYLenhParams, ['hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan']);
                 $phieuYLenhParams['loai_phieu_y_lenh'] = self::PHIEU_DIEU_TRI;
