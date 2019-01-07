@@ -55,12 +55,10 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
             'ma',
             'ma_nhom_bhyt',
             'ten',
-            'ten_nhan_dan',
             'ten_bhyt',
             'ten_nuoc_ngoai',
             'don_vi_tinh',
             'gia',
-            'gia_nhan_dan',
             'gia_bhyt',
             'gia_nuoc_ngoai',
             'trang_thai',
@@ -127,12 +125,10 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
             'ma',
             'ma_nhom_bhyt',
             'ten',
-            'ten_nhan_dan',
             'ten_bhyt',
             'ten_nuoc_ngoai',
             'don_vi_tinh',
             'gia',
-            'gia_nhan_dan',
             'gia_bhyt',
             'gia_nuoc_ngoai'
         ];
@@ -181,5 +177,29 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         return $data;
     }
     
-    
+    public function getYLenhByListId($listId)
+    {
+        $data = [];
+        
+        $result = $this->model->whereIn('id', $listId)->get();
+        if($result) {
+            foreach($result as $item) {
+                $item['key'] = $item->id;
+                $item['so_luong'] = 1;
+                switch($item->loai_nhom) {
+                    case self::LOAI_XET_NGHIEM:
+                        $data['xet_nghiem'][] = $item;
+                        break;
+                    case self::LOAI_CHAN_DOAN_HINH_ANH:
+                        $data['chan_doan_hinh_anh'][] = $item;
+                        break;
+                    case self::LOAI_CHUYEN_KHOA:
+                        $data['chuyen_khoa'][] = $item;
+                        break;
+                }
+            }
+        }
+        
+        return $data;
+    }
 }

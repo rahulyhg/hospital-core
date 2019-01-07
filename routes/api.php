@@ -171,7 +171,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getPddtById/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@getPddtById');
 		Route::post('savePddt/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@savePddt');
 		Route::get('getPddtByCode/{icd10Code}','PhacDoDieuTri\PhacDoDieuTriController@getPddtByCode');
-		Route::post('saveGiaiTrinhPddt','PhacDoDieuTri\PhacDoDieuTriController@saveGiaiTrinhPddt');
+		Route::post('saveYLenhGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@saveYLenhGiaiTrinh');
+		Route::post('confirmGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@confirmGiaiTrinh');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

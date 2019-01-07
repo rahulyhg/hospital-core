@@ -39,11 +39,9 @@ class YLenhRepository extends BaseRepositoryV2
         $column = [
             'y_lenh.id',
             'y_lenh.ten',
-            // 'y_lenh.ten_nhan_dan',
-            // 'y_lenh.ten_bhyt',
-            // 'y_lenh.ten_nuoc_ngoai',
             'y_lenh.loai_y_lenh',
-            // 'y_lenh.thoi_gian_chi_dinh',
+            'y_lenh.thoi_gian_chi_dinh',
+            'y_lenh.phieu_y_lenh_id',
             'phong.ten_phong'
         ];
         
@@ -81,10 +79,11 @@ class YLenhRepository extends BaseRepositoryV2
                     $type = self::Y_LENH_TEXT_CHUYEN_KHOA;
                 }
                     
-                // $date = Carbon::parse($item->thoi_gian_chi_dinh)->format('d/m/Y');
+                $datetime = Carbon::parse($item->thoi_gian_chi_dinh)->format('d/m/Y');
                 $phong = $item->ten_phong;
+                $phieuYLenh = $item->phieu_y_lenh_id;
                 $item['key'] = $item->id;
-                $array[$phong][$type][] = $item;
+                $array[$phong][$datetime][$phieuYLenh][$type][] = $item;
             }
             
             $result['itemXetNghiem'] = $itemXetNghiem;

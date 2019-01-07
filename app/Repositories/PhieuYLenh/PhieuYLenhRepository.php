@@ -12,7 +12,7 @@ class PhieuYLenhRepository extends BaseRepositoryV2
         return PhieuYLenh::class;
     }
     
-    public function createDataPhieuYLenh(array $input)
+    public function getPhieuYLenhId(array $input)
     {
         $id = $this->model->create($input)->id;
         return $id;

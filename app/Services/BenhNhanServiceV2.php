@@ -355,15 +355,14 @@ class BenhNhanServiceV2 {
         $dataYLenh['phong_id'] = $this->dataSttPk['phong_id'];
         $dataYLenh['ma'] = $this->dataYeuCauKham['ma'];
         $dataYLenh['ten'] = $this->dataYeuCauKham['ten'];
-        $dataYLenh['ten_nhan_dan'] = $this->dataYeuCauKham['ten_nhan_dan'];
         $dataYLenh['ten_bhyt'] = $this->dataYeuCauKham['ten_bhyt'];
         $dataYLenh['ten_nuoc_ngoai'] = $this->dataYeuCauKham['ten_nuoc_ngoai'];
         $dataYLenh['trang_thai'] = 0; // TODO - define constant
         $dataYLenh['gia'] = (double)$this->dataYeuCauKham['gia'];
-        $dataYLenh['gia_nhan_dan'] = (double)$this->dataYeuCauKham['gia_nhan_dan'];
         $dataYLenh['gia_bhyt'] = (double)$this->dataYeuCauKham['gia_bhyt'];
         $dataYLenh['gia_nuoc_ngoai'] = (double)$this->dataYeuCauKham['gia_nuoc_ngoai'];
         $dataYLenh['loai_y_lenh'] = 1; // TODO - define constant
+        $dataYLenh['thoi_gian_chi_dinh'] = Carbon::now()->toDateTimeString();
         $dataYLenh['id'] = $this->yLenhRepository->createDataYLenh($dataYLenh);
         $this->dataYLenh = $dataYLenh;
         return $this;
