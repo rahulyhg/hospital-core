@@ -43,6 +43,14 @@ class AuthUsersRepository extends BaseRepositoryV2
             return false;
     }
     
+    public function getInforAuthUserById($authUsersId)
+    {
+        $data = DB::table('auth_users')
+                ->where('id', $authUsersId)
+                ->first();
+        return $data;
+    }    
+    
     public function getListNguoiDung($limit = 100, $page = 1, $keyWords ='')
     {
         $offset = ($page - 1) * $limit;
