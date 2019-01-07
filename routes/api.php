@@ -71,6 +71,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::group(['prefix' => 'dangkykhambenh'], function () {
 		Route::get('listPhong/{loaiPhong}/{khoaId}','DangKyKhamBenh\DangKyKhamBenhController@getListPhong');
 		Route::get('listKhoa/{loaiKhoa}/{benhVienId}','DangKyKhamBenh\DangKyKhamBenhController@getListKhoa');
+		Route::get('listKhoaByBenhVienId/{benhVienId}','DangKyKhamBenh\DangKyKhamBenhController@listKhoaByBenhVienId');
 		Route::get('nhomPhongKham/{loaiPhong}/{khoaId}','DangKyKhamBenh\DangKyKhamBenhController@getNhomPhong');
     	Route::get('yeuCauKham/{loai_nhom}','DangKyKhamBenh\DangKyKhamBenhController@getListYeuCauKham');
     	Route::get('listNgheNghiep','DangKyKhamBenh\DangKyKhamBenhController@getListNgheNghiep');
@@ -138,6 +139,19 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::delete('deleteAuthUsers/{id}','AuthUser\AuthUserController@deleteAuthUsers');
      	Route::get('checkEmail/{email}','AuthUser\AuthUserController@checkEmailbyEmail');
     });
+    
+    Route::group(['prefix' => 'nhomnguoidung'], function () {
+		Route::get('getListAuthGroups','AuthController@getListAuthGroups');
+		Route::get('getByListId','AuthController@getAuthGroupsByListId');
+		Route::post('createAuthGroups','AuthController@createAuthGroups');
+		Route::get('getAuthGroupsById/{id}','AuthController@getAuthGroupsById');
+		Route::post('updateAuthGroups/{id}','AuthController@updateAuthGroups');
+		Route::get('getTreeListKhoaPhong','AuthController@getTreeListKhoaPhong');
+		Route::get('getAuthUsersGroups/{id}','AuthController@getAuthGroupsByUsersId');
+		Route::get('getListRoles','AuthController@getListRoles');
+		Route::get('getRolesByGroupsId/{id}','AuthController@getRolesByGroupsId');
+		Route::get('getKhoaPhongByGroupsId/{id}','AuthController@getKhoaPhongByGroupsId');
+    });     
     
     Route::group(['prefix' => 'thungan'], function () {
 		Route::post('createSoThuNgan','ThuNgan\ThuNganController@createSoThuNgan');

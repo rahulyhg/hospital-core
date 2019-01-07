@@ -9,13 +9,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Services\AuthService;
+use App\Services\AuthRolesService;
+use App\Services\AuthGroupsService;
+use App\Services\AuthUsersGroupsService;
+use App\Services\AuthGroupsHasRolesService;
+use App\Services\KhoaService;
 
-class AuthController extends Controller
+class AuthController extends APIController
 {
-    public function __construct(AuthService $service)
+    public function __construct(AuthService $service,AuthGroupsService $authGroupsService,KhoaService $khoaService,AuthUsersGroupsService $authUsersGroupsService,AuthRolesService $authRolesService,AuthGroupsHasRolesService $authGroupsHasRolesService)
     {
-        
         $this->authService = $service;
+        $this->authGroupsService = $authGroupsService;
+        $this->khoaService = $khoaService;
+        $this->authUsersGroupsService = $authUsersGroupsService;
+        $this->authRolesService = $authRolesService;
+        $this->authGroupsHasRolesService = $authGroupsHasRolesService;
     }
     public function register(RegisterFormRequest $request)
     {
@@ -100,5 +109,125 @@ class AuthController extends Controller
         return response([
             'status' => 'success'
         ]);
+    }
+    
+    public function getListAuthGroups(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $keyWords = $request->query('keyWords', '');
+        $data = $this->authGroupsService->getListAuthGroups($limit, $page, $keyWords);
+        return $this->respond($data);
+    }
+    
+    public function getAuthGroupsByListId(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $id = $request->query('id');
+        $data = $this->authGroupsService->getByListId($limit,$page,$id);
+        return $this->respond($data);
+    }
+    
+    public function createAuthGroups(Request $request)
+    {
+        $input = $request->all();
+        
+        $id = $this->authGroupsService->createAuthGroups($input);
+        if($id) {
+            $this->setStatusCode(201);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
+    }
+    
+    public function getAuthGroupsById($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->authGroupsService->getAuthGroupsById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function updateAuthGroups($id,Request $request)
+    {
+        try {
+            $isNumericId = is_numeric($id);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $this->authGroupsService->updateAuthGroups($id, $input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    
+    public function getTreeListKhoaPhong(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);        
+        $data = $this->khoaService->getTreeListKhoaPhong($limit, $page);
+        return $this->respond($data);
+    }
+    
+    public function getAuthGroupsByUsersId($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->authUsersGroupsService->getAuthGroupsByUsersId($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function getListRoles(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);        
+        $data = $this->authRolesService->getListRoles($limit, $page);
+        return $this->respond($data);
+    }
+    
+    public function getRolesByGroupsId($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->authGroupsHasRolesService->getRolesByGroupsId($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function getKhoaPhongByGroupsId($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->authGroupsService->getKhoaPhongByGroupsId($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
     }
 }

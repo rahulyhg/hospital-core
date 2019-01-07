@@ -110,7 +110,12 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         
         if($status != -1 && $phongId != $phongDonTiepID) {
             $query = $query->where(function($queryAdv) use ($status) {
-                $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $status);
+                if($status == 0){
+                    $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2]);
+                }
+                else {
+                    $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $status);
+                }
             });
         }
         
