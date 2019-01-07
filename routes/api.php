@@ -107,6 +107,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
 		Route::get('getPddtByIcd10Code/{icd10Code}','PhongKham\PhongKhamController@getPddtByIcd10Code');
+		Route::get('getListPhieuYLenh/{id}','PhongKham\PhongKhamController@getListPhieuYLenh');
+		Route::get('getDetailPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getDetailPhieuYLenh');		
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
