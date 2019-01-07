@@ -35,4 +35,16 @@ class PhieuYLenhRepository extends BaseRepositoryV2
         else
             return $this->createDataPhieuYLenh($input);
     }
+    
+    public function getListPhieuYLenh($hsbaId)
+    {
+        $result = $this->model
+                ->where('hsba_id',$hsbaId)
+                ->orderBy('id')
+                ->get();
+        if($result)
+            return $result;
+        else
+            return null;
+    }    
 }
