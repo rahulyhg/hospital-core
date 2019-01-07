@@ -59,10 +59,9 @@ class AuthUsersRepository extends BaseRepositoryV2
         ];
         
         $query = DB::table('auth_users');
-        
         if($keyWords!=""){
-           $query->where('fullname', 'like', '%' . $keyWords . '%')
-                 ->orWhere('email', 'like', '%' . $keyWords . '%');
+           $query->where('fullname', 'like', '%' . strtolower($keyWords) . '%')
+                 ->orWhere('email', 'like', '%' . strtolower($keyWords) . '%');
         }
             
         $totalRecord = $query->count();
