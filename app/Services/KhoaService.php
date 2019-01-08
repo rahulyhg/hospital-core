@@ -21,5 +21,17 @@ class KhoaService {
         );
     }
     
+    public function listKhoaByBenhVienId($benhVienId)
+    {
+        $data = $this->khoaRepository->listKhoaByBenhVienId($benhVienId);
+        return $data;   
+    }    
+    
+    public function getTreeListKhoaPhong($limit, $page)
+    {
+        $data = $this->khoaRepository->getTreeListKhoaPhong($limit, $page);
+        return $data;
+    }    
+    
     
 }

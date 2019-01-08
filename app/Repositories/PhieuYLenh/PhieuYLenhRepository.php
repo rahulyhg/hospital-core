@@ -12,27 +12,21 @@ class PhieuYLenhRepository extends BaseRepositoryV2
         return PhieuYLenh::class;
     }
     
-    public function createDataPhieuYLenh(array $input)
+    public function getPhieuYLenhId(array $input)
     {
         $id = $this->model->create($input)->id;
         return $id;
     }
     
-    public function getPhieuYLenhId(array $input)
+    public function getListPhieuYLenh($hsbaId)
     {
-        $where = [
-            ['hsba_id', '=', $input['hsba_id']],
-            ['benh_nhan_id', '=', $input['benh_nhan_id']],
-            ['khoa_id', '=', $input['khoa_id']],
-            ['phong_id', '=', $input['phong_id']],
-            ['dieu_tri_id', '=', $input['dieu_tri_id']],
-        ];
-        
-        $result = $this->model->where($where)->orderBy('id')->get()->first();
-        
+        $result = $this->model
+                ->where('hsba_id',$hsbaId)
+                ->orderBy('id')
+                ->get();
         if($result)
-            return $result->id;
+            return $result;
         else
-            return $this->createDataPhieuYLenh($input);
-    }
+            return null;
+    }    
 }

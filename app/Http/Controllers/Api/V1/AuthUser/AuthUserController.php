@@ -18,8 +18,9 @@ class AuthUserController extends APIController
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
+        $keyWords = $request->query('keyWords', '');
         
-        $data = $this->authUsersService->getListNguoiDung($limit, $page);
+        $data = $this->authUsersService->getListNguoiDung($limit, $page, $keyWords);
         return $this->respond($data);
     }
     

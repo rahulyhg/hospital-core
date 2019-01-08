@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Auth;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +14,8 @@ class AuthGroups extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name', 'description'];
+    protected $table='auth_groups';     
+    protected $fillable = ['name', 'description','meta_data'];
+    public $timestamps = false;
 
 }
