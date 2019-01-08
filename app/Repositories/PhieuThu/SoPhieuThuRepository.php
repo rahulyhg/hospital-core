@@ -59,4 +59,13 @@ class SoPhieuThuRepository extends BaseRepositoryV2
     {
         $this->model->where('id', $id)->delete();
     }
+    
+    public function getSoPhieuThuByAuthUserIdAndTrangThai($auth_users_id) {
+        $result = $this->model
+                        ->where('auth_users_id', $auth_users_id)
+                        ->where('trang_thai', 0)
+                        ->orderBy('id')
+                        ->first(); 
+        return $result;
+    }
 }
