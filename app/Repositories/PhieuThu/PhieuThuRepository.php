@@ -41,6 +41,23 @@ class PhieuThuRepository extends BaseRepositoryV2
         ];
         return $result;
     }
+    
+    public function getListPhieuThuByHsbaId($hsbaId) {
+        $column = [
+            'phieu_thu.ma_so',
+            'phieu_thu.loai_phieu_thu_id',
+            'phieu_thu.tong_tien',
+            'phieu_thu.ly_do_mien_giam',
+        ];
+        
+        $query = $this->model->where('hsba_id', $hsbaId);
+        $data = $query->orderBy('ma_so')->get();
+        
+        $result = [
+            'data'          => $data
+        ];
+        return $result;
+    }
   
     public function createDataPhieuThu(array $input)
     {

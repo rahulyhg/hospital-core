@@ -341,7 +341,7 @@ class BenhNhanServiceV2 {
         $dataPhieuYLenh['auth_users_id'] = $this->dataHsba['auth_users_id'];
         $dataPhieuYLenh['loai_phieu_y_lenh'] = 2; // TODO - define constant
         $dataPhieuYLenh['trang_thai'] = 0; // TODO - define constant
-        $dataPhieuYLenh['id'] = $this->phieuYLenhRepository->createDataPhieuYLenh($dataPhieuYLenh);
+        $dataPhieuYLenh['id'] = $this->phieuYLenhRepository->getPhieuYLenhId($dataPhieuYLenh);
         $this->dataPhieuYLenh = $dataPhieuYLenh;
         return $this;
     }

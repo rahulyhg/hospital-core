@@ -15,7 +15,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return HsbaKhoaPhong::class;
     }
     
-    public function getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1)
+    public function getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1, $option = null)
     {
         $khoaHienTai = $dataBenhVienThietLap['khoaHienTai']; //khoa kham benh
         $phongDonTiepID = $dataBenhVienThietLap['phongDonTiepID'];
@@ -52,10 +52,13 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'tt1.diengiai as ten_trang_thai_cls',
             'hsba_khoa_phong.trang_thai',
             'tt2.diengiai as ten_trang_thai',
+            'vien_phi.trang_thai as vien_phi_trang_thai',
+            'vien_phi.loai_vien_phi'
         ];
         
         $query = $this->model
             ->leftJoin('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
+            ->leftJoin('vien_phi', 'vien_phi.hsba_id', '=', 'hsba.id')
             ->leftJoin('red_trangthai as tt1', function($join) {
                 $join->on('tt1.giatri', '=', 'hsba_khoa_phong.trang_thai_cls')
                     ->where('tt1.tablename', '=', 'canlamsang');
@@ -82,11 +85,38 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             
         $query = $query->where($where);
         
-        if($startDay == $endDay){
-            $query = $query->whereDate('thoi_gian_vao_vien', '=', $startDay);
-        } else {
-            $query = $query->whereBetween('thoi_gian_vao_vien', [Carbon::parse($startDay)->startOfDay(), Carbon::parse($endDay)->endOfDay()]);
+        if(empty($option['typeDay'])) {
+            if($startDay == $endDay){
+                $query = $query->whereDate('thoi_gian_vao_vien', '=', $startDay);
+            } else {
+                $query = $query->whereBetween('thoi_gian_vao_vien', [Carbon::parse($startDay)->startOfDay(), Carbon::parse($endDay)->endOfDay()]);
+            }
         }
+        else {
+            if($option['typeDay'] == 0) {
+                if($startDay == $endDay){
+                    $query = $query->whereDate('thoi_gian_vao_vien', '=', $startDay);
+                } else {
+                    $query = $query->whereBetween('thoi_gian_vao_vien', [Carbon::parse($startDay)->startOfDay(), Carbon::parse($endDay)->endOfDay()]);
+                }    
+            }
+            else {
+                if($startDay == $endDay){
+                    $query = $query->whereDate('thoi_gian_ra_vien', '=', $startDay);
+                } else {
+                    $query = $query->whereBetween('thoi_gian_ra_vien', [Carbon::parse($startDay)->startOfDay(), Carbon::parse($endDay)->endOfDay()]);
+                }
+            }
+        }
+        
+        if($option['loaiVienPhi'] === 'VP') {
+            $query = $query->where('vien_phi.loai_vien_phi', '<>', 2);
+        }
+        else if($option['loaiVienPhi'] === 'BH') {
+            $query = $query->where('vien_phi.loai_vien_phi', '=', 2);
+        }
+        
+        
         
         if($keyword != '') {
             $query = $query->where(function($queryAdv) use ($keyword) {
@@ -265,6 +295,8 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'hsba_khoa_phong.huyet_ap_thap',
             'hsba_khoa_phong.huyet_ap_cao',
             'hsba_khoa_phong.chan_doan_ban_dau',
+            'hsba_khoa_phong.upload_file_hoi_benh',
+            'hsba_khoa_phong.upload_file_kham_benh',
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
             'bhyt.tuyen_bhyt',
