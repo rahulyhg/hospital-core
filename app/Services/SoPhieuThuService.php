@@ -17,6 +17,7 @@ class SoPhieuThuService {
     public function createSoPhieuThu(array $input)
     {
         $input['ngay_tao'] = Carbon::now();
+        $input['so_phieu_su_dung'] = $input['so_phieu_tu'];
         $id = $this->soPhieuThuRepository->createDataSoPhieuThu($input);
         return $id;
     }

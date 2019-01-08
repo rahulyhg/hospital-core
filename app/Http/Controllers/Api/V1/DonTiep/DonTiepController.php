@@ -41,6 +41,13 @@ class DonTiepController extends APIController
         $page = $request->query('page', 1);
         $keyword = $request->query('keyword', '');
         $status = $request->query('status', 0);
+        $typeDay = $request->query('typeDay', 0);
+        $loaiVienPhi = $request->query('loaiVienPhi', '');
+        
+        $option = [
+            'typeDay'           => $typeDay,
+            'loaiVienPhi'       => $loaiVienPhi
+        ];
         
         //$redis = Redis::connection();
         
@@ -52,7 +59,7 @@ class DonTiepController extends APIController
         try 
         {
             $dataBenhVienThietLap = $this->hsbaKhoaPhongService->getBenhVienThietLap($benhVienId);
-            $listBenhNhan = $this->hsbaKhoaPhongService->getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit, $page, $keyword, $status);
+            $listBenhNhan = $this->hsbaKhoaPhongService->getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit, $page, $keyword, $status, $option);
             $this->setStatusCode(200);
             return $this->respond($listBenhNhan);
         } catch (\Exception $ex) {
