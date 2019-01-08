@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\YLenh;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
+use App\Repositories\DanhMuc\DanhMucKQYLRepository;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
@@ -13,10 +14,11 @@ use Carbon\Carbon;
 class YLenhService {
     const PHIEU_DIEU_TRI = 3;
     
-    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository)
+    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository,DanhMucKQYLRepository $danhMucKQYLRepository)
     {
         $this->yLenhRepository = $yLenhRepository;
         $this->phieuYLenhRepository = $phieuYLenhRepository;
+        $this->danhMucKQYLRepository=$danhMucKQYLRepository;
     }
 
     public function saveYLenh(array $input)
@@ -83,7 +85,13 @@ class YLenhService {
     public function getDetailPhieuYLenh($phieuYLenhId,$type)
     {
         $result = $this->yLenhRepository->getDetailPhieuYLenh($phieuYLenhId,$type);
-                            
+        foreach($result as $item){
+            $ketQuaYLenh = $this->danhMucKQYLRepository->getKetQuaYLenhByCode($item->ma);
+            $item['children']=$ketQuaYLenh;
+        }
         return $result;
+    
+                            
+       
     }    
 }
