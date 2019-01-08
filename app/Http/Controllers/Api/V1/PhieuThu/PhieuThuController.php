@@ -87,16 +87,20 @@ class PhieuThuController extends APIController {
         return $this->respond($data);
     }
     
-    // public function createPhieuThu(PhieuThuFormRequest $request) {
-    //     $input = $request->all();
-        
-    //     $id = $this->phieuThuService->createPhieuThu($input);
-    //     if($id) {
-    //         $this->setStatusCode(201);
-    //         return $this->respond($id);
-    //     } else {
-    //         $this->setStatusCode(400);
-    //         return $this->respond([]);
-    //     }
-    // }
+    public function getListPhieuThuByHsbaId($hsbaId) {
+        $data = $this->phieuThuService->getListPhieuThuByHsbaId($hsbaId);
+        return $this->respond($data);
+    }
+    
+    public function createPhieuThu(Request $request) {
+        $input = $request->all();
+        $id = $this->phieuThuService->createPhieuThu($input);
+        if($id) {
+            $this->setStatusCode(201);
+            return $this->respond($id);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+    }
 }
