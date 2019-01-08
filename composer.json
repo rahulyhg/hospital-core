@@ -13,7 +13,8 @@
         "laravel/tinker": "^1.0",
         "nahid/jsonq": "^5.2",
         "predis/predis": "^1.1",
-        "tymon/jwt-auth": "1.0.0-rc.2"
+        "tymon/jwt-auth": "1.0.0-rc.2",
+        "league/flysystem-aws-s3-v3": "~1.0"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
