@@ -57,6 +57,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
         Route::post('register','DonTiep\DonTiepController@register');
+        
+        // store to cache from queue
+        Route::post('hsbaKp/cache/fromQueue','DonTiep\DonTiepController@pushToRedisFromQueue');
+        
     });
     
     Route::group(['prefix' => 'setting'], function () {
@@ -67,6 +71,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::group(['prefix' => 'dangkykhambenh'], function () {
 		Route::get('listPhong/{loaiPhong}/{khoaId}','DangKyKhamBenh\DangKyKhamBenhController@getListPhong');
 		Route::get('listKhoa/{loaiKhoa}/{benhVienId}','DangKyKhamBenh\DangKyKhamBenhController@getListKhoa');
+		Route::get('listKhoaByBenhVienId/{benhVienId}','DangKyKhamBenh\DangKyKhamBenhController@listKhoaByBenhVienId');
 		Route::get('nhomPhongKham/{loaiPhong}/{khoaId}','DangKyKhamBenh\DangKyKhamBenhController@getNhomPhong');
     	Route::get('yeuCauKham/{loai_nhom}','DangKyKhamBenh\DangKyKhamBenhController@getListYeuCauKham');
     	Route::get('listNgheNghiep','DangKyKhamBenh\DangKyKhamBenhController@getListNgheNghiep');
@@ -102,6 +107,9 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
 		Route::get('getYLenhByHsbaId/{hsbaId}','PhongKham\PhongKhamController@getYLenhByHsbaId');
+		Route::get('getPddtByIcd10Code/{icd10Code}','PhongKham\PhongKhamController@getPddtByIcd10Code');
+		Route::get('getListPhieuYLenh/{id}','PhongKham\PhongKhamController@getListPhieuYLenh');
+		Route::get('getDetailPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getDetailPhieuYLenh');		
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
@@ -135,6 +143,19 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::get('checkEmail/{email}','AuthUser\AuthUserController@checkEmailbyEmail');
     });
     
+    Route::group(['prefix' => 'nhomnguoidung'], function () {
+		Route::get('getListAuthGroups','AuthController@getListAuthGroups');
+		Route::get('getByListId','AuthController@getAuthGroupsByListId');
+		Route::post('createAuthGroups','AuthController@createAuthGroups');
+		Route::get('getAuthGroupsById/{id}','AuthController@getAuthGroupsById');
+		Route::post('updateAuthGroups/{id}','AuthController@updateAuthGroups');
+		Route::get('getTreeListKhoaPhong','AuthController@getTreeListKhoaPhong');
+		Route::get('getAuthUsersGroups/{id}','AuthController@getAuthGroupsByUsersId');
+		Route::get('getListRoles','AuthController@getListRoles');
+		Route::get('getRolesByGroupsId/{id}','AuthController@getRolesByGroupsId');
+		Route::get('getKhoaPhongByGroupsId/{id}','AuthController@getKhoaPhongByGroupsId');
+    });     
+    
     Route::group(['prefix' => 'thungan'], function () {
 		Route::post('createSoThuNgan','ThuNgan\ThuNganController@createSoThuNgan');
     });
@@ -156,6 +177,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getPddtById/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@getPddtById');
 		Route::post('savePddt/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@savePddt');
 		Route::get('getPddtByCode/{icd10Code}','PhacDoDieuTri\PhacDoDieuTriController@getPddtByCode');
+		Route::post('saveYLenhGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@saveYLenhGiaiTrinh');
+		Route::post('confirmGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@confirmGiaiTrinh');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

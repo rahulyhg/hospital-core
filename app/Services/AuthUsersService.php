@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\Auth\AuthUsersRepository;
+use App\Repositories\Auth\AuthUsersGroupsRepository;
 use App\Repositories\AuthPasswordResetRepository;
 use App\Notifications\PasswordResetRequest;
 use App\Notifications\PasswordResetSuccess;
@@ -11,16 +12,16 @@ use Carbon\Carbon;
 
 class AuthUsersService
 {
-    public function __construct(AuthUsersRepository $authUsersRepository, AuthPasswordResetRepository $authPasswordResetRepository)
+    public function __construct(AuthUsersRepository $authUsersRepository, AuthPasswordResetRepository $authPasswordResetRepository,AuthUsersGroupsRepository $authUsersGroupsRepository)
     {
         $this->authUsersRepository = $authUsersRepository;      
         $this->authPasswordResetRepository = $authPasswordResetRepository;
+        $this->authUsersGroupsRepository = $authUsersGroupsRepository;
     }
     
-    public function getListNguoiDung($limit, $page)
+    public function getListNguoiDung($limit, $page, $keyWords)
     {
-        $data = $this->authUsersRepository->getListNguoiDung($limit, $page);
-        
+        $data = $this->authUsersRepository->getListNguoiDung($limit, $page, $keyWords);
         return $data;
     }
     public function getAuthUsersById($id)
@@ -47,6 +48,7 @@ class AuthUsersService
     public function updateAuthUsers($id, array $input)
     {
         $this->authUsersRepository->updateAuthUsers($id, $input);
+        $this->authUsersGroupsRepository->updateAuthUsersGroups($id, $input['dataSelected']);
     }    
     
     public function createToken($request) {

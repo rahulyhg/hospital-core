@@ -29,11 +29,9 @@ class DanhMucDichVuFormRequest extends ApiFormRequest
             'don_vi_tinh'           => 'nullable|string',
             'trang_thai'            => 'required|int',
             'ten'                   => 'required|string',
-            'ten_nhan_dan'          => 'nullable|string',
             'ten_bhyt'              => 'nullable|string',
             'ten_nuoc_ngoai'        => 'nullable|string',
             'gia'                   => 'required|regex:/^\d*(\.\d{1,2})?$/',
-            'gia_nhan_dan'          => 'nullable|regex:/^\d*(\.\d{1,2})?$/',
             'gia_bhyt'              => 'nullable|regex:/^\d*(\.\d{1,2})?$/',
             'gia_nuoc_ngoai'        => 'nullable|regex:/^\d*(\.\d{1,2})?$/'
         ];

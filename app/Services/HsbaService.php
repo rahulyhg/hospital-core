@@ -5,10 +5,13 @@ use App\Http\Resources\HsbaResource;
 use App\Http\Resources\PatientResource;
 use App\Repositories\Hsba\HsbaRepository;
 use App\Repositories\HanhChinhRepository;
+use App\Models\ValueObjects\NhomNguoiThan;
 use Validator;
 
 class HsbaService
 {
+    private $dataNhomNguoiThan = null;
+    
     public function __construct(HsbaRepository $hsbaRepository,HanhChinhRepository $hanhChinhRepository)
     {
         $this->hsbaRepository = $hsbaRepository;
@@ -39,10 +42,15 @@ class HsbaService
                 $input['ten_tinh_thanh_pho']=$tinh->ten_tinh;
                 $input['ten_quan_huyen']=$huyen->ten_huyen;
                 $input['ten_phuong_xa']=$xa->ten_xa;
+                $this->dataNhomNguoiThan = new NhomNguoiThan($input['loai_nguoi_than'], $input['ten_nguoi_than'], $input['dien_thoai_nguoi_than']);
+                $input['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
+                unset($input['loai_nguoi_than'],$input['ten_nguoi_than'],$input['dien_thoai_nguoi_than']);                
+
             } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
             }
         }
+        
         $this->hsbaRepository->updateHsba($hsbaId, $input);
     }
     

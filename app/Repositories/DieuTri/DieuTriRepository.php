@@ -53,4 +53,13 @@ class DieuTriRepository extends BaseRepositoryV2
         else
             return null;
     }
+    
+    public function getInforDieuTriById($id)
+    {
+        $result = $this->model->where('id',$id)->orderBy('id')->get()->first();
+        if($result)
+            return $result;
+        else
+            return null;
+    }    
 }

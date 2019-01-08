@@ -39,11 +39,9 @@ class YLenhRepository extends BaseRepositoryV2
         $column = [
             'y_lenh.id',
             'y_lenh.ten',
-            // 'y_lenh.ten_nhan_dan',
-            // 'y_lenh.ten_bhyt',
-            // 'y_lenh.ten_nuoc_ngoai',
             'y_lenh.loai_y_lenh',
-            // 'y_lenh.thoi_gian_chi_dinh',
+            'y_lenh.thoi_gian_chi_dinh',
+            'y_lenh.phieu_y_lenh_id',
             'phong.ten_phong'
         ];
         
@@ -81,10 +79,11 @@ class YLenhRepository extends BaseRepositoryV2
                     $type = self::Y_LENH_TEXT_CHUYEN_KHOA;
                 }
                     
-                // $date = Carbon::parse($item->thoi_gian_chi_dinh)->format('d/m/Y');
+                $datetime = Carbon::parse($item->thoi_gian_chi_dinh)->format('d/m/Y');
                 $phong = $item->ten_phong;
+                $phieuYLenh = $item->phieu_y_lenh_id;
                 $item['key'] = $item->id;
-                $array[$phong][$type][] = $item;
+                $array[$phong][$datetime][$phieuYLenh][$type][] = $item;
             }
             
             $result['itemXetNghiem'] = $itemXetNghiem;
@@ -233,4 +232,35 @@ class YLenhRepository extends BaseRepositoryV2
                     })
                     ->update(['phieu_thu_id' => $input['phieu_thu_id']]);
     }
+  
+    public function getDetailPhieuYLenh($phieuYLenhId,$type)
+    {
+        $result = $this->model
+                ->where('phieu_y_lenh_id',$phieuYLenhId)
+                ->where('loai_y_lenh',$type)
+                ->orderBy('id')
+                ->get();
+        if($result){
+            foreach($result as $item){
+                $phongThucHienId = DB::table('danh_muc_dich_vu')->where('ma',$item->ma)->first();
+                if($phongThucHienId->phong_thuc_hien){
+                    $phongThucHienName = DB::table('phong')->where('id',$phongThucHienId->phong_thuc_hien)->first();
+                    $item['phong_thuc_hien']=$phongThucHienName?$phongThucHienName->ten_phong:'';
+                }
+                $item['children']=[[
+                            'id'            => 'C'.$item->id,
+                            'ten'           => 'Tên xét nghiệm '.$item->id,
+                            'ket_qua'       => 'Kết quả xét nghiệm',
+                            'don_vi'        => 'Đơn vị',
+                            'gh_duoi'       => 'Giới hạn dưới',
+                            'gh_tren'       => 'Giới hạn trên',
+                            'ghi_chu_cd'    => 'Ghi chú chẩn đoán',
+                            'ghi_chu_kq'    => 'Ghi chú kết quả' 
+                ]];
+            }
+            return $result;
+        }
+        else
+            return null;
+    }     
 }

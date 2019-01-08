@@ -4,6 +4,7 @@ namespace App\Repositories;
 use DB;
 use App\Models\PhacDoDieuTri;
 use App\Repositories\BaseRepositoryV2;
+use Carbon\Carbon;
 
 class PhacDoDieuTriRepository extends BaseRepositoryV2
 {
@@ -72,7 +73,28 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
     
     public function getDataPhacDoDieuTriById($pddtId)
     {
-        $result = $this->model->where('id', $pddtId)->first(); 
+        $obj = $this->model->where('id', $pddtId)->first(); 
+        $listId = [];
+        $giaiTrinh = [];
+        if($obj) {
+           $arrXetNghiem = $obj->xet_nghiem ? json_decode($obj->xet_nghiem) : []; 
+           $arrChanDoanHinhAnh = $obj->chan_doan_hinh_anh ? json_decode($obj->chan_doan_hinh_anh) : [];
+           $arrChuyenKhoa = $obj->chuyen_khoa ? json_decode($obj->chuyen_khoa) : [];
+           $listId = array_merge($arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa);
+           
+           $arrData = $obj->giai_trinh ? json_decode($obj->giai_trinh) : [];
+           if($arrData) {
+               foreach($arrData as $item) {
+                   $temp = explode('|', $item);
+                   $arr = explode('---', $temp[0]);
+                   $str = explode('--', $arr[1]);
+                   $giaiTrinh[$temp[1]][$temp[2]][$arr[0].'---'.$str[0]] = $str[1];
+               }
+           }
+        }
+        
+        $result['listId'] = array_map('intval', $listId);
+        $result['giaiTrinh'] = $giaiTrinh;
         return $result;
     }
     
@@ -83,18 +105,20 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $arrChuyenKhoa = [];
         $dataPddt = [];
         
-        foreach($input as $item) {
+        foreach($input['data'] as $item) {
             $arrTemp = explode('---', $item);
             $arr = explode('--', $arrTemp[1]);
             
-            if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
-                $arrXetNghiem[$arr[0]] = $arr[1];
-            }
-            if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
-                $arrChanDoanHinhAnh[$arr[0]] = $arr[1];
-            }
-            if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
-                $arrChuyenKhoa[$arr[0]] = $arr[1];
+            if(!in_array($arr[0], $input['remove'])) {
+                if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
+                    $arrXetNghiem[] = $arr[0];
+                }
+                if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
+                    $arrChanDoanHinhAnh[] = $arr[0];
+                }
+                if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
+                    $arrChuyenKhoa[] = $arr[0];
+                }
             }
         }
         
@@ -113,5 +137,62 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
     {
         $result = $this->model->where('icd10code', $icd10Code)->first(); 
         return $result;
+    }
+    
+    public function getPddtByIcd10Code($icd10Code)
+    {
+        $icd10Code = str_replace(' ', '', $icd10Code);
+        $arrIcd10 = explode(',', $icd10Code);
+        $result = $this->model->whereIn('icd10code', $arrIcd10)
+                                ->orderBy('id', 'asc')
+                                ->get(); 
+        $listId = [];
+        $data['list'] = $result;
+        if($result) {
+            foreach($result as $obj) {
+                $arrXetNghiem = $obj->xet_nghiem ? json_decode($obj->xet_nghiem) : []; 
+                $arrChanDoanHinhAnh = $obj->chan_doan_hinh_anh ? json_decode($obj->chan_doan_hinh_anh) : [];
+                $arrChuyenKhoa = $obj->chuyen_khoa ? json_decode($obj->chuyen_khoa) : [];
+                $listId = array_merge($listId, $arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa);
+            }
+            $data['listId'] = array_map('intval', $listId);
+        }
+        
+        return $data;
+    }
+    
+    public function saveYLenhGiaiTrinh(array $input)
+    {
+        $arr = [];
+        foreach($input['icd10code'] as $item) {
+            $str = explode('-', $item);
+            
+            foreach($input['dataYLenh'] as $yLenh) {
+                if($yLenh['id'] == $str[1]) {
+                    $arr[$str[0]][$yLenh['id']] = $yLenh['loai_nhom'] . '---' . $yLenh['id'] . '--' . $yLenh['ten'] . '|' . $input['username'] . '|' . Carbon::now()->toDateTimeString();
+                    break;
+                }
+            }
+        }
+        
+        foreach($arr as $id=>$item) {
+            $pddt = $this->model->findOrFail($id);
+            $data = json_decode($pddt->giai_trinh, true);
+            if($data)
+                $data = array_merge($data, $item);
+            else
+                $data = $item;
+            $params['giai_trinh'] = json_encode($data);
+		    $pddt->update($params);
+        }
+    }
+    
+    public function confirmGiaiTrinh(array $input)
+    {
+        $pddt = $this->model->findOrFail($input['id']);
+        $data = json_decode($pddt->giai_trinh, true);
+        if($input['type'] == 'remove') {
+            
+        }
     }
 }
