@@ -4,6 +4,9 @@ namespace App\Services;
 // Framework Libraries
 use Illuminate\Http\Request;
 use Validator;
+use Storage;
+use Exception;
+use App\Helper\AwsS3;
 
 // Models
 use App\Models\HsbaKhoaPhong;
@@ -13,8 +16,6 @@ use App\Repositories\Hsba\HsbaKhoaPhongRepository;
 use App\Repositories\Sqs\Hsba\HsbaKhoaPhongRepository as HsbaKhoaPhongSqsRepository;
 use App\Repositories\Redis\Hsba\HsbaKhoaPhongRepository as HsbaKhoaPhongRedisRepository;
 use App\Repositories\BenhVienRepository;
-
-// Resources (output formatter)
 use App\Http\Resources\HsbaKhoaPhongResource;
 
 class HsbaKhoaPhongService 
@@ -46,7 +47,65 @@ class HsbaKhoaPhongService
     
     public function update($hsbaKhoaPhongId, array $params)
     {
+        $fileUpload = [];
+        // Config S3
+        $s3 = new AwsS3();
+        
+        // GET OLD FILE
+        $item = $this->hsbaKhoaPhongRepository->getById($hsbaKhoaPhongId);
+        $fileItem =  json_decode($item->upload_file_hoi_benh, true);
+        
+        
+        // Remove File old
+        if(!empty($params['oldFiles'])) {
+            foreach($fileItem as $file) {
+                if(!in_array($file, $params['oldFiles'])) {
+                    $s3->deleteObject($file);
+                }
+                else {
+                    $fileUpload[] = $file;
+                }
+            }
+            unset($params['oldFiles']);
+        }
+        else {
+            if(!empty($fileItem)) {
+                foreach($fileItem as $file) {
+                    $s3->deleteObject($file);
+                }
+            }
+        }
+        
+        if(!empty($params['files'])) {
+            $arrayExtension = ['jpg', 'jpeg', 'png', 'bmp', 'mp3', 'mp4', 'pdf', 'docx'];
+            foreach($params['files'] as $file) {
+                if(!in_array($file->getClientOriginalExtension(), $arrayExtension)) {
+                    throw new Exception('File chứa định dạng ko cho phép để upload');
+                }
+            }
+            
+            foreach ($params['files'] as $file) {
+                $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
+                //$move = $file->move('upload/hsbakp/hoibenh', $imageFileName);
+                $fileUpload[] = $imageFileName;
+                
+                $result = $s3->putObject($imageFileName, $file);
+            }
+                
+            if(!empty($fileUpload)) {
+                $params['upload_file_hoi_benh'] = json_encode($fileUpload);
+            }
+            else {
+                $params['upload_file_hoi_benh'] = NULL;
+            }
+            
+            unset($params['files']);
+        }
         $this->hsbaKhoaPhongRepository->update($hsbaKhoaPhongId, $params);
+        $data = array(
+            'status'  => 'success'
+        );
+        return $data;
     }
     
     public function getByHsbaId($hsbaId)

@@ -40,7 +40,12 @@ class PhongKhamController extends APIController
             
             if($isNumeric) {
                 $input = $request->all();
-                $this->hsbaKhoaPhongService->update($hsbaKhoaPhongId, $input);
+                
+                $data = $this->hsbaKhoaPhongService->update($hsbaKhoaPhongId, $input);
+                if($data['status'] === 'error') {
+                    $this->setStatusCode($data['statusCode']);
+                }
+                return $this->respond($data);
             } else {
                 $this->setStatusCode(400);
             }

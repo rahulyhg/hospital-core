@@ -295,6 +295,8 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'hsba_khoa_phong.huyet_ap_thap',
             'hsba_khoa_phong.huyet_ap_cao',
             'hsba_khoa_phong.chan_doan_ban_dau',
+            'hsba_khoa_phong.upload_file_hoi_benh',
+            'hsba_khoa_phong.upload_file_kham_benh',
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
             'bhyt.tuyen_bhyt',
