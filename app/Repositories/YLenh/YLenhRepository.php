@@ -251,6 +251,6 @@ class YLenhRepository extends BaseRepositoryV2
             return $result;
         }
         else
-            return null;
+            return [];
     }     
 }
