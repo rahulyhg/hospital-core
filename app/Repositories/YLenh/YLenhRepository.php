@@ -247,21 +247,11 @@ class YLenhRepository extends BaseRepositoryV2
                     $phongThucHienName = DB::table('phong')->where('id',$phongThucHienId->phong_thuc_hien)->first();
                     $item['phong_thuc_hien']=$phongThucHienName?$phongThucHienName->ten_phong:'';
                 }
-                $item['children']=[[
-                            'id'            => 'C'.$item->id,
-                            'ten'           => 'Tên xét nghiệm '.$item->id,
-                            'ket_qua'       => 'Kết quả xét nghiệm',
-                            'don_vi'        => 'Đơn vị',
-                            'gh_duoi'       => 'Giới hạn dưới',
-                            'gh_tren'       => 'Giới hạn trên',
-                            'ghi_chu_cd'    => 'Ghi chú chẩn đoán',
-                            'ghi_chu_kq'    => 'Ghi chú kết quả' 
-                ]];
             }
             return $result;
         }
         else
-            return null;
+            return [];
     }
     
     public function getYLenhById($vienPhiId)
