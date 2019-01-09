@@ -158,6 +158,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'thungan'], function () {
 		Route::post('createSoThuNgan','ThuNgan\ThuNganController@createSoThuNgan');
+		Route::post('getThongTinVienPhi','ThuNgan\ThuNganController@getThongTinVienPhi');
     });
     
     Route::group(['prefix' => 'phieuthu'], function () {
@@ -168,7 +169,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::delete('deleteSoPhieuThu/{id}','PhieuThu\PhieuThuController@deleteSoPhieuThu');
         
         Route::get('getListPhieuThuBySoPhieuThuId/{soPhieuThuId}','PhieuThu\PhieuThuController@getListPhieuThuBySoPhieuThuId');
-        Route::get('getListPhieuThuByHsbaId/{hsbaId}','PhieuThu\PhieuThuController@getListPhieuThuByHsbaId');
+        Route::post('getListPhieuThuByHsbaId','PhieuThu\PhieuThuController@getListPhieuThuByHsbaId');
         Route::post('createPhieuThu','PhieuThu\PhieuThuController@createPhieuThu');
     });
     
