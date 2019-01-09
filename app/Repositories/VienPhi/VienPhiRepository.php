@@ -24,5 +24,14 @@ class VienPhiRepository extends BaseRepositoryV2
         $vienPhi = $this->model->findOrFail($vienPhiId);
 		$vienPhi->update($params);
     }
+    
+    public function getVienPhiById($vienPhiId)
+    {
+        $data = $this->model
+                ->where('vien_phi.id', '=', $vienPhiId)
+                ->first();
+      return $data; 
+    }
+    
  
 }

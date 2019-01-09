@@ -252,5 +252,28 @@ class YLenhRepository extends BaseRepositoryV2
         }
         else
             return [];
-    }     
+    }
+    
+    public function getYLenhById($vienPhiId)
+    {
+        $where = [
+            ['y_lenh.vien_phi_id', '=', $vienPhiId],
+            ['y_lenh.phieu_thu_id']//is null
+        ];
+        
+        $column = [
+            'y_lenh.ten',
+            'y_lenh.gia',
+            'y_lenh.gia_bhyt',
+            'vien_phi.loai_vien_phi',
+            'bhyt.ms_bhyt'
+        ];
+        
+        $result = $this->model
+            ->leftJoin('vien_phi','vien_phi.id','=','y_lenh.vien_phi_id')
+            ->leftJoin('bhyt','bhyt.id','=','vien_phi.bhyt_id')
+            ->where($where)
+            ->get($column);
+        return $result;
+    }
 }
