@@ -178,20 +178,6 @@ class PhongKhamController extends APIController
         return $this->respond([]);
     }
     
-
-    public function getYLenhByHsbaId($hsbaId)
-    {
-        if(is_numeric($hsbaId)) {
-            $data = $this->yLenhService->getYLenhByHsbaId($hsbaId);
-        }
-        else 
-        {
-            $this->setStatusCode(400);
-            $data = [];
-        }
-          return $this->respond($data);
-      }
-
     public function getPddtByIcd10Code($icd10Code)
     {
         $data = $this->pddtService->getPddtByIcd10Code($icd10Code);
