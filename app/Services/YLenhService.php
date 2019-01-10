@@ -33,7 +33,7 @@ class YLenhService {
                 if(isset($input['dataYLenh']))
                     $input = array_except($input, ['dataYLenh', 'username', 'icd10code']);
                 $phieuYLenhParams = $input;
-                $phieuYLenhParams = array_except($phieuYLenhParams, ['hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan']);
+                $phieuYLenhParams = array_except($phieuYLenhParams, ['hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong']);
                 $phieuYLenhParams['loai_phieu_y_lenh'] = self::PHIEU_DIEU_TRI;
                 $phieuYLenhParams['trang_thai'] = 0;
                 $phieuYLenhId = $this->phieuYLenhRepository->getPhieuYLenhId($phieuYLenhParams);
@@ -58,6 +58,9 @@ class YLenhService {
                             'so_luong'              => $value['so_luong'],
                             'loai_y_lenh'           => $value['loai_nhom'],
                             'thoi_gian_chi_dinh'    => Carbon::now()->toDateTimeString(),
+                            'bhyt_tra'              => $value['bhyt_tra'],
+                            'vien_phi'              => $value['vien_phi'],
+                            'muc_huong'             => $input['muc_huong']
                         ];
                     }
                 }

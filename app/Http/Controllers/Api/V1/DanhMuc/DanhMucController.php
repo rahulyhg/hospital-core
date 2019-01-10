@@ -6,17 +6,25 @@ use App\Http\Controllers\Api\V1\APIController;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
 use App\Services\DanhMucTrangThaiService;
+use App\Services\DanhMucThuocVatTuService;
 use App\Http\Requests\DanhMucDichVuFormRequest;
 use App\Http\Requests\DanhMucTongHopFormRequest;
 use App\Http\Requests\DanhMucTrangThaiFormRequest;
 
 class DanhMucController extends APIController
 {
-    public function __construct(DanhMucDichVuService $dmdvService, DanhMucTongHopService $dmthService, DanhMucTrangThaiService $dmttService)
+    public function __construct
+    (
+        DanhMucDichVuService $dmdvService,
+        DanhMucTongHopService $dmthService, 
+        DanhMucTrangThaiService $dmttService, 
+        DanhMucThuocVatTuService $dmtvtService
+    )
     {
         $this->dmdvService = $dmdvService;
         $this->dmthService = $dmthService;
         $this->dmttService = $dmttService;
+        $this->dmtvtService = $dmtvtService;
     }
     
     public function getListDanhMucDichVu(Request $request)
@@ -273,5 +281,19 @@ class DanhMucController extends APIController
         }
         
         return $this->respond([]);        
+    }
+    
+    public function getThuocVatTuByLoaiNhom($loaiNhom)
+    {
+        $isNumeric = is_numeric($loaiNhom);
+        
+        if($isNumeric) {
+            $data = $this->dmtvtService->getThuocVatTuByLoaiNhom($loaiNhom);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
     }
 }
