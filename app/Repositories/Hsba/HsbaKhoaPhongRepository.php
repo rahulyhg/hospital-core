@@ -23,7 +23,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $loaiBenhAn = 24; //kham benh
         $offset = ($page - 1) * $limit;
         
-        if($phongId != $phongDonTiepID) {  //phong kham
+        if($phongId != $phongDonTiepID && !isset($option['typeDay'])) {  //phong kham
             $where = [
                 ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
                 ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
@@ -141,7 +141,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         if($status != -1 && $phongId != $phongDonTiepID) {
             $query = $query->where(function($queryAdv) use ($status) {
                 if($status == 0){
-                    $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2,3]);
+                    $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [2,3]);
                 }
                 else {
                     $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $status);
