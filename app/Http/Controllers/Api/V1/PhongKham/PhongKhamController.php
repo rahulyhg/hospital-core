@@ -190,12 +190,12 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }
     
-    public function getListPhieuYLenh($hsbaId)
+    public function getListPhieuYLenh($hsbaId,$type)
     {
         $isNumeric = is_numeric($hsbaId);
 
         if($isNumeric) {
-            $data = $this->phieuYLenhService->getListPhieuYLenh($hsbaId);
+            $data = $this->phieuYLenhService->getListPhieuYLenh($hsbaId,$type);
         } else {
             $this->setStatusCode(400);
             $data = [];
