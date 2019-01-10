@@ -54,10 +54,10 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         //     ['trang_thai', '=', self::SU_DUNG],
         // ];
         
-        $result = $this->model->leftJoin('the_kho', function($join) use ($loaiNhom) {
-                                   $join->on('the_kho.danh_muc_dich_vu_id', '=', 'danh_muc_thuoc_vat_tu.id')
-                                       ->where('the_kho.kho_id', '=', $loaiNhom);
+        $result = $this->model->rightJoin('the_kho', function($join) use ($loaiNhom) {
+                                   $join->on('the_kho.danh_muc_dich_vu_id', '=', 'danh_muc_thuoc_vat_tu.id');
                                })
+                               ->where('the_kho.kho_id', '=', (int)$loaiNhom)
                                ->get($column);
         
         // if($result) {
