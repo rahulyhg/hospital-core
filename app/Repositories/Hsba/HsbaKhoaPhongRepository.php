@@ -24,19 +24,19 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $offset = ($page - 1) * $limit;
         
         if($phongId != $phongDonTiepID) {  //phong kham
-            if(isset($option['typeDay'])) {
-                $where = [
-                    ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
-                    ['hsba_khoa_phong.khoa_hien_tai', '=', $khoaHienTai],
-                    ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
-                ];
-            } else {
+            // if(isset($option['typeDay'])) {
+            //     $where = [
+            //         ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+            //         ['hsba_khoa_phong.khoa_hien_tai', '=', $khoaHienTai],
+            //         ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
+            //     ];
+            // } else {
                 $where = [
                     ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
                     ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
                     ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
                 ];
-            }
+            // }
         } else {    //hanh chanh don tiep
             $where = [
                 ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
