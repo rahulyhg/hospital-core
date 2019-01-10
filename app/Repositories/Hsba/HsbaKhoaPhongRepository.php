@@ -23,7 +23,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $loaiBenhAn = 24; //kham benh
         $offset = ($page - 1) * $limit;
         
-        if($phongId != $phongDonTiepID) {  //phong kham
+        if($phongId != $phongDonTiepID && !isset($option['typeDay'])) {  //phong kham
             $where = [
                 ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
                 ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
