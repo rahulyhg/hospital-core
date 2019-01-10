@@ -106,7 +106,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
-		Route::get('getYLenhByHsbaId/{hsbaId}','PhongKham\PhongKhamController@getYLenhByHsbaId');
 		Route::get('getPddtByIcd10Code/{icd10Code}','PhongKham\PhongKhamController@getPddtByIcd10Code');
 		Route::get('getListPhieuYLenh/{id}','PhongKham\PhongKhamController@getListPhieuYLenh');
 		Route::get('getDetailPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getDetailPhieuYLenh');		
@@ -132,6 +131,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::post('createDanhMucTrangThai','DanhMuc\DanhMucController@createDanhMucTrangThai');
     	Route::post('updateDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@updateDanhMucTrangThai');
     	Route::delete('deleteDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@deleteDanhMucTrangThai');
+    	Route::get('getThuocVatTuByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getThuocVatTuByLoaiNhom');
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {
@@ -158,7 +158,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'thungan'], function () {
 		Route::post('createSoThuNgan','ThuNgan\ThuNganController@createSoThuNgan');
-		Route::post('getThongTinVienPhi','ThuNgan\ThuNganController@getThongTinVienPhi');
+// 		Route::post('getThongTinVienPhi','ThuNgan\ThuNganController@getThongTinVienPhi');
+        Route::get('getListDichVuByHsbaId/{hsbaId}','ThuNgan\ThuNganController@getListDichVuByHsbaId');
     });
     
     Route::group(['prefix' => 'phieuthu'], function () {
@@ -169,7 +170,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::delete('deleteSoPhieuThu/{id}','PhieuThu\PhieuThuController@deleteSoPhieuThu');
         
         Route::get('getListPhieuThuBySoPhieuThuId/{soPhieuThuId}','PhieuThu\PhieuThuController@getListPhieuThuBySoPhieuThuId');
-        Route::post('getListPhieuThuByHsbaId','PhieuThu\PhieuThuController@getListPhieuThuByHsbaId');
+        Route::get('getListPhieuThuByHsbaId/{hsbaId}','PhieuThu\PhieuThuController@getListPhieuThuByHsbaId');
         Route::post('createPhieuThu','PhieuThu\PhieuThuController@createPhieuThu');
     });
     

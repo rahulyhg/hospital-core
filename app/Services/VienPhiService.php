@@ -17,7 +17,6 @@ class VienPhiService
     const PT_HOAN_UNG = 1;
     const PT_TAM_UNG = 2;
     
-    
     public function __construct
     (
         VienPhiRepository $vienPhiRepository,
@@ -25,15 +24,12 @@ class VienPhiService
         MucHuongRepository $mucHuongRepository,
         PhieuThuRepository $phieuThuRepository
     )
-    
     {
        $this->vienPhiRepository = $vienPhiRepository;
        $this->yLenhRepository = $yLenhRepository;
        $this->mucHuongRepository = $mucHuongRepository;
        $this->phieuThuRepository = $phieuThuRepository;
     }
-    
-    
     
     public function getThongTinVienPhi(array $input)
     {
@@ -47,7 +43,7 @@ class VienPhiService
         $mienGiam = 0;
         
         $dataMucHuong = $this->mucHuongRepository->getListMucHuong()->toArray();
-        $dataYLenh = $this->yLenhRepository->getYLenhById($input['vien_phi_id']); //if (!empty($dataYLenh))
+        $dataYLenh = $this->yLenhRepository->getYLenhByVienPhiId($input['vien_phi_id']); //if (!empty($dataYLenh))
         $dctBHYT = 0;// chênh lệch % mức hưởng * giá BHYT
         $chenhLechBHYT = 0;// giá bv - giá BHYT
         foreach($dataYLenh as $item) {
@@ -97,5 +93,21 @@ class VienPhiService
                 
             }
         }
+    }
+    
+    public function getMucHuong(array $input)
+    {
+        $dataMucHuong = $this->mucHuongRepository->getListMucHuong()->toArray();
+        $maDoiTuong = substr($input['ms_bhyt'], 0, 2);
+        $heSo = substr($input['ms_bhyt'], 2, 1);
+        $dataMucHuongByHeSo = array_where($dataMucHuong, function ($value, $key) use ($heSo) {
+            return $value['he_so'] == intval($heSo);
+        });
+        
+        if($dataMucHuongByHeSo) {
+            $obj = current($dataMucHuongByHeSo);
+            return (float)$obj['muc_huong_dung_tuyen'];
+        } else
+            return 0;
     }
 }
