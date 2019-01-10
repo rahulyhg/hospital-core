@@ -6,6 +6,7 @@ use App\Models\YLenh;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
 use App\Repositories\DanhMuc\DanhMucKQYLRepository;
+use App\Repositories\YLenh\KetQuaYLenhRepository;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
@@ -14,11 +15,12 @@ use Carbon\Carbon;
 class YLenhService {
     const PHIEU_DIEU_TRI = 3;
     
-    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository,DanhMucKQYLRepository $danhMucKQYLRepository)
+    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository,DanhMucKQYLRepository $danhMucKQYLRepository,KetQuaYLenhRepository $ketQuaYLenhRepository)
     {
         $this->yLenhRepository = $yLenhRepository;
         $this->phieuYLenhRepository = $phieuYLenhRepository;
         $this->danhMucKQYLRepository=$danhMucKQYLRepository;
+        $this->ketQuaYLenhRepository=$ketQuaYLenhRepository;
     }
 
     public function saveYLenh(array $input)
@@ -86,8 +88,11 @@ class YLenhService {
     {
         $result = $this->yLenhRepository->getDetailPhieuYLenh($phieuYLenhId,$type);
         foreach($result as $item){
-            $ketQuaYLenh = $this->danhMucKQYLRepository->getKetQuaYLenhByCode($item->ma);
-            $item['children']=$ketQuaYLenh;
+            $ketQuaYLenh = $this->ketQuaYLenhRepository->getKetQuaYLenhByCode($item->ma);
+            foreach($ketQuaYLenh as $itemKQYL){
+                $danhMucKetQua = $this->danhMucKQYLRepository->getDanhMucKetQuaByCode($itemKQYL->ma_ket_qua_y_lenh);
+                $item['children']=$danhMucKetQua;                
+            }
         }
         return $result;
     
