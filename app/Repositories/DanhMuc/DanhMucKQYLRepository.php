@@ -11,7 +11,7 @@ class DanhMucKQYLRepository extends BaseRepositoryV2
         return DanhMucKetQuaYLenh::class;
     }    
 
-    public function getKetQuaYLenhByCode($maYLenh)
+    public function getDanhMucKetQuaByCode($maYLenh)
     {
         $column = [
             'id',
@@ -25,7 +25,7 @@ class DanhMucKQYLRepository extends BaseRepositoryV2
             'don_vi_tinh'
             ];
         $dataSet = $this->model
-                ->where('ma_nhom',$maYLenh)
+                ->where('ma',$maYLenh)
                 ->get($column);
         return $dataSet;    
     }
