@@ -23,6 +23,7 @@ use App\Repositories\HanhChinhRepository;
 // Service
 use App\Services\SttPhongKhamService;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\VienPhiService;
 
 // Others
 use App\Helper\Util;
@@ -91,6 +92,7 @@ class BenhNhanServiceV2 {
     (
         HsbaKhoaPhongService $hsbaKhoaPhongService,
         SttPhongKhamService $sttPhongKhamService,
+        VienPhiService $vienPhiService,
         
         BenhNhanRepository $benhNhanRepository, 
         HsbaRepository $hsbaRepository, 
@@ -109,6 +111,7 @@ class BenhNhanServiceV2 {
         // Services
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->vienPhiService = $vienPhiService;
         
         // Repositories
         $this->benhNhanRepository = $benhNhanRepository;
@@ -347,6 +350,16 @@ class BenhNhanServiceV2 {
     }
     
     private function createYLenh() {
+        //tính bhyt, viện phí
+        if($this->dataHsba['ms_bhyt']) {
+            $input['ms_bhyt'] = $this->dataHsba['ms_bhyt'];
+            $mucHuong = $this->vienPhiService->getMucHuong($input);
+        } else {
+            $mucHuong = 0;
+        }
+        $bhytTra = $mucHuong * (int)$this->dataYeuCauKham['gia_bhyt'];
+        $vienPhi = (1 - $mucHuong) * (int)$this->dataYeuCauKham['gia_bhyt'] + (int)$this->dataYeuCauKham['gia'] - (int)$this->dataYeuCauKham['gia_bhyt'];
+        
         //set params y_lenh
         $dataYLenh['vien_phi_id'] = $this->dataVienPhi['id'];
         $dataYLenh['phieu_y_lenh_id'] = $this->dataPhieuYLenh['id'];
@@ -363,6 +376,9 @@ class BenhNhanServiceV2 {
         $dataYLenh['gia_nuoc_ngoai'] = (double)$this->dataYeuCauKham['gia_nuoc_ngoai'];
         $dataYLenh['loai_y_lenh'] = 1; // TODO - define constant
         $dataYLenh['thoi_gian_chi_dinh'] = Carbon::now()->toDateTimeString();
+        $dataYLenh['muc_huong'] = $mucHuong;
+        $dataYLenh['bhyt_tra'] = $bhytTra;
+        $dataYLenh['vien_phi'] = $vienPhi;
         $dataYLenh['id'] = $this->yLenhRepository->createDataYLenh($dataYLenh);
         $this->dataYLenh = $dataYLenh;
         return $this;
@@ -437,6 +453,11 @@ class BenhNhanServiceV2 {
     private function updateVienPhi(){
         $this->vienPhiRepository->updateVienPhi($this->dataVienPhi['id'], ['phong_id' => $this->dataSttPk['phong_id']]);
         return $this;
+    }
+    
+    private function getMucHuong()
+    {
+        
     }
     
 }
