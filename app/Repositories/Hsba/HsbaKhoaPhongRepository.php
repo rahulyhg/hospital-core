@@ -9,6 +9,10 @@ use Carbon\Carbon;
 class HsbaKhoaPhongRepository extends BaseRepositoryV2
 {
     const BENH_AN_KHAM_BENH = 24;
+    const THOI_GIAN_VAO_VIEN = 0;
+    const VIEN_PHI = 'VP';
+    const BAO_HIEM = 'BH';
+    const LOAI_VIEN_PHI_BAO_HIEM = 2;
     
     public function getModel()
     {
@@ -101,7 +105,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             }
         }
         else {
-            if($option['typeDay'] == 0) {
+            if($option['typeDay'] == self::THOI_GIAN_VAO_VIEN) {
                 if($startDay == $endDay){
                     $query = $query->whereDate('thoi_gian_vao_vien', '=', $startDay);
                 } else {
@@ -117,11 +121,11 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             }
         }
         
-        if($option['loaiVienPhi'] === 'VP') {
-            $query = $query->where('vien_phi.loai_vien_phi', '<>', 2);
+        if($option['loaiVienPhi'] === self::VIEN_PHI) {
+            $query = $query->where('vien_phi.loai_vien_phi', '<>', self::LOAI_VIEN_PHI_BAO_HIEM);
         }
-        else if($option['loaiVienPhi'] === 'BH') {
-            $query = $query->where('vien_phi.loai_vien_phi', '=', 2);
+        else if($option['loaiVienPhi'] === self::BAO_HIEM) {
+            $query = $query->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BAO_HIEM);
         }
         
         if($keyword != '') {
