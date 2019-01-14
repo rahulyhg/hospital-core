@@ -127,7 +127,9 @@ class DieuTriService
                         $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
                         $fileUpload[] = $imageFileName;
                         
-                        $s3->putObject($imageFileName, $file);
+                        $pathName = $file->getPathName();
+                        $mimeType = $file->getMimeType();
+                        $result = $s3->putObject($imageFileName, $pathName, $mimeType);
                     }
                         
                     if(!empty($fileUpload)) {

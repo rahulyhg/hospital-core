@@ -5,8 +5,16 @@ namespace App\Helper;
 class AwsS3
 {
     private $_s3;
+    private $_bucket;
     
-    public function __construct() {
+    public function __construct($bucket = null) {
+        if($bucket === null) {
+            $this->_bucket = config('filesystems.disks.s3.bucket');
+        }
+        else {
+            $this->_bucket = $bucket;
+        }
+        
         $this->_s3 = new \Aws\S3\S3Client([
         	'region'  => config('filesystems.disks.s3.region'),
         	'version' => 'latest',
@@ -19,17 +27,17 @@ class AwsS3
     
     public function deleteObject($key) {
         $this->_s3->deleteObject([
-            'Bucket' => config('filesystems.disks.s3.bucket'),
+            'Bucket' => $this->_bucket,
             'Key'    => $key
         ]);
     }
     
-    public function putObject($key, $file) {
+    public function putObject($key, $pathName, $mimeType) {
         $this->_s3->putObject([
-        	'Bucket' => config('filesystems.disks.s3.bucket'),
+        	'Bucket' => $this->_bucket,
         	'Key'    => $key,
-        	'SourceFile' => $file->getPathName(),
-        	'ContentType' => $file->getMimeType()
+        	'SourceFile' => $pathName,
+        	'ContentType' => $mimeType
         ]);
     }
 }

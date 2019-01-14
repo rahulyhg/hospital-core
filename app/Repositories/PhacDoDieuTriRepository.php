@@ -178,11 +178,17 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         foreach($arr as $id=>$item) {
             $pddt = $this->model->findOrFail($id);
             $data = json_decode($pddt->giai_trinh, true);
-            if($data)
+            $dataTmp = json_decode($pddt->giai_trinh_tmp, true);
+            if($data) {
                 $data = array_merge($data, $item);
-            else
+                $dataTmp = array_merge($dataTmp, $item);
+            }
+            else {
                 $data = $item;
+                $dataTmp = $item;
+            }
             $params['giai_trinh'] = json_encode($data);
+            $params['giai_trinh_tmp'] = json_encode($dataTmp);
 		    $pddt->update($params);
         }
     }
@@ -192,7 +198,51 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $pddt = $this->model->findOrFail($input['id']);
         $data = json_decode($pddt->giai_trinh, true);
         if($input['type'] == 'remove') {
+            foreach($data as $keyItem => $dataItem) {
+                foreach($input['data'] as $keyInput => $dataInput) {
+                    if(strpos($dataItem, $dataInput) !== false) {
+                        unset($data[$keyItem]);
+                    }
+                }
+            }
             
+            $pddt->giai_trinh = json_encode($data);
+            $pddt->save();
+        }
+        else {
+            $arrXetNghiem = json_decode($pddt->xet_nghiem, true);
+            $arrChanDoanHinhAnh = json_decode($pddt->chuan_doan_hinh_anh, true);
+            $arrChuyenKhoa = json_decode($pddt->chuyen_khoa, true);
+            
+            foreach($data as $keyItem => $dataItem) {
+                foreach($input['data'] as $keyInput => $dataInput) {
+                    if(strpos($dataItem, $dataInput) !== false) {
+                        unset($data[$keyItem]);
+                    }
+                    
+                    $arrTemp = explode('---', $dataInput);
+                    
+                    if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
+                        $arrXetNghiem[] = $arrTemp[1];
+                    }
+                    if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
+                        $arrChanDoanHinhAnh[] = $arrTemp[1];
+                    }
+                    if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
+                        $arrChuyenKhoa[] = $arrTemp[1];
+                    }
+                    
+                    if(count($arrXetNghiem) > 0)
+                        $dataPddt['xet_nghiem'] = json_encode($arrXetNghiem);
+                    if(count($arrChanDoanHinhAnh) > 0)
+                        $dataPddt['chan_doan_hinh_anh'] = json_encode($arrChanDoanHinhAnh);
+                    if(count($arrChuyenKhoa) > 0)
+                        $dataPddt['chuyen_khoa'] = json_encode($arrChuyenKhoa);
+                    
+                    $dataPddt['giai_trinh'] = json_encode($data);
+            		$pddt->update($dataPddt);
+                }
+            }
         }
     }
 }

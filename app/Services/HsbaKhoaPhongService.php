@@ -47,9 +47,14 @@ class HsbaKhoaPhongService
     
     public function update($hsbaKhoaPhongId, array $params)
     {
+        // Get Data Benh Vien Thiet Lap
+        if(empty($params['benh_vien_id'])) $params['benh_vien_id'] = 1;
+        $dataBenhVienThietLap = $this->getBenhVienThietLap($params['benh_vien_id']);
+        unset($params['benh_vien_id']);
+        
         $fileUpload = [];
         // Config S3
-        $s3 = new AwsS3();
+        $s3 = new AwsS3($dataBenhVienThietLap['bucket']);
         
         // GET OLD FILE
         $item = $this->hsbaKhoaPhongRepository->getById($hsbaKhoaPhongId);
@@ -88,8 +93,9 @@ class HsbaKhoaPhongService
                 $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
                 //$move = $file->move('upload/hsbakp/hoibenh', $imageFileName);
                 $fileUpload[] = $imageFileName;
-                
-                $result = $s3->putObject($imageFileName, $file);
+                $pathName = $file->getPathName();
+                $mimeType = $file->getMimeType();
+                $result = $s3->putObject($imageFileName, $pathName, $mimeType);
             }
                 
             if(!empty($fileUpload)) {
