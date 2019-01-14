@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\YLenh;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
+use App\Repositories\DanhMuc\DanhMucKQYLRepository;
+use App\Repositories\YLenh\KetQuaYLenhRepository;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
@@ -13,10 +15,12 @@ use Carbon\Carbon;
 class YLenhService {
     const PHIEU_DIEU_TRI = 3;
     
-    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository)
+    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository,DanhMucKQYLRepository $danhMucKQYLRepository,KetQuaYLenhRepository $ketQuaYLenhRepository)
     {
         $this->yLenhRepository = $yLenhRepository;
         $this->phieuYLenhRepository = $phieuYLenhRepository;
+        $this->danhMucKQYLRepository=$danhMucKQYLRepository;
+        $this->ketQuaYLenhRepository=$ketQuaYLenhRepository;
     }
 
     public function saveYLenh(array $input)
@@ -29,7 +33,7 @@ class YLenhService {
                 if(isset($input['dataYLenh']))
                     $input = array_except($input, ['dataYLenh', 'username', 'icd10code']);
                 $phieuYLenhParams = $input;
-                $phieuYLenhParams = array_except($phieuYLenhParams, ['hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan']);
+                $phieuYLenhParams = array_except($phieuYLenhParams, ['hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong']);
                 $phieuYLenhParams['loai_phieu_y_lenh'] = self::PHIEU_DIEU_TRI;
                 $phieuYLenhParams['trang_thai'] = 0;
                 $phieuYLenhId = $this->phieuYLenhRepository->getPhieuYLenhId($phieuYLenhParams);
@@ -54,6 +58,9 @@ class YLenhService {
                             'so_luong'              => $value['so_luong'],
                             'loai_y_lenh'           => $value['loai_nhom'],
                             'thoi_gian_chi_dinh'    => Carbon::now()->toDateTimeString(),
+                            'bhyt_tra'              => $value['bhyt_tra'],
+                            'vien_phi'              => $value['vien_phi'],
+                            'muc_huong'             => $input['muc_huong']
                         ];
                     }
                 }
@@ -83,7 +90,16 @@ class YLenhService {
     public function getDetailPhieuYLenh($phieuYLenhId,$type)
     {
         $result = $this->yLenhRepository->getDetailPhieuYLenh($phieuYLenhId,$type);
-                            
+        foreach($result as $item){
+            $ketQuaYLenh = $this->ketQuaYLenhRepository->getKetQuaYLenhByCode($item->ma);
+            foreach($ketQuaYLenh as $itemKQYL){
+                $danhMucKetQua = $this->danhMucKQYLRepository->getDanhMucKetQuaByCode($itemKQYL->ma_ket_qua_y_lenh);
+                $item['children']=$danhMucKetQua;                
+            }
+        }
         return $result;
+    
+                            
+       
     }    
 }

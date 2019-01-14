@@ -106,8 +106,9 @@ class YLenhRepository extends BaseRepositoryV2
             'y_lenh.id',
             'y_lenh.ten',
             'y_lenh.gia',
-            'y_lenh.gia_bhyt_tra',
-            'y_lenh.gia_mien_giam',
+            'y_lenh.gia_bhyt',
+            'y_lenh.bhyt_tra',
+            'y_lenh.vien_phi',
             'y_lenh.so_luong',
             'y_lenh.loai_y_lenh',
             'y_lenh.phieu_thu_id'
@@ -130,37 +131,45 @@ class YLenhRepository extends BaseRepositoryV2
             $priceChuanDoanHinhAnh = 0;
             $priceChuyenKhoa = 0;
             
+            $priceBhytTra = 0;
+            $priceVienPhi = 0;
+            
             foreach($data as $item) {
                 $item['gia']            = !empty($item['gia']) ? (int)$item['gia'] : 0;
-                $item['gia_bhyt_tra']   = !empty($item['gia_bhyt_tra']) ? (int)$item['gia_bhyt_tra'] : 0;
-                $item['gia_mien_giam']  = !empty($item['gia_mien_giam']) ? (int)$item['gia_mien_giam'] : 0;
+                $item['gia_bhyt']  = !empty($item['gia_bhyt']) ? (int)$item['gia_bhyt'] : 0;
+                $item['bhyt_tra']   = !empty($item['bhyt_tra']) ? (int)$item['bhyt_tra'] : 0;
                 $item['so_luong']       = !empty($item['so_luong']) ? (int)$item['so_luong'] : 0;
-                $item['thanh_tien'] = ($item['gia'] - $item['gia_bhyt_tra'] - $item['gia_mien_giam']) * $item['so_luong'];
+                // $item['thanh_tien'] = ($item['gia'] - $item['bhyt_tra']) * $item['so_luong'];
                 $item['key']        = rand() . $item['id'];
                 
                 if($item->loai_y_lenh == self::Y_LENH_CODE_YEU_CAU_KHAM) {
                     $itemYeuCauKham[] = $item;
-                    $priceYeuCauKham += $item['thanh_tien'];
+                    $priceYeuCauKham += $item['vien_phi'];
                 }
                 if($item->loai_y_lenh == self::Y_LENH_CODE_XET_NGHIEM) {
                     $itemXetNghiem[] = $item;
-                    $priceXetNghiem += $item['thanh_tien'];
+                    $priceXetNghiem += $item['vien_phi'];
                 }
                 if($item->loai_y_lenh == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
                     $itemChanDoanHinhAnh[] = $item;
-                    $priceChuanDoanHinhAnh += $item['thanh_tien'];
+                    $priceChuanDoanHinhAnh += $item['vien_phi'];
+                    
                 }
                 if($item->loai_y_lenh == self::Y_LENH_CODE_CHUYEN_KHOA) {
                     $itemChuyenKhoa[] = $item;
                     $priceChuyenKhoa += $item['thanh_tien'];
                 }
+                
+                $priceBhytTra += $item['bhyt_tra'];
+                $priceVienPhi += $item['vien_phi'];
             }
             
             if(!empty($itemYeuCauKham)) {
                 $result[] = [
-                    'key'         => rand() . 'VP',
-                    'ten'         => 'VIỆN PHÍ (' . number_format($priceYeuCauKham) . ' đ)',
+                    'key'         => 'YC',
+                    'ten'         => 'YÊU CẦU (' . number_format($priceYeuCauKham) . ' đ)',
                     'children'    => array([
+                        'key'           => rand() . 'YCK',
                         'ten'           => 'Khám bệnh (' . number_format($priceYeuCauKham) . ' đ)',
                         'children'      => $itemYeuCauKham    
                     ])
@@ -180,13 +189,13 @@ class YLenhRepository extends BaseRepositoryV2
             if(!empty($itemChanDoanHinhAnh)) {
                 $resultYeuCau[] = [
                     'key'           => rand() . 'CDHA',
-                    'ten'           => 'Chuẩn đoán hình ảnh (' . number_format($priceChuanDoanHinhAnh) . ' đ)',
+                    'ten'           => 'Chẩn đoán hình ảnh (' . number_format($priceChuanDoanHinhAnh) . ' đ)',
                     'children'      => $itemChanDoanHinhAnh
                 ]; 
             }
             
             if(!empty($itemChuyenKhoa)) {
-                $resultYeuCaup[] = [
+                $resultYeuCau[] = [
                     'key'           => rand(). 'CK',
                     'ten'           => 'Chuyên khoa (' . number_format($priceChuyenKhoa) . ' đ)',
                     'children'      => $itemChuyenKhoa
@@ -196,8 +205,8 @@ class YLenhRepository extends BaseRepositoryV2
             if(!empty($resultYeuCau)) {
                 $totalYeuCau = $priceXetNghiem + $priceChuanDoanHinhAnh + $priceChuyenKhoa;
                 $result[] = [
-                    'key'         => rand() . 'YC',
-                    'ten'         => 'YÊU CẦU (' . number_format($totalYeuCau) . ' đ)',
+                    'key'         => 'CD',
+                    'ten'         => 'CHỈ ĐỊNH (' . number_format($totalYeuCau) . ' đ)',
                     'children'    => $resultYeuCau
                 ];
                 
@@ -206,6 +215,8 @@ class YLenhRepository extends BaseRepositoryV2
             
             $dataResult['data'] = $result;
             $dataResult['total'] = $total;
+            $dataResult['bhyt_tra'] = $priceBhytTra;
+            $dataResult['vien_phi'] = $priceVienPhi;
             
             return $dataResult;
         } else {
@@ -219,8 +230,8 @@ class YLenhRepository extends BaseRepositoryV2
             'y_lenh.id',
             'y_lenh.ten',
             'y_lenh.gia',
-            'y_lenh.gia_bhyt_tra',
-            'y_lenh.gia_mien_giam',
+            'y_lenh.bhyt_tra',
+            'y_lenh.mien_giam',
             'y_lenh.so_luong',
             'y_lenh.loai_y_lenh',
             'y_lenh.phieu_thu_id'
@@ -247,20 +258,33 @@ class YLenhRepository extends BaseRepositoryV2
                     $phongThucHienName = DB::table('phong')->where('id',$phongThucHienId->phong_thuc_hien)->first();
                     $item['phong_thuc_hien']=$phongThucHienName?$phongThucHienName->ten_phong:'';
                 }
-                $item['children']=[[
-                            'id'            => 'C'.$item->id,
-                            'ten'           => 'Tên xét nghiệm '.$item->id,
-                            'ket_qua'       => 'Kết quả xét nghiệm',
-                            'don_vi'        => 'Đơn vị',
-                            'gh_duoi'       => 'Giới hạn dưới',
-                            'gh_tren'       => 'Giới hạn trên',
-                            'ghi_chu_cd'    => 'Ghi chú chẩn đoán',
-                            'ghi_chu_kq'    => 'Ghi chú kết quả' 
-                ]];
             }
             return $result;
         }
         else
-            return null;
-    }     
+            return [];
+    }
+    
+    public function getYLenhByVienPhiId($vienPhiId)
+    {
+        $where = [
+            ['y_lenh.vien_phi_id', '=', $vienPhiId],
+            ['y_lenh.phieu_thu_id']//is null
+        ];
+        
+        $column = [
+            'y_lenh.ten',
+            'y_lenh.gia',
+            'y_lenh.gia_bhyt',
+            'vien_phi.loai_vien_phi',
+            'bhyt.ms_bhyt'
+        ];
+        
+        $result = $this->model
+            ->leftJoin('vien_phi','vien_phi.id','=','y_lenh.vien_phi_id')
+            ->leftJoin('bhyt','bhyt.id','=','vien_phi.bhyt_id')
+            ->where($where)
+            ->get($column);
+        return $result;
+    }
 }

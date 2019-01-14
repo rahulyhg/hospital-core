@@ -28,11 +28,19 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $offset = ($page - 1) * $limit;
         
         if($phongId != $phongDonTiepID) {  //phong kham
-            $where = [
-                ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
-                ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
-                ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
-            ];
+            // if(isset($option['typeDay'])) {
+            //     $where = [
+            //         ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+            //         ['hsba_khoa_phong.khoa_hien_tai', '=', $khoaHienTai],
+            //         ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
+            //     ];
+            // } else {
+                $where = [
+                    ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+                    ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
+                    ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
+                ];
+            // }
         } else {    //hanh chanh don tiep
             $where = [
                 ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
@@ -120,8 +128,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             $query = $query->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BAO_HIEM);
         }
         
-        
-        
         if($keyword != '') {
             $query = $query->where(function($queryAdv) use ($keyword) {
                 $upperCase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
@@ -143,9 +149,9 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         }
         
         if($status != -1 && $phongId != $phongDonTiepID) {
-            $query = $query->where(function($queryAdv) use ($status) {
+            $query = $query->where(function($queryAdv) use ($status, $option) {
                 if($status == 0){
-                    $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2]);
+                    $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2,3]);
                 }
                 else {
                     $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $status);

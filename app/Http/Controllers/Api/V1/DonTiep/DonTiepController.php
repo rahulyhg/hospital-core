@@ -10,9 +10,9 @@ use App\Services\HsbaService;
 use App\Services\BenhNhanServiceV2;
 use App\Services\BhytService;
 use App\Services\PhongService;
+use App\Services\VienPhiService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
-//use Illuminate\Support\Facades\Redis;
 
 class DonTiepController extends APIController
 {
@@ -22,7 +22,8 @@ class DonTiepController extends APIController
         HsbaService $hsbaService, 
         BenhNhanServiceV2 $benhNhanService, 
         BhytService $bhytService,
-        PhongService $phongService
+        PhongService $phongService,
+        VienPhiService $vienPhiService
     )
     {
         $this->sttDonTiepService = $sttDonTiepService;
@@ -31,6 +32,7 @@ class DonTiepController extends APIController
         $this->benhNhanService = $benhNhanService;
         $this->bhytService = $bhytService;
         $this->phongService = $phongService;
+        $this->vienPhiService = $vienPhiService;
     }
     
     public function getListPatientByKhoaPhong($phongId = 0, $benhVienId, Request $request)
@@ -49,8 +51,6 @@ class DonTiepController extends APIController
             'loaiVienPhi'       => $loaiVienPhi
         ];
         
-        //$redis = Redis::connection();
-        
         if($phongId === null || $benhVienId === null){
             $this->setStatusCode(400);
             return $this->respond([]);
@@ -66,29 +66,6 @@ class DonTiepController extends APIController
             return $this->respondInternalError($ex->getMessage());
         }
         
-        // if(empty($listBenhNhan)) {
-        //     $this->setStatusCode(400);
-        //     return $this->respond([]);
-        // }
-        //if($type == "HC"){
-            //$data = $redis->get('list_BN_HC');
-            
-            //if($data) {
-                //$listBenhNhan = $data;
-            //} else {
-                //$listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanHanhChanh($benhVienId, $startDay, $endDay, $limit, $page, $keyword);
-                //$redis->set('list_BN_HC', $listBenhNhan);
-            //}
-        //} else {
-            //$data = $redis->get('list_BN_PK');
-            
-            //if($data) {
-                //$listBenhNhan = $data;
-            //} else {
-                //$listBenhNhan = $this->hsbaKhoaPhongService->getListBenhNhanPhongKham($phongId, $benhVienId, $startDay, $endDay, $limit, $page, $keyword);
-            //}
-        //}
-        
         return $this->respond($listBenhNhan);
     }
     
@@ -96,6 +73,15 @@ class DonTiepController extends APIController
     {
         if(is_numeric($hsbaId)) {
             $data = $this->hsbaKhoaPhongService->getByHsbaId($hsbaId);
+            if($data['ms_bhyt']) {
+                $input['ms_bhyt'] = $data['ms_bhyt'];
+                $input['vien_phi_id'] = $data['vien_phi_id'];
+                $input['loai_vien_phi'] = $data['loai_vien_phi'];
+                //cần check thời hạn thẻ BHYT
+                $data['muc_huong'] = $this->vienPhiService->getMucHuong($input);
+            } else {
+                $data['muc_huong'] = 0;
+            }
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);
