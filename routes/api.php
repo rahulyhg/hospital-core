@@ -106,9 +106,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
-		Route::get('getYLenhByHsbaId/{hsbaId}','PhongKham\PhongKhamController@getYLenhByHsbaId');
 		Route::get('getPddtByIcd10Code/{icd10Code}','PhongKham\PhongKhamController@getPddtByIcd10Code');
-		Route::get('getListPhieuYLenh/{id}','PhongKham\PhongKhamController@getListPhieuYLenh');
+		Route::get('getListPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getListPhieuYLenh');
 		Route::get('getDetailPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getDetailPhieuYLenh');		
     });
     
@@ -132,6 +131,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::post('createDanhMucTrangThai','DanhMuc\DanhMucController@createDanhMucTrangThai');
     	Route::post('updateDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@updateDanhMucTrangThai');
     	Route::delete('deleteDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@deleteDanhMucTrangThai');
+    	Route::get('getThuocVatTuByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getThuocVatTuByLoaiNhom');
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {
@@ -153,11 +153,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getAuthUsersGroups/{id}','AuthController@getAuthGroupsByUsersId');
 		Route::get('getListRoles','AuthController@getListRoles');
 		Route::get('getRolesByGroupsId/{id}','AuthController@getRolesByGroupsId');
-		Route::get('getKhoaPhongByGroupsId/{id}','AuthController@getKhoaPhongByGroupsId');
+		Route::get('getKhoaPhongByGroupsId/{id}/{benhVienId}','AuthController@getKhoaPhongByGroupsId');
     });     
     
     Route::group(['prefix' => 'thungan'], function () {
 		Route::post('createSoThuNgan','ThuNgan\ThuNganController@createSoThuNgan');
+// 		Route::post('getThongTinVienPhi','ThuNgan\ThuNganController@getThongTinVienPhi');
+        Route::get('getListDichVuByHsbaId/{hsbaId}','ThuNgan\ThuNganController@getListDichVuByHsbaId');
     });
     
     Route::group(['prefix' => 'phieuthu'], function () {
