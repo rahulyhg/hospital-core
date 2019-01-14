@@ -15,9 +15,9 @@ class AuthGroupsService
         $this->authGroupsHasRolesRepository = $authGroupsHasRolesRepository; 
     }
     
-    public function getListAuthGroups($limit, $page, $keyWords)
+    public function getListAuthGroups($limit, $page, $keyWords, $benhVienId)
     {
-        $data = $this->authGroupsRepository->getListAuthGroups($limit, $page, $keyWords);
+        $data = $this->authGroupsRepository->getListAuthGroups($limit, $page, $keyWords, $benhVienId);
         return $data;
     }
     
@@ -45,9 +45,9 @@ class AuthGroupsService
         $this->authGroupsRepository->updateAuthGroups($id, $input);
     }
     
-    public function getKhoaPhongByGroupsId($id)
+    public function getKhoaPhongByGroupsId($id,$benhVienId)
     {
-        $data = $this->authGroupsRepository->getKhoaPhongByGroupsId($id);
+        $data = $this->authGroupsRepository->getKhoaPhongByGroupsId($id,$benhVienId);
         return $data;
     }    
 }
