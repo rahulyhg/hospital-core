@@ -32,6 +32,7 @@ use Carbon\Carbon;
 use App\Models\ValueObjects\NhomNguoiThan;
 
 use Validator;
+use App\Helper\AwsS3;
 
 class BenhNhanServiceV2 {
     
@@ -200,7 +201,7 @@ class BenhNhanServiceV2 {
                 throw $ex;
             }
         });
-        
+        $this->uploadInfoJson($arrayRequest);
         return $result;
     }
     
@@ -225,7 +226,7 @@ class BenhNhanServiceV2 {
         $dataBenhNhan['quoc_tich_id'] = $this->dataQuocTich['gia_tri']??null;
         $dataBenhNhan['nam_sinh'] =  str_limit($dataBenhNhan['ngay_sinh'], 4,'');// TODO - define constant
         $dataBenhNhan['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
-        $dataBenhNhan['thong_tin_chuyen_tuyen'] = json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']);
+        $dataBenhNhan['thong_tin_chuyen_tuyen'] = !empty($dataBenhNhan['thong_tin_chuyen_tuyen']) ? json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']) : null;
         $bhyt = $this->checkBhytFromScanner($scan);
         if ($bhyt['benh_nhan_id']) {
             $dataBenhNhan['id'] = $bhyt['benh_nhan_id'];
@@ -258,7 +259,7 @@ class BenhNhanServiceV2 {
         $dataHsba['nam_sinh'] =  $this->dataBenhNhan['nam_sinh'];
         $dataHsba['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
         $dataHsba['ngay_tao'] = Carbon::now()->toDateTimeString();
-        $dataHsba['thong_tin_chuyen_tuyen'] = json_encode($dataHsba['thong_tin_chuyen_tuyen']);
+        $dataBenhNhan['thong_tin_chuyen_tuyen'] = !empty($dataBenhNhan['thong_tin_chuyen_tuyen']) ? json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']) : null;
         $dataHsba['id'] = $this->hsbaRepository->createDataHsba($dataHsba);
         $this->dataHsba = $dataHsba;
         return $this;
@@ -439,4 +440,14 @@ class BenhNhanServiceV2 {
         return $this;
     }
     
+    private function uploadInfoJson($arrayRequest) {
+        $dataBenhVienThietLap = $this->hsbaKhoaPhongService->getBenhVienThietLap($arrayRequest['benh_vien_id']);
+        $s3 = new AwsS3($dataBenhVienThietLap['bucket']);
+        $json_data = json_encode($arrayRequest);
+        file_put_contents('myfile.json', $json_data);
+        
+        $pathName = public_path('myfile.json');
+        $result = $s3->putObject('dang-ky-kham-benh/' . time() . '_myfile.json', $pathName, 'application/json');
+        unlink($pathName);
+    }
 }
