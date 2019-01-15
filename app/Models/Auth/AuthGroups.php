@@ -15,7 +15,7 @@ class AuthGroups extends Model
      * @var array
      */
     protected $table='auth_groups';     
-    protected $fillable = ['name', 'description','meta_data'];
+    protected $fillable = ['name', 'description','meta_data','benh_vien_id'];
     public $timestamps = false;
 
 }
