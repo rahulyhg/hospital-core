@@ -26,12 +26,16 @@ class AuthUsersGroupsRepository extends BaseRepositoryV2
         }
     }
 
-     public function getKhoaPhongByUserId($id)
+     public function getKhoaPhongByUserId($id,$benhVienId)
     {
         $column=['auth_groups.meta_data'];
         $dataSet = $this->model
                     ->leftJoin('auth_groups','auth_groups.id','=','auth_users_groups.group_id')
-                    ->where([['auth_users_groups.user_id','=',$id],['auth_groups.meta_data','<>',null]])
+                    ->where([
+                        ['auth_users_groups.user_id','=',$id],
+                        ['auth_users_groups.benh_vien_id','=',$benhVienId],
+                        ['auth_groups.meta_data','<>',null]
+                    ])
                     ->get($column);
         $str1 = $dataSet->implode('meta_data', ',');
         $str2 = str_replace('[','',$str1);
@@ -58,13 +62,14 @@ class AuthUsersGroupsRepository extends BaseRepositoryV2
     public function updateAuthUsersGroups($id,array $input)
     {
         $query = $this->model;
-        $find = $query->where('user_id',$id)->first();
+        $find = $query->where([['user_id','=',$id],['benh_vien_id','=',$input[0]['benh_vien_id']]])->first();
         if($find){
-            $query->where('user_id',$id)->delete();
+            $query->where([['user_id','=',$id],['benh_vien_id','=',$input[0]['benh_vien_id']]])->delete();
             foreach($input as $item){
                 $query->insert(array(
                         'group_id'=>$item['id'],
-                        'user_id'=>$id
+                        'user_id'=>$id,
+                        'benh_vien_id'=>$item['benh_vien_id']
                     ));
             }
         }
@@ -72,19 +77,19 @@ class AuthUsersGroupsRepository extends BaseRepositoryV2
             foreach($input as $item){
                 $query->insert(array(
                         'group_id'=>$item['id'],
-                        'user_id'=>$id
+                        'user_id'=>$id,
+                        'benh_vien_id'=>$item['benh_vien_id']
                     ));
             }
         }
     }
     
-    public function getAuthGroupsByUsersId($id)
+    public function getAuthGroupsByUsersId($id,$benhVienId)
     {
         $column=[
-                'group_id',
-                'user_id'
+                'auth_groups.*'
                 ];
-        $result = $this->model->where('user_id',$id)->distinct()->get($column);
+        $result = $this->model->leftJoin('auth_groups','auth_groups.id','=','auth_users_groups.group_id')->where([['auth_users_groups.user_id','=',$id],['auth_users_groups.benh_vien_id','=',$benhVienId]])->distinct()->get($column);
         return $result;
     }    
     

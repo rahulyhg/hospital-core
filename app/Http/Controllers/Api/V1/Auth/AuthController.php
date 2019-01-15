@@ -57,12 +57,10 @@ class AuthController extends APIController
         }
         $roles = $this->authService->getUserRolesByEmail($request->email);
         $userName = $this->authService->getUserNameByEmail($request->email);
-        $khoaPhongId = $this->authService->getKhoaPhongId($request->email);
         $extraPayload = array(
             'roles' => $roles,
             'userName' => $userName->fullname,
             'userId'   => $userName->id,
-            'khoaPhong'   => $khoaPhongId
         );
         return response([
             'status' => 'success',
@@ -116,7 +114,8 @@ class AuthController extends APIController
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         $keyWords = $request->query('keyWords', '');
-        $data = $this->authGroupsService->getListAuthGroups($limit, $page, $keyWords);
+        $benhVienId = $request->benhVienId;
+        $data = $this->authGroupsService->getListAuthGroups($limit, $page, $keyWords,$benhVienId);
         return $this->respond($data);
     }
     
@@ -177,16 +176,17 @@ class AuthController extends APIController
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);        
-        $data = $this->khoaService->getTreeListKhoaPhong($limit, $page);
+        $benhVienId = $request->query('benhVienId', '');
+        $data = $this->khoaService->getTreeListKhoaPhong($limit, $page, $benhVienId);
         return $this->respond($data);
     }
     
-    public function getAuthGroupsByUsersId($id)
+    public function getAuthGroupsByUsersId($id,$benhVienId)
     {
         $isNumericId = is_numeric($id);
         
         if($isNumericId) {
-            $data = $this->authUsersGroupsService->getAuthGroupsByUsersId($id);
+            $data = $this->authUsersGroupsService->getAuthGroupsByUsersId($id,$benhVienId);
         } else {
             $this->setStatusCode(400);
             $data = [];
@@ -217,12 +217,12 @@ class AuthController extends APIController
         return $this->respond($data);
     }
     
-    public function getKhoaPhongByGroupsId($id)
+    public function getKhoaPhongByGroupsId($id,$benhVienId)
     {
         $isNumericId = is_numeric($id);
         
         if($isNumericId) {
-            $data = $this->authGroupsService->getKhoaPhongByGroupsId($id);
+            $data = $this->authGroupsService->getKhoaPhongByGroupsId($id,$benhVienId);
         } else {
             $this->setStatusCode(400);
             $data = [];
@@ -230,4 +230,18 @@ class AuthController extends APIController
         
         return $this->respond($data);
     }
+    
+    public function getKhoaPhongByUserId($id,$benhVienId)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->authService->getKhoaPhongId($id,$benhVienId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }    
 }
