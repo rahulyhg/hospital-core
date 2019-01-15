@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
 use App\Repositories\Hsba\HsbaKhoaPhongRepository;
+use App\Repositories\Hsba\HsbaPhongKhamRepository;
 use App\Repositories\Hsba\HsbaRepository;
 use App\Repositories\VienPhi\VienPhiRepository;
 use App\Repositories\PhongRepository;
@@ -58,11 +59,13 @@ class DieuTriService
         VienPhiRepository $vienPhiRepository, 
         PhongRepository $phongRepository,
         SttPhongKhamService $sttPhongKhamService,
-        RaVienRepository $raVienRepository
+        RaVienRepository $raVienRepository,
+        HsbaPhongKhamRepository $hsbaPhongKhamRepository
     )
     {
         $this->dieuTriRepository = $dieuTriRepository;
         $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
+        $this->hsbaPhongKhamRepository = $hsbaPhongKhamRepository;
         $this->hsbaRepository = $hsbaRepository;
         $this->vienPhiRepository = $vienPhiRepository;
         $this->phongRepository = $phongRepository;
@@ -85,14 +88,14 @@ class DieuTriService
                 $input = array_where($dieuTriParams, function ($value, $key) {
                         return $value != '';
                 });
-                $input = array_except($input, ['hsba_khoa_phong_id', 'thoi_gian_chi_dinh', 'khoa_id', 'phong_id']);
+                $input = array_except($input, ['hsba_khoa_phong_id', 'thoi_gian_chi_dinh', 'khoa_id']);
                 
                 $fileUpload = [];
                 // Config S3
                 $s3 = new AwsS3();
                 
                 // GET OLD FILE
-                $item = $this->hsbaKhoaPhongRepository->getById($dieuTriParams['hsba_khoa_phong_id']);
+                $item = $this->hsbaPhongKhamRepository->getByHSBAKPId($dieuTriParams['hsba_khoa_phong_id']);
                 $fileItem =  json_decode($item->upload_file_kham_benh, true);
                 
                 // Remove File old
@@ -142,7 +145,7 @@ class DieuTriService
                     unset($input['files']);
                 }
                 
-                $this->hsbaKhoaPhongRepository->update($dieuTriParams['hsba_khoa_phong_id'], $input);
+                $this->hsbaPhongKhamRepository->updatePhongKham($dieuTriParams['hsba_khoa_phong_id'], $input);
             } catch (\Exception $ex) {
                  throw $ex;
             }

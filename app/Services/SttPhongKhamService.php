@@ -4,18 +4,28 @@ namespace App\Services;
 use App\Models\SttPhongKham;
 use App\Http\Resources\SttPhongKhamResource;
 use App\Repositories\SttPhongKhamRepository;
+use App\Repositories\Hsba\HsbaPhongKhamRepository;
+use App\Repositories\BenhVienRepository;
 use App\Services\HsbaKhoaPhongService;
 use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
 use App\User;
+use App\Helper\AwsS3; 
 
 class SttPhongKhamService 
 {
-    public function __construct(SttPhongKhamRepository $sttPhongKhamRepository, HsbaKhoaPhongService $hsbaKhoaPhongService)
+    public function __construct(
+        SttPhongKhamRepository $sttPhongKhamRepository, 
+        BenhVienRepository $benhVienRepository, 
+        HsbaPhongKhamRepository $hsbaPhongKhamRepository,
+        HsbaKhoaPhongService $hsbaKhoaPhongService
+    )
     {
         $this->sttPhongKhamRepository = $sttPhongKhamRepository;
+        $this->benhVienRepository = $benhVienRepository;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->hsbaPhongKhamRepository = $hsbaPhongKhamRepository;
     }
     
     public function getSttPhongKham(array $params)
@@ -29,7 +39,7 @@ class SttPhongKhamService
             $params['so_phong'] = $phongKham->so_phong;
             
             $stt = $this->sttPhongKhamRepository->createSttPhongKham($params);
-            
+            $this->hsbaPhongKhamRepository->createHsbaPhongKham($params);
             if($stt) {
                 $input = ['phong_hien_tai' => $params['phong_id']];
                 $this->hsbaKhoaPhongService->update($params['hsba_khoa_phong_id'], $input);
