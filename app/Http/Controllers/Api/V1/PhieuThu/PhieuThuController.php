@@ -89,7 +89,12 @@ class PhieuThuController extends APIController {
     
     public function getListPhieuThuByHsbaId($hsbaId) {
         $data = $this->phieuThuService->getListPhieuThuByHsbaId($hsbaId);
-        return $this->respond($data);
+        if($data)
+            return $this->respond($data);
+        else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
     }
     
     public function createPhieuThu(Request $request) {

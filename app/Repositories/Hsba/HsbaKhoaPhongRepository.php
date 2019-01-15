@@ -9,6 +9,10 @@ use Carbon\Carbon;
 class HsbaKhoaPhongRepository extends BaseRepositoryV2
 {
     const BENH_AN_KHAM_BENH = 24;
+    const THOI_GIAN_VAO_VIEN = 0;
+    const VIEN_PHI = 'VP';
+    const BAO_HIEM = 'BH';
+    const LOAI_VIEN_PHI_BAO_HIEM = 2;
     
     public function getModel()
     {
@@ -24,11 +28,19 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $offset = ($page - 1) * $limit;
         
         if($phongId != $phongDonTiepID) {  //phong kham
-            $where = [
-                ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
-                ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
-                ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
-            ];
+            // if(isset($option['typeDay'])) {
+            //     $where = [
+            //         ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+            //         ['hsba_khoa_phong.khoa_hien_tai', '=', $khoaHienTai],
+            //         ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
+            //     ];
+            // } else {
+                $where = [
+                    ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
+                    ['hsba_khoa_phong.phong_hien_tai', '=', $phongId],
+                    ['hsba_khoa_phong.benh_vien_id', '=', $benhVienId]
+                ];
+            // }
         } else {    //hanh chanh don tiep
             $where = [
                 ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn],
@@ -93,7 +105,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             }
         }
         else {
-            if($option['typeDay'] == 0) {
+            if($option['typeDay'] == self::THOI_GIAN_VAO_VIEN) {
                 if($startDay == $endDay){
                     $query = $query->whereDate('thoi_gian_vao_vien', '=', $startDay);
                 } else {
@@ -109,14 +121,12 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             }
         }
         
-        if($option['loaiVienPhi'] === 'VP') {
-            $query = $query->where('vien_phi.loai_vien_phi', '<>', 2);
+        if($option['loaiVienPhi'] === self::VIEN_PHI) {
+            $query = $query->where('vien_phi.loai_vien_phi', '<>', self::LOAI_VIEN_PHI_BAO_HIEM);
         }
-        else if($option['loaiVienPhi'] === 'BH') {
-            $query = $query->where('vien_phi.loai_vien_phi', '=', 2);
+        else if($option['loaiVienPhi'] === self::BAO_HIEM) {
+            $query = $query->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BAO_HIEM);
         }
-        
-        
         
         if($keyword != '') {
             $query = $query->where(function($queryAdv) use ($keyword) {
@@ -139,9 +149,9 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         }
         
         if($status != -1 && $phongId != $phongDonTiepID) {
-            $query = $query->where(function($queryAdv) use ($status) {
+            $query = $query->where(function($queryAdv) use ($status, $option) {
                 if($status == 0){
-                    $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2]);
+                    $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2,3]);
                 }
                 else {
                     $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $status);
@@ -295,6 +305,8 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'hsba_khoa_phong.huyet_ap_thap',
             'hsba_khoa_phong.huyet_ap_cao',
             'hsba_khoa_phong.chan_doan_ban_dau',
+            'hsba_khoa_phong.upload_file_hoi_benh',
+            'hsba_khoa_phong.upload_file_kham_benh',
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
             'bhyt.tuyen_bhyt',

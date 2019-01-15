@@ -11,6 +11,7 @@ use App\Repositories\VienPhi\VienPhiRepository;
 use App\Repositories\PhongRepository;
 use App\Repositories\RaVienRepository;
 use App\Services\SttPhongKhamService;
+use App\Helper\AwsS3;
 
 class DieuTriService
 {
@@ -85,6 +86,62 @@ class DieuTriService
                         return $value != '';
                 });
                 $input = array_except($input, ['hsba_khoa_phong_id', 'thoi_gian_chi_dinh', 'khoa_id', 'phong_id']);
+                
+                $fileUpload = [];
+                // Config S3
+                $s3 = new AwsS3();
+                
+                // GET OLD FILE
+                $item = $this->hsbaKhoaPhongRepository->getById($dieuTriParams['hsba_khoa_phong_id']);
+                $fileItem =  json_decode($item->upload_file_kham_benh, true);
+                
+                // Remove File old
+                if(!empty($input['oldFiles'])) {
+                    foreach($fileItem as $file) {
+                        if(!in_array($file, $input['oldFiles'])) {
+                            $s3->deleteObject($file);
+                        }
+                        else {
+                            $fileUpload[] = $file;
+                        }
+                    }
+                    unset($input['oldFiles']);
+                }
+                else {
+                    if(!empty($fileItem)) {
+                        foreach($fileItem as $file) {
+                            $s3->deleteObject($file);
+                        }
+                    }
+                }
+                
+                if(!empty($input['files'])) {
+                    $arrayExtension = ['jpg', 'jpeg', 'png', 'bmp', 'mp3', 'mp4', 'pdf', 'docx'];
+                    foreach($input['files'] as $file) {
+                        if(!in_array($file->getClientOriginalExtension(), $arrayExtension)) {
+                            throw new Exception('File chứa định dạng ko cho phép để upload');
+                        }
+                    }
+                    
+                    foreach ($input['files'] as $file) {
+                        $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
+                        $fileUpload[] = $imageFileName;
+                        
+                        $pathName = $file->getPathName();
+                        $mimeType = $file->getMimeType();
+                        $result = $s3->putObject($imageFileName, $pathName, $mimeType);
+                    }
+                        
+                    if(!empty($fileUpload)) {
+                        $input['upload_file_kham_benh'] = json_encode($fileUpload);
+                    }
+                    else {
+                        $input['upload_file_kham_benh'] = NULL;
+                    }
+                    
+                    unset($input['files']);
+                }
+                
                 $this->hsbaKhoaPhongRepository->update($dieuTriParams['hsba_khoa_phong_id'], $input);
             } catch (\Exception $ex) {
                  throw $ex;

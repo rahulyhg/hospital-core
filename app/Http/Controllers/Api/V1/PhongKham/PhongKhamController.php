@@ -40,7 +40,12 @@ class PhongKhamController extends APIController
             
             if($isNumeric) {
                 $input = $request->all();
-                $this->hsbaKhoaPhongService->update($hsbaKhoaPhongId, $input);
+                
+                $data = $this->hsbaKhoaPhongService->update($hsbaKhoaPhongId, $input);
+                if($data['status'] === 'error') {
+                    $this->setStatusCode($data['statusCode']);
+                }
+                return $this->respond($data);
             } else {
                 $this->setStatusCode(400);
             }
@@ -173,20 +178,6 @@ class PhongKhamController extends APIController
         return $this->respond([]);
     }
     
-
-    public function getYLenhByHsbaId($hsbaId)
-    {
-        if(is_numeric($hsbaId)) {
-            $data = $this->yLenhService->getYLenhByHsbaId($hsbaId);
-        }
-        else 
-        {
-            $this->setStatusCode(400);
-            $data = [];
-        }
-          return $this->respond($data);
-      }
-
     public function getPddtByIcd10Code($icd10Code)
     {
         $data = $this->pddtService->getPddtByIcd10Code($icd10Code);
@@ -199,12 +190,12 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }
     
-    public function getListPhieuYLenh($hsbaId)
+    public function getListPhieuYLenh($hsbaId,$type)
     {
         $isNumeric = is_numeric($hsbaId);
 
         if($isNumeric) {
-            $data = $this->phieuYLenhService->getListPhieuYLenh($hsbaId);
+            $data = $this->phieuYLenhService->getListPhieuYLenh($hsbaId,$type);
         } else {
             $this->setStatusCode(400);
             $data = [];
