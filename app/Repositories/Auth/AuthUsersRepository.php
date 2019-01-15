@@ -140,5 +140,11 @@ class AuthUsersRepository extends BaseRepositoryV2
             $input['userstatus']=0; 
         $update = AuthUsers::findOrFail($id);
 		$update->update($input);
+    }
+    
+     public function resetPasswordByUserId($input)
+    {
+        $password = bcrypt($input['password']);
+        DB::table('auth_users')->where('id',$input['id'])->update(['password' => $password]);
     }    
 }
