@@ -262,7 +262,8 @@ class BenhNhanServiceV2 {
         $dataHsba['nam_sinh'] =  $this->dataBenhNhan['nam_sinh'];
         $dataHsba['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
         $dataHsba['ngay_tao'] = Carbon::now()->toDateTimeString();
-        $dataBenhNhan['thong_tin_chuyen_tuyen'] = !empty($dataBenhNhan['thong_tin_chuyen_tuyen']) ? json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']) : null;
+        $dataHsba['thong_tin_chuyen_tuyen'] = !empty($dataHsba['thong_tin_chuyen_tuyen']) ? json_encode($dataHsba['thong_tin_chuyen_tuyen']) : null;
+        //var_dump($dataHsba);
         $dataHsba['id'] = $this->hsbaRepository->createDataHsba($dataHsba);
         $this->dataHsba = $dataHsba;
         return $this;

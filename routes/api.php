@@ -65,7 +65,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'setting'], function () {
         Route::get('khuVuc/{loai}/{benhVienId}','UserSetting\UserSettingController@getListKhuVuc');
-        Route::get('quaySo/{khuVucId}/{benhVienId}','UserSetting\UserSettingController@getListQuay');        
+        Route::get('quaySo/{khuVucId}/{benhVienId}','UserSetting\UserSettingController@getListQuay');
+        Route::get('getKhoaPhongByUserId/{userId}/{benhVienId}','AuthController@getKhoaPhongByUserId');
     });
     
     Route::group(['prefix' => 'dangkykhambenh'], function () {
@@ -152,7 +153,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getAuthGroupsById/{id}','AuthController@getAuthGroupsById');
 		Route::post('updateAuthGroups/{id}','AuthController@updateAuthGroups');
 		Route::get('getTreeListKhoaPhong','AuthController@getTreeListKhoaPhong');
-		Route::get('getAuthUsersGroups/{id}','AuthController@getAuthGroupsByUsersId');
+		Route::get('getAuthUsersGroups/{id}/{benhVienId}','AuthController@getAuthGroupsByUsersId');
 		Route::get('getListRoles','AuthController@getListRoles');
 		Route::get('getRolesByGroupsId/{id}','AuthController@getRolesByGroupsId');
 		Route::get('getKhoaPhongByGroupsId/{id}/{benhVienId}','AuthController@getKhoaPhongByGroupsId');

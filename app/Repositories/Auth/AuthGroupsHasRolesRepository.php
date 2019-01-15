@@ -53,7 +53,7 @@ class AuthGroupsHasRolesRepository extends BaseRepositoryV2
     {
         $column=[
                 'auth_groups_has_roles.group_id',
-                'auth_groups_has_roles.role_id',
+                'auth_groups_has_roles.role_id as id',
                 'auth_roles.name',
                 'auth_roles.description'
                 ];

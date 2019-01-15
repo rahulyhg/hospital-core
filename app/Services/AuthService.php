@@ -41,10 +41,9 @@ class AuthService {
         return $bool;
     }
     
-    public function getKhoaPhongId($email)
+    public function getKhoaPhongId($id,$benhVienId)
     {
-        $id = $this->authUsersRepository->getIdbyEmail($email);
-        $khoaPhongId = $this->authUsersGroupsRepository->getKhoaPhongByUserId($id->id);
-        return $khoaPhongId;
+        $khoaPhong = $this->authUsersGroupsRepository->getKhoaPhongByUserId($id,$benhVienId);
+        return $khoaPhong;
     }
 }

@@ -13,9 +13,9 @@ class AuthUsersGroupsService {
         $this->authUsersGroupsRepository = $authUsersGroupsRepository;
     }
 
-    public function getAuthGroupsByUsersId($id)
+    public function getAuthGroupsByUsersId($id,$benhVienId)
     {
-        $data = $this->authUsersGroupsRepository->getAuthGroupsByUsersId($id);
+        $data = $this->authUsersGroupsRepository->getAuthGroupsByUsersId($id,$benhVienId);
         return $data;
     }
 
