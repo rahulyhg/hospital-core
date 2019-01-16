@@ -95,7 +95,7 @@ class DieuTriService
                 $s3 = new AwsS3();
                 
                 // GET OLD FILE
-                $item = $this->hsbaPhongKhamRepository->getByHSBAKPId($dieuTriParams['hsba_khoa_phong_id']);
+                $item = $this->hsbaPhongKhamRepository->getByHsbaKpId($dieuTriParams['hsba_khoa_phong_id']);
                 $fileItem =  json_decode($item->upload_file_kham_benh, true);
                 
                 // Remove File old
