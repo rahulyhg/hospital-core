@@ -27,9 +27,9 @@ class KhoaService {
         return $data;   
     }    
     
-    public function getTreeListKhoaPhong($limit, $page)
+    public function getTreeListKhoaPhong($limit, $page, $benhVienId)
     {
-        $data = $this->khoaRepository->getTreeListKhoaPhong($limit, $page);
+        $data = $this->khoaRepository->getTreeListKhoaPhong($limit, $page, $benhVienId);
         return $data;
     }    
     

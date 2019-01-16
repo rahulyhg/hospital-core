@@ -33,7 +33,7 @@ class KhoaRepository extends BaseRepositoryV2
         return $data;    
     }
     
-    public function getTreeListKhoaPhong($limit = 100, $page = 1)
+    public function getTreeListKhoaPhong($limit = 100, $page = 1, $benhVienId)
     {
         $offset = ($page - 1) * $limit;
         
@@ -43,7 +43,7 @@ class KhoaRepository extends BaseRepositoryV2
             'ten_phong as ten_khoa_phong'
         ];
         
-        $query = $this->model;
+        $query = $this->model->where('benh_vien_id',$benhVienId);
         
         $dataSet = [];    
         

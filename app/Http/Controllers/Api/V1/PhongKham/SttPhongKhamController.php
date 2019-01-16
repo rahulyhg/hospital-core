@@ -85,4 +85,15 @@ class SttPhongKhamController extends APIController
         
         return $this->respond([]);
     }
+    
+    public function getByHsbaId($hsbaId) {
+        if(is_numeric($hsbaId)) {
+            $data = $this->sttPhongKhamService->getByHsbaId($hsbaId);
+        } else {
+            $data = [];
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond($data);
+    }
 }

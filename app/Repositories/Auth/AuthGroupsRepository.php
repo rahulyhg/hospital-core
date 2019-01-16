@@ -12,19 +12,23 @@ class AuthGroupsRepository extends BaseRepositoryV2
         return AuthGroups::class;
     }    
     
-    public function getListAuthGroups($limit = 100, $page = 1, $keyWords ='')
+    public function getListAuthGroups($limit = 100, $page = 1, $keyWords ='',$benhVienId)
     {
         $offset = ($page - 1) * $limit;
         $column = [
             'id',
             'name',
-            'description'
+            'description',
+            'benh_vien_id'
         ];
         $query = DB::table('auth_groups');
         if($keyWords!=""){
-           $query->where('name', 'like', '%' . $keyWords . '%')
-                 ->orWhere('description', 'like', '%' . $keyWords . '%');
-        }        
+           $query->where([['name', 'like', '%' . $keyWords . '%'],['benh_vien_id','=',$benhVienId]])
+                 ->orWhere([['description', 'like', '%' . $keyWords . '%'],['benh_vien_id','=',$benhVienId]]);
+        }
+        else {
+            $query->where('benh_vien_id',$benhVienId);
+        }
         $totalRecord = $query->count();
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
@@ -119,7 +123,7 @@ class AuthGroupsRepository extends BaseRepositoryV2
 		$update->update($input);
     }
     
-    public function getKhoaPhongByGroupsId($id)
+    public function getKhoaPhongByGroupsId($id,$benhVienId)
     {
         $metaData = $this->model
             ->where('id', $id)
@@ -127,11 +131,11 @@ class AuthGroupsRepository extends BaseRepositoryV2
             ->first()
             ->meta_data;
         if($metaData){
-        $result = DB::table('phong')
-            ->select(DB::raw("CONCAT('0',khoa_id,id) AS key"),'id as phong_id','khoa_id','ten_phong as ten_khoa_phong')
-            ->whereIn('id',json_decode($metaData))
-            ->get();
-        return $result;
+            $result = DB::table('phong')
+                ->select(DB::raw("CONCAT('0',khoa_id,id) AS key"),'id as phong_id','khoa_id','ten_phong as ten_khoa_phong')
+                ->whereIn('id',json_decode($metaData))
+                ->get();
+            return $result;
         }
     }    
     

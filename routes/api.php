@@ -65,7 +65,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'setting'], function () {
         Route::get('khuVuc/{loai}/{benhVienId}','UserSetting\UserSettingController@getListKhuVuc');
-        Route::get('quaySo/{khuVucId}/{benhVienId}','UserSetting\UserSettingController@getListQuay');        
+        Route::get('quaySo/{khuVucId}/{benhVienId}','UserSetting\UserSettingController@getListQuay');
+        Route::get('getKhoaPhongByUserId/{userId}/{benhVienId}','AuthController@getKhoaPhongByUserId');
     });
     
     Route::group(['prefix' => 'dangkykhambenh'], function () {
@@ -108,8 +109,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
 		Route::get('getPddtByIcd10Code/{icd10Code}','PhongKham\PhongKhamController@getPddtByIcd10Code');
 		Route::get('getListPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getListPhieuYLenh');
-		Route::get('getDetailPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getDetailPhieuYLenh');
-		Route::get('countItemYLenh/{hsbaId}','PhongKham\PhongKhamController@countItemYLenh');
+		Route::get('getDetailPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getDetailPhieuYLenh');	
+		Route::post('updateHsbaPhongKham/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@updateHsbaPhongKham');
+		Route::get('getDetailHsbaPhongKham/{hsbaId}/{phongId}','PhongKham\PhongKhamController@getDetailHsbaPhongKham');
+    Route::get('countItemYLenh/{hsbaId}','PhongKham\PhongKhamController@countItemYLenh');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
@@ -143,6 +146,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateAuthUsers/{id}','AuthUser\AuthUserController@updateAuthUsers');
      	Route::delete('deleteAuthUsers/{id}','AuthUser\AuthUserController@deleteAuthUsers');
      	Route::get('checkEmail/{email}','AuthUser\AuthUserController@checkEmailbyEmail');
+     	Route::post('resetPassword','AuthUser\AuthUserController@resetPasswordByUserId');
     });
     
     Route::group(['prefix' => 'nhomnguoidung'], function () {
@@ -152,7 +156,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getAuthGroupsById/{id}','AuthController@getAuthGroupsById');
 		Route::post('updateAuthGroups/{id}','AuthController@updateAuthGroups');
 		Route::get('getTreeListKhoaPhong','AuthController@getTreeListKhoaPhong');
-		Route::get('getAuthUsersGroups/{id}','AuthController@getAuthGroupsByUsersId');
+		Route::get('getAuthUsersGroups/{id}/{benhVienId}','AuthController@getAuthGroupsByUsersId');
 		Route::get('getListRoles','AuthController@getListRoles');
 		Route::get('getRolesByGroupsId/{id}','AuthController@getRolesByGroupsId');
 		Route::get('getKhoaPhongByGroupsId/{id}/{benhVienId}','AuthController@getKhoaPhongByGroupsId');
