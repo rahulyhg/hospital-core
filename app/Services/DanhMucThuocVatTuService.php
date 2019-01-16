@@ -49,4 +49,11 @@ class DanhMucThuocVatTuService
         
         return $data;
     }
+    
+    public function getThuocVatTuByCode($maNhom)
+    {
+        $data = $this->repository->getThuocVatTuByCode($maNhom);
+        
+        return $data;
+    }
 }
