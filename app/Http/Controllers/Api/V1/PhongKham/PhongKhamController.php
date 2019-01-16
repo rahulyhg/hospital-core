@@ -222,7 +222,7 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }    
     
-    public function updatePhongKham($hsbaKhoaPhongId, Request $request)
+    public function updateHsbaPhongKham($hsbaKhoaPhongId, Request $request)
     {
         try {
             $isNumeric = is_numeric($hsbaKhoaPhongId);
@@ -230,7 +230,7 @@ class PhongKhamController extends APIController
             if($isNumeric) {
                 $input = $request->all();
                 
-                $data = $this->hsbaPhongKhamService->updatePhongKham($hsbaKhoaPhongId, $input);
+                $data = $this->hsbaPhongKhamService->update($hsbaKhoaPhongId, $input);
                 if($data['status'] === 'error') {
                     $this->setStatusCode($data['statusCode']);
                 }

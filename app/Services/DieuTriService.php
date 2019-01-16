@@ -145,7 +145,7 @@ class DieuTriService
                     unset($input['files']);
                 }
                 
-                $this->hsbaPhongKhamRepository->updatePhongKham($dieuTriParams['hsba_khoa_phong_id'], $input);
+                $this->hsbaPhongKhamRepository->update($dieuTriParams['hsba_khoa_phong_id'], $input);
             } catch (\Exception $ex) {
                  throw $ex;
             }

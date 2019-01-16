@@ -16,7 +16,7 @@ class HsbaPhongKhamService {
         $this->hsbaPhongKhamRepository = $hsbaPhongKhamRepository;
     }
     
-    public function updatePhongKham($hsbaKhoaPhongId, array $params)
+    public function update($hsbaKhoaPhongId, array $params)
     {
         // Get Data Benh Vien Thiet Lap
         if(empty($params['benh_vien_id'])) $params['benh_vien_id'] = 1;
@@ -28,7 +28,7 @@ class HsbaPhongKhamService {
         $s3 = new AwsS3($dataBenhVienThietLap['bucket']);
         
         // GET OLD FILE
-        $item = $this->hsbaPhongKhamRepository->getDetailHSBAPhongKham($params['hsba_id'], $params['phong_id']);
+        $item = $this->hsbaPhongKhamRepository->getDetail($params['hsba_id'], $params['phong_id']);
         $fileItem =  json_decode($item->upload_file_hoi_benh, true);
         
         
@@ -78,7 +78,7 @@ class HsbaPhongKhamService {
             
             unset($params['files']);
         }
-        $this->hsbaPhongKhamRepository->updatePhongKham($hsbaKhoaPhongId, $params);
+        $this->hsbaPhongKhamRepository->update($hsbaKhoaPhongId, $params);
         $data = [
             'status'    => 'success'
         ];
@@ -91,7 +91,7 @@ class HsbaPhongKhamService {
     }
     
     public function getDetailHSBAPhongKham($hsbaId, $phongId) {
-        $data = $this->hsbaPhongKhamRepository->getDetailHSBAPhongKham($hsbaId, $phongId);
+        $data = $this->hsbaPhongKhamRepository->getDetail($hsbaId, $phongId);
         return $data;
     }
     

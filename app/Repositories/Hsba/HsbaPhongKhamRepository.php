@@ -13,7 +13,7 @@ class HsbaPhongKhamRepository extends BaseRepositoryV2
         return HsbaPhongKham::class;
     }
     
-    public function createHsbaPhongKham(array $params) {
+    public function create(array $params) {
         $attributes = [
                         'ten_benh_nhan' => $params['ten_benh_nhan'],
                         'phong_id' => $params['phong_id'],
@@ -27,7 +27,7 @@ class HsbaPhongKhamRepository extends BaseRepositoryV2
         $this->model->create($attributes);
     }
     
-    public function updatePhongKham($hsbaKhoaPhongId, array $params)
+    public function update($hsbaKhoaPhongId, array $params)
     {
         $where = [
             ['hsba_khoa_phong_id', '=', $hsbaKhoaPhongId],
@@ -48,7 +48,7 @@ class HsbaPhongKhamRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getDetailHSBAPhongKham($hsbaId, $phongId) {
+    public function getDetail($hsbaId, $phongId) {
         $where = [
             ['hsba_id', '=', $hsbaId],
             ['phong_id', '=', $phongId]

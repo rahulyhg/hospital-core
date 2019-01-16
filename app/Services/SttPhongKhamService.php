@@ -39,7 +39,7 @@ class SttPhongKhamService
             $params['so_phong'] = $phongKham->so_phong;
             
             $stt = $this->sttPhongKhamRepository->createSttPhongKham($params);
-            $this->hsbaPhongKhamRepository->createHsbaPhongKham($params);
+            $this->hsbaPhongKhamRepository->create($params);
             if($stt) {
                 $input = ['phong_hien_tai' => $params['phong_id']];
                 $this->hsbaKhoaPhongService->update($params['hsba_khoa_phong_id'], $input);
