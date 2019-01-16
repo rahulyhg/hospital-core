@@ -253,7 +253,21 @@ class PhongKhamController extends APIController
             $this->setStatusCode(400);
             $data = [];
         }
-        
+      
+        return $this->respond($data);
+    }
+  
+    public function countItemYLenh($hsbaId)
+    {
+        $isNumeric = is_numeric($hsbaId);
+           
+        if($isNumeric) {
+            $data = $this->yLenhService->countItemYLenh($hsbaId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+            
         return $this->respond($data);
     }
 }
