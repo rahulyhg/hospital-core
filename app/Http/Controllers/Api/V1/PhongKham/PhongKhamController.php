@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\PhongKham;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\HsbaPhongKhamService;
 use App\Services\SttPhongKhamService;
 use App\Services\DieuTriService;
 use App\Services\Icd10Service;
@@ -16,6 +17,7 @@ class PhongKhamController extends APIController
     public function __construct
     (
         HsbaKhoaPhongService $hsbaKhoaPhongService, 
+        HsbaPhongKhamService $hsbaPhongKhamService,
         SttPhongKhamService $sttPhongKhamService, 
         DieuTriService $dieuTriService, 
         Icd10Service $icd10Service,
@@ -25,6 +27,7 @@ class PhongKhamController extends APIController
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->hsbaPhongKhamService = $hsbaPhongKhamService;
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->dieuTriService = $dieuTriService;
         $this->icd10Service = $icd10Service;
@@ -218,4 +221,39 @@ class PhongKhamController extends APIController
         
         return $this->respond($data);
     }    
+    
+    public function updateHsbaPhongKham($hsbaKhoaPhongId, Request $request)
+    {
+        try {
+            $isNumeric = is_numeric($hsbaKhoaPhongId);
+            
+            if($isNumeric) {
+                $input = $request->all();
+                
+                $data = $this->hsbaPhongKhamService->update($hsbaKhoaPhongId, $input);
+                if($data['status'] === 'error') {
+                    $this->setStatusCode($data['statusCode']);
+                }
+                return $this->respond($data);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        }
+    }
+    
+    public function getDetailHsbaPhongKham($hsbaId, $phongId) {
+        $isNumeric = is_numeric($hsbaId);
+        $phongIsNumeric = is_numeric($phongId);
+        
+        if($isNumeric && $phongIsNumeric) {
+            $data = $this->hsbaPhongKhamService->getDetailHsbaPhongKham($hsbaId, $phongId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }
