@@ -136,4 +136,11 @@ class AuthUsersService
         $user->notify(new PasswordResetSuccess($passwordReset));
         return $user;
     }
+    
+    public function resetPasswordByUserId($input)
+    {
+        $find = $this->authUsersRepository->getAuthUsersById($input['id']);
+        if(!empty($find))
+            $this->authUsersRepository->resetPasswordByUserId($input);
+    }    
 }

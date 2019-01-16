@@ -296,4 +296,16 @@ class DanhMucController extends APIController
         
         return $this->respond($data);
     }
+    
+    public function getThuocVatTuByCode($maNhom)
+    {
+        if($maNhom) {
+            $data = $this->dmtvtService->getThuocVatTuByCode($maNhom);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }

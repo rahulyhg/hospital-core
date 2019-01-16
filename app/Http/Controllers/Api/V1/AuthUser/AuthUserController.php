@@ -86,6 +86,23 @@ class AuthUserController extends APIController
         } catch (\Exception $ex) {
             return $ex;
         }
+    }
+    
+    public function resetPasswordByUserId(Request $request)
+    {
+        try {
+            $input = $request->all();
+            var_dump($input);
+            $isNumericId = is_numeric($input['id']);
+            
+            if($isNumericId) {
+                $this->authUsersService->resetPasswordByUserId($input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
     }    
 
 }
