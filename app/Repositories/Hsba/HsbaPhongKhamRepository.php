@@ -37,7 +37,7 @@ class HsbaPhongKhamRepository extends BaseRepositoryV2
 		$model->update($params);
     }
     
-    public function getByHSBAKPId($hsbaKhoaPhongId)
+    public function getByHsbaKpId($hsbaKhoaPhongId)
     {
         $where = [
             ['hsba_khoa_phong_id', '=', $hsbaKhoaPhongId],

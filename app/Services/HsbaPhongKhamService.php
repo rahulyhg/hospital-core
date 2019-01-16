@@ -90,7 +90,7 @@ class HsbaPhongKhamService {
         return $data;
     }
     
-    public function getDetailHSBAPhongKham($hsbaId, $phongId) {
+    public function getDetailHsbaPhongKham($hsbaId, $phongId) {
         $data = $this->hsbaPhongKhamRepository->getDetail($hsbaId, $phongId);
         return $data;
     }

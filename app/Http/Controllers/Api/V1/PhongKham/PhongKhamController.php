@@ -243,12 +243,12 @@ class PhongKhamController extends APIController
         }
     }
     
-    public function getDetailHSBAPhongKham($hsbaId, $phongId) {
+    public function getDetailHsbaPhongKham($hsbaId, $phongId) {
         $isNumeric = is_numeric($hsbaId);
         $phongIsNumeric = is_numeric($phongId);
         
         if($isNumeric && $phongIsNumeric) {
-            $data = $this->hsbaPhongKhamService->getDetailHSBAPhongKham($hsbaId, $phongId);
+            $data = $this->hsbaPhongKhamService->getDetailHsbaPhongKham($hsbaId, $phongId);
         } else {
             $this->setStatusCode(400);
             $data = [];
