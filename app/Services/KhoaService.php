@@ -33,5 +33,9 @@ class KhoaService {
         return $data;
     }    
     
+    public function createKhoa($benhVienId, array $input)
+    {
+        return $this->khoaRepository->createKhoa($benhVienId, $input);
+    }    
     
 }

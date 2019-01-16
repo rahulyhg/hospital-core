@@ -62,4 +62,10 @@ class PhongRepository extends BaseRepositoryV2
                             ->first();
         return $phong;
     }
+    
+    public function createPhong($khoaId, array $input)
+    {
+        $input['khoa_id'] = $khoaId;
+        return $this->model->create($input)->id;
+    }
 }

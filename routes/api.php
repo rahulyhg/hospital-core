@@ -157,6 +157,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getKhoaPhongByGroupsId/{id}/{benhVienId}','AuthController@getKhoaPhongByGroupsId');
     });     
     
+    Route::group(['prefix' => 'khoaphong'], function () {
+		Route::post('createKhoa/{benhVienId}','KhoaPhongController@createKhoa');
+		Route::post('createPhong/{khoaId}','KhoaPhongController@createPhong');
+    });     
+    
     Route::group(['prefix' => 'thungan'], function () {
 		Route::post('createSoThuNgan','ThuNgan\ThuNganController@createSoThuNgan');
 // 		Route::post('getThongTinVienPhi','ThuNgan\ThuNganController@getThongTinVienPhi');

@@ -27,4 +27,9 @@ class PhongService {
            $this->phongRepository->getNhomPhong($loaiPhong,$khoaId)
         );
     }
+    
+    public function createPhong($khoaId, array $input)
+    {
+        return $this->phongRepository->createPhong($khoaId, $input);
+    }
 }

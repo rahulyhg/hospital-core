@@ -89,4 +89,9 @@ class KhoaRepository extends BaseRepositoryV2
         return $result;
     }    
     
+    public function createKhoa($benhVienId, array $input)
+    {
+        $input['benh_vien_id'] = $benhVienId;
+        return $this->model->create($input)->id;
+    }
 }
