@@ -12,6 +12,7 @@ class YLenhRepository extends BaseRepositoryV2
     const Y_LENH_CODE_XET_NGHIEM = 2;
     const Y_LENH_CODE_CHAN_DOAN_HINH_ANH = 3;
     const Y_LENH_CODE_CHUYEN_KHOA = 4;
+    const Y_LENH_CODE_CAN_LAM_SANG = [2, 3, 4];
     
     const Y_LENH_TEXT_YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
     const Y_LENH_TEXT_XET_NGHIEM = 'XÉT NGHIỆM';
@@ -286,5 +287,43 @@ class YLenhRepository extends BaseRepositoryV2
             ->where($where)
             ->get($column);
         return $result;
+    }
+    
+    public function countItemYLenh($hsbaId)
+    {
+        $data = $this->model->select('loai_y_lenh', DB::raw('count(loai_y_lenh) as total'))
+                            ->join('phieu_y_lenh', function($join) use ($hsbaId) {
+                                $join->on('phieu_y_lenh.id', '=', 'y_lenh.phieu_y_lenh_id')
+                                    ->where('phieu_y_lenh.hsba_id', '=', $hsbaId);
+                            })
+                            ->whereIn('loai_y_lenh', self::Y_LENH_CODE_CAN_LAM_SANG)
+                            ->groupBy('loai_y_lenh')
+                            ->get();
+        
+        if($data) {
+            $itemXetNghiem = 0;
+            $itemChanDoanHinhAnh = 0;
+            $itemChuyenKhoa = 0;
+            
+            foreach($data as $item) {
+                if($item->loai_y_lenh == self::Y_LENH_CODE_XET_NGHIEM) {
+                    $itemXetNghiem = $item->total;
+                }
+                if($item->loai_y_lenh == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
+                    $itemChanDoanHinhAnh = $item->total;
+                }
+                if($item->loai_y_lenh == self::Y_LENH_CODE_CHUYEN_KHOA) {
+                    $itemChuyenKhoa = $item->total;
+                }
+            }
+            
+            $result['itemXetNghiem'] = $itemXetNghiem;
+            $result['itemChanDoanHinhAnh'] = $itemChanDoanHinhAnh;
+            $result['itemChuyenKhoa'] = $itemChuyenKhoa;
+            
+            return $result;
+        } else {
+            return null;
+        }
     }
 }
