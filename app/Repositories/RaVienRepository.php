@@ -13,14 +13,15 @@ class RaVienRepository extends BaseRepositoryV2
         return RaVien::class;
     }    
     
-    public function getById($id)
+    public function getById($hsbaKhoaPhongId, $benhNhanId)
     {
-        $data = $this->model
-                ->where([
-                    'hsba_khoa_phong_id'=>$id,
-                    ])
-                ->first();
-        return $data;    
+        $where = [
+            ['hsba_khoa_phong_id', '=', $hsbaKhoaPhongId],
+            ['benh_nhan_id', '=', $benhNhanId]
+        ];
+        
+        $result = $this->model->where($where)->get()->first();
+        return $result;
         
     }
     
@@ -34,6 +35,5 @@ class RaVienRepository extends BaseRepositoryV2
     {
         $hsbaKhoaPhong = $this->model->findOrFail($hsbaKhoaPhongId);
 		$hsbaKhoaPhong->update($params);  
-        
     }    
 }
