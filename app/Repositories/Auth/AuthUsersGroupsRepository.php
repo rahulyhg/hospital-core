@@ -47,6 +47,7 @@ class AuthUsersGroupsRepository extends BaseRepositoryV2
                 'phong.id',
                 'phong.khoa_id',
                 'phong.ten_phong',
+                'phong.ma_nhom',
                 'khoa.ten_khoa'
                 ];
             $result = DB::table('phong')
