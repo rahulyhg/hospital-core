@@ -89,4 +89,25 @@ class DanhMucTrangThaiService {
     {
         $this->danhMucTrangThaiRepository->deleteDanhMucTrangThai($dmttId);
     }
+    
+    public function getListHinhThucChuyen()
+    {
+        return DanhMucTrangThaiResource::collection(
+           $this->danhMucTrangThaiRepository->getListHinhThucChuyen()
+        );
+    }
+    
+    public function getListTuyen()
+    {
+        return DanhMucTrangThaiResource::collection(
+           $this->danhMucTrangThaiRepository->getListTuyen()
+        );
+    }
+    
+    public function getListLyDoChuyen()
+    {
+        return DanhMucTrangThaiResource::collection(
+           $this->danhMucTrangThaiRepository->getListLyDoChuyen()
+        );
+    }
 }

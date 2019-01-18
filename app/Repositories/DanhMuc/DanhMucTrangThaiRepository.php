@@ -119,5 +119,29 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         return $data;    
         
     }
+    
+    public function getListHinhThucChuyen()
+    {
+        $dataSet = $this->model
+                ->where('khoa', 'hinh_thuc_chuyen')
+                ->get();
+        return $dataSet;    
+    }
+    
+    public function getListTuyen()
+    {
+        $dataSet = $this->model
+                ->where('khoa','tuyen')
+                ->get();
+        return $dataSet;    
+    }
+    
+    public function getListLyDoChuyen()
+    {
+        $dataSet = $this->model
+                ->where('khoa','ly_do_chuyen')
+                ->get();
+        return $dataSet;    
+    }
 
 }
