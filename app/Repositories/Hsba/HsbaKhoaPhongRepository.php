@@ -14,9 +14,245 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     const BAO_HIEM = 'BH';
     const LOAI_VIEN_PHI_BAO_HIEM = 2;
     
+    // Params KhoaPhong
+    private $benhVienId = null;
+    private $khoaId = null;
+    private $phongId = null;
+    private $loaiBenhAn = null;
+    // Params Pagination
+    private $limit = 20;
+    private $page = 1;
+    private $query = null;
+    // Others
+    private $keyword = '';
+    private $loaiVienPhi = null;
+    private $status = null;
+    private $khoangThoiGianVaoVien = [];
+    private $khoangThoiGianRaVien = [];
+    
     public function getModel()
     {
         return HsbaKhoaPhong::class;
+    }
+    
+    public function setKhoaPhongParams(int $benhVienId, int $khoaId, $phongId, $loaiBenhAn) {
+        // setBenhvienId, setKhoaId, setPhongId, setLoaiBenhAn
+        $this->benhVienId = $benhVienId;
+        $this->khoaId = $khoaId;
+        $this->phongId = $phongId;
+        $this->loaiBenhAn = $loaiBenhAn;
+        return $this;
+        
+    }
+    
+    public function setPaginationParams($limit, $page) {
+        // limit, page
+        $this->limit = $limit;
+        $this->page = $page;
+        return $this;
+    }
+    
+    public function setLoaiVienPhiParams($loaiVienPhi) {
+        if ($loaiVienPhi && !in_array($loaiVienPhi,array(self::VIEN_PHI,self::BAO_HIEM))) {
+            throw new \Exception("invalid Loai Vien Phi");
+        }
+        $this->loaiVienPhi = $loaiVienPhi;
+        return $this;
+    }
+    
+    public function setKeyWordParams($keyword) {
+        $this->keyword = $keyword;
+        return $this;
+    }
+    
+    public function setStatusParams(int $status) {
+        $this->status = $status;
+        return $this;
+    }
+    
+    public function setKhoangThoiGianVaoVienParams($from, $to) {
+        // todo validate
+        $this->khoangThoiGianVaoVien = ['from' => $from, 'to' => $to];
+        return $this;
+    }
+    
+    public function setKhoangThoiGianRaVienParams($from, $to) {
+        // todo validate
+        $this->khoangThoiGianRaVien = ['from' => $from, 'to' => $to];
+        return $this;
+    }
+    
+    	public function getListV2()
+    {
+        if (
+            $this->khoaId === null || $this->benhVienId === null
+        ) {
+            throw new \Exception("In valid data");
+        }
+        
+        $page = $this->page;
+        $limit = $this->limit;
+        $loaiBenhAn = $this->loaiBenhAn; //kham benh
+        $offset = ($page - 1) * $limit;
+        
+        // $khoaHienTai = $dataBenhVienThietLap['khoaHienTai']; //khoa kham benh
+        // $phongDonTiepID = $dataBenhVienThietLap['phongDonTiepID'];
+        
+        $where = [
+            ['hsba_khoa_phong.loai_benh_an', '=', $this->loaiBenhAn],
+            ['hsba_khoa_phong.benh_vien_id', '=', $this->benhVienId]
+        ];
+        
+        if ($this->phongId === null) {
+            $where[] = ['hsba_khoa_phong.khoa_hien_tai', '=', $this->khoaId];
+        } else {
+            $where[] = ['hsba_khoa_phong.phong_hien_tai', '=', $this->phongId];
+        }
+        
+        $column = [
+            'hsba.id as hsba_id',
+            'hsba_khoa_phong.id as hsba_khoa_phong_id',
+            'hsba.ten_benh_nhan',
+            'hsba.nam_sinh',
+            'hsba.ms_bhyt',
+            'hsba.trang_thai_hsba',
+            'hsba.ngay_tao',
+            'hsba.ngay_ra_vien',
+            'hsba_khoa_phong.thoi_gian_vao_vien',
+            'hsba_khoa_phong.thoi_gian_ra_vien',
+            'hsba_khoa_phong.trang_thai_cls',
+            'tt1.diengiai as ten_trang_thai_cls',
+            'hsba_khoa_phong.trang_thai',
+            'tt2.diengiai as ten_trang_thai',
+            'vien_phi.trang_thai as vien_phi_trang_thai',
+            'vien_phi.loai_vien_phi'
+        ];
+        
+        $query = $this->model
+            ->leftJoin('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
+            ->leftJoin('vien_phi', 'vien_phi.hsba_id', '=', 'hsba.id')
+            ->leftJoin('red_trangthai as tt1', function($join) {
+                $join->on('tt1.giatri', '=', 'hsba_khoa_phong.trang_thai_cls')
+                    ->where('tt1.tablename', '=', 'canlamsang');
+            })
+            ->leftJoin('red_trangthai as tt2', function($join) {
+                $join->on('tt2.giatri', '=', 'hsba_khoa_phong.trang_thai')
+                    ->where('tt2.tablename', '=', 'patientstatus');
+            });
+            
+        if($this->phongId) {
+            $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) {
+                $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
+                    ->where('sttpk.phong_id', '=', $this->phongId);
+            });
+            
+            $arrayColumn = [
+                'sttpk.loai_stt',
+                'sttpk.so_thu_tu',
+                'sttpk.stt_don_tiep_id',
+            ];
+            
+            $column = array_merge($column, $arrayColumn);
+        }
+            
+        $query = $query->where($where);
+        
+        
+        if ($this->khoangThoiGianVaoVien || $this->khoangThoiGianRaVien) {
+            if ($this->khoangThoiGianVaoVien ) {
+                $filterColumn = 'thoi_gian_vao_vien';
+                $from = $this->khoangThoiGianVaoVien['from'];
+                $to = $this->khoangThoiGianVaoVien['to'];
+            } elseif ($this->khoangThoiGianRaVien) {
+                $filterColumn = 'thoi_gian_ra_vien';
+                $from = $this->khoangThoiGianRaVien['from'];
+                $to = $this->khoangThoiGianRaVien['to'];
+            }
+            
+            if($from == $to){
+                $query = $query->whereDate($filterColumn, '=', $from);
+            } else {
+                $query = $query->whereBetween($filterColumn, [Carbon::parse($from)->startOfDay(), Carbon::parse($to)->endOfDay()]);
+            }
+        }
+        
+        
+        if($this->loaiVienPhi === self::VIEN_PHI) {
+            $query = $query->where('vien_phi.loai_vien_phi', '<>', self::LOAI_VIEN_PHI_BAO_HIEM);
+        }
+        else if($this->loaiVienPhi === self::BAO_HIEM) {
+            $query = $query->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BAO_HIEM);
+        }
+        
+        if($this->keyword != '') {
+            $query = $query->where(function($queryAdv) {
+                $keyword = $this->keyword;
+                $upperCase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
+                $lowerCase = mb_convert_case($keyword, MB_CASE_LOWER, "UTF-8");
+                $titleCase = mb_convert_case($keyword, MB_CASE_TITLE, "UTF-8");
+                
+                $queryAdv->where('hsba.ten_benh_nhan', 'like', '%'.$upperCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$lowerCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titleCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$keyword.'%')
+                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$upperCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$lowerCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$titleCase.'%')
+                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$keyword.'%')
+                        ->orWhereRaw("cast(hsba.id as text) like '%$keyword%'")
+                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$keyword%'")
+                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$upperCase%'");
+            });
+        }
+        
+        if($this->status != -1 && $this->phongId) {
+            $query = $query->where(function($queryAdv) {
+                if($this->status == 0){
+                    $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2,3]);
+                }
+                else {
+                    $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $this->status);
+                }
+            });
+        }
+        
+        // TO DO : Store SQL Log
+        /*
+        $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
+        $sql = vsprintf($sql, $query->getBindings());
+        var_dump($sql);die;
+        */
+        
+        $totalRecord = $query->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            /*
+            
+            */
+            $data = $query->orderBy('thoi_gian_vao_vien', 'asc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get($column);
+                        
+            $data->each(function ($item, $key) {
+                $item->hsba_id = sprintf('%012d', $item->hsba_id);
+                $item->so_thu_tu = sprintf('%03d', $item->so_thu_tu);
+            });
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+        
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
     }
     
     public function getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1, $option = null)
