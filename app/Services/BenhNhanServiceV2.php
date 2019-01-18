@@ -19,6 +19,7 @@ use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
 use App\Repositories\HanhChinhRepository;
+use App\Repositories\ChuyenVienRepository;
 
 // Service
 use App\Services\SttPhongKhamService;
@@ -55,6 +56,7 @@ class BenhNhanServiceV2 {
     //private $dataTHX = null;
     private $dataTenTHX = [];
     private $dataNhomNguoiThan = null;
+    private $dataChuyenVien = [];
     
     private $dataLog = [];
     
@@ -62,7 +64,7 @@ class BenhNhanServiceV2 {
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
-        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'thong_tin_chuyen_tuyen'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id'
     ];
     
     private $hsbaKeys = [
@@ -71,7 +73,7 @@ class BenhNhanServiceV2 {
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
         , 'ms_bhyt', 'benh_vien_id'
-        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'thong_tin_chuyen_tuyen'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id'
     ];
     
     private $hsbaKpKeys = [
@@ -88,6 +90,13 @@ class BenhNhanServiceV2 {
     private $dieuTriKeys = [
         'cd_icd10_code', 'cd_icd10_text'
     ];
+    
+    private $chuyenVienKeys = [
+        'khoa_id', 'chuyen_tuyen_hoi','benh_vien_tuyen_duoi_code',
+        'tinh_trang_chuyen_tuyen','ly_do_chuyen_tuyen','phuong_tien_van_chuyen',
+        'ten_nguoi_ho_tong','dau_hieu_lam_sang','phuong_phap_thu_thuat','ket_qua_xet_nghiem',
+        'huong_dieu_tri','chan_doan','chan_doan_tuyen_duoi_code','chan_doan_tuyen_duoi'
+    ];    
     
     public function __construct
     (
@@ -106,7 +115,8 @@ class BenhNhanServiceV2 {
         DanhMucDichVuRepository $danhMucDichVuRepository, 
         YLenhRepository $yLenhRepository, 
         PhongRepository $phongRepository, 
-        HanhChinhRepository $hanhChinhRepository
+        HanhChinhRepository $hanhChinhRepository,
+        ChuyenVienRepository $chuyenVienRepository
     )
     {
         // Services
@@ -127,6 +137,7 @@ class BenhNhanServiceV2 {
         $this->yLenhRepository = $yLenhRepository;
         $this->phongRepository = $phongRepository;
         $this->hanhChinhRepository = $hanhChinhRepository;
+        $this->chuyenVienRepository = $chuyenVienRepository;
     }
     
     public function registerBenhNhan(Request $request)
@@ -175,13 +186,15 @@ class BenhNhanServiceV2 {
         $bhytParams['image_url'] = $request->only('image_url_bhyt')['image_url_bhyt'];     
         $dieuTriParams = $request->only(...$this->dieuTriKeys);        
         $sttPhongKhamParams =  $request->only(...$this->sttPkKeys);
-        $result = DB::transaction(function () use ($scan, $benhNhanParams, $hsbaParams, $hsbaKpParams, $bhytParams, $dieuTriParams, $sttPhongKhamParams) {
+        $chuyenVienParams =  $request->only(...$this->chuyenVienKeys);
+        $result = DB::transaction(function () use ($scan, $benhNhanParams, $hsbaParams, $hsbaKpParams, $bhytParams, $dieuTriParams, $sttPhongKhamParams,$chuyenVienParams) {
             try {
                 // TODO - implement try catch log inside each function carefully
                 $this->createBhyt($bhytParams)
                     ->checkOrCreateBenhNhan($scan,$benhNhanParams)
                     ->createHsbaKhamBenh($hsbaParams)
                     ->createHsbaKpKhamBenh($hsbaKpParams)
+                    ->createChuyenVien($chuyenVienParams)
                     ->getDataYeucauKham()
                     ->getSttPhongKham($sttPhongKhamParams) //sothutuphongkham
                     ->createVienPhi()
@@ -229,7 +242,7 @@ class BenhNhanServiceV2 {
         $dataBenhNhan['quoc_tich_id'] = $this->dataQuocTich['gia_tri']??null;
         $dataBenhNhan['nam_sinh'] =  str_limit($dataBenhNhan['ngay_sinh'], 4,'');// TODO - define constant
         $dataBenhNhan['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
-        $dataBenhNhan['thong_tin_chuyen_tuyen'] = !empty($dataBenhNhan['thong_tin_chuyen_tuyen']) ? json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']) : null;
+        //$dataBenhNhan['thong_tin_chuyen_tuyen'] = !empty($dataBenhNhan['thong_tin_chuyen_tuyen']) ? json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']) : null;
         $bhyt = $this->checkBhytFromScanner($scan);
         if ($bhyt['benh_nhan_id']) {
             $dataBenhNhan['id'] = $bhyt['benh_nhan_id'];
@@ -262,7 +275,7 @@ class BenhNhanServiceV2 {
         $dataHsba['nam_sinh'] =  $this->dataBenhNhan['nam_sinh'];
         $dataHsba['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
         $dataHsba['ngay_tao'] = Carbon::now()->toDateTimeString();
-        $dataHsba['thong_tin_chuyen_tuyen'] = !empty($dataHsba['thong_tin_chuyen_tuyen']) ? json_encode($dataHsba['thong_tin_chuyen_tuyen']) : null;
+        //$dataHsba['thong_tin_chuyen_tuyen'] = !empty($dataHsba['thong_tin_chuyen_tuyen']) ? json_encode($dataHsba['thong_tin_chuyen_tuyen']) : null;
         //var_dump($dataHsba);
         $dataHsba['id'] = $this->hsbaRepository->createDataHsba($dataHsba);
         $this->dataHsba = $dataHsba;
@@ -285,6 +298,35 @@ class BenhNhanServiceV2 {
         $this->dataHsbaKp = $dataHsbaKp;
         return $this;
     }
+    
+    private function createChuyenVien($params) {
+        //set params chuyen_vien
+        //$dataChuyenVien = $params;
+        if(count($params)>1){
+            $dataChuyenVien['khoa_id'] = $params['khoa_id'];
+            $dataChuyenVien['hsba_khoa_phong_id'] = $this->dataHsbaKp['id']?$this->dataHsbaKp['id']:null;
+            $dataChuyenVien['benh_nhan_id'] = $this->dataBenhNhan['id']?$this->dataBenhNhan['id']:null;
+            $dataChuyenVien['thoi_gian_chuyen_vien'] = isset($params['chuyen_tuyen_hoi'])?$params['chuyen_tuyen_hoi']:null;
+            $dataChuyenVien['ma_benh_vien_chuyen_toi'] = isset($params['benh_vien_tuyen_duoi_code'])?$params['benh_vien_tuyen_duoi_code']:null;
+            $dataChuyenVien['tinh_trang_nguoi_benh'] = isset($params['tinh_trang_chuyen_tuyen'])?$params['tinh_trang_chuyen_tuyen']:null;
+            $dataChuyenVien['phuong_tien_van_chuyen'] = isset($params['phuong_tien_van_chuyen'])?$params['phuong_tien_van_chuyen']:null;
+            $dataChuyenVien['nguoi_van_chuyen'] = isset($params['ten_nguoi_ho_tong'])?$params['ten_nguoi_ho_tong']:null;
+            $dataChuyenVien['dau_hieu_lam_sang'] = isset($params['dau_hieu_lam_sang'])?$params['dau_hieu_lam_sang']:null;
+            $dataChuyenVien['thuoc'] = isset($params['phuong_phap_thu_thuat'])?$params['phuong_phap_thu_thuat']:null;
+            $dataChuyenVien['xet_nghiem'] = isset($params['ket_qua_xet_nghiem'])?$params['ket_qua_xet_nghiem']:null;
+            $dataChuyenVien['huong_dieu_tri'] = isset($params['huong_dieu_tri'])?$params['huong_dieu_tri']:null;
+            $dataChuyenVien['chan_doan'] = isset($params['chan_doan'])?$params['chan_doan']:null;
+            $dataChuyenVien['ly_do_chuyen_vien_id'] = isset($params['ly_do_chuyen_tuyen'])?$params['ly_do_chuyen_tuyen']:null;
+            $dataChuyenVien['chan_doan_tuyen_duoi_code'] = isset($params['chan_doan_tuyen_duoi_code'])?$params['chan_doan_tuyen_duoi_code']:null;
+            $dataChuyenVien['chan_doan_tuyen_duoi_text'] = isset($params['chan_doan_tuyen_duoi'])?$params['chan_doan_tuyen_duoi']:null;
+            //insert chuyen_vien
+            $dataChuyenVien['id'] = $this->chuyenVienRepository->createData($dataChuyenVien);
+            $this->dataChuyenVien = $dataChuyenVien;
+            return $this;
+        }
+        else
+            return $this;
+    }    
     
     private function getSttPhongKham($params) {
         $sttPhongKhamParams = $params;

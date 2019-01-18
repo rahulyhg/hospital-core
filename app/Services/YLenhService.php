@@ -78,7 +78,6 @@ class YLenhService {
     public function getLichSuYLenh(array $input)
     {
         $result = $this->yLenhRepository->getLichSuYLenh($input);
-                            
         return $result;
     }
     
@@ -98,8 +97,11 @@ class YLenhService {
             }
         }
         return $result;
+    } 
     
-                            
-       
-    }    
+    public function countItemYLenh($hsbaId)
+    {
+        $result = $this->yLenhRepository->countItemYLenh($hsbaId);
+        return $result;
+    }
 }
