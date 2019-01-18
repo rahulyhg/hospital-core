@@ -183,7 +183,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'hsbakp'], function () {
-        Route::get('list/{benhVienId}','Hsba\HsbaKhoaPhongController@getListKhoaKhamBenh');
+        Route::get('list/{benhVienId}/khoakhambenh','Hsba\HsbaKhoaPhongController@getListKhoaKhamBenh');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
