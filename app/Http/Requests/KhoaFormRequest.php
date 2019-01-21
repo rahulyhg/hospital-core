@@ -25,7 +25,7 @@ class KhoaFormRequest extends ApiFormRequest
             'ma_khoa'       => 'required|string',
             'ten_khoa'      => 'required|string',
             'loai_khoa'     => 'int',
-            'ma_khoa_byt'   => 'string',
+            'ma_khoa_byt'   => 'required|string',
             'benh_vien_id'  => 'int'
         ];
     }

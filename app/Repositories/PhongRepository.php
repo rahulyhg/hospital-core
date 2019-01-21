@@ -68,4 +68,20 @@ class PhongRepository extends BaseRepositoryV2
         $input['khoa_id'] = $khoaId;
         return $this->model->create($input)->id;
     }
+    
+    public function updatePhong($id, array $input)
+    {
+        $khoa = $this->model->findOrFail($id);
+        $khoa->update($input);
+    }
+    
+    public function deletePhong($id)
+    {
+        $this->model->destroy($id);
+    }
+    
+    public function getPhongById($id)
+    {
+        return $this->model->where('id', $id)->first();
+    }
 }

@@ -32,4 +32,19 @@ class PhongService {
     {
         return $this->phongRepository->createPhong($khoaId, $input);
     }
+    
+    public function updatePhong($id, array $input)
+    {
+        $this->phongRepository->updatePhong($id, $input);
+    }
+    
+    public function deletePhong($id)
+    {
+        $this->phongRepository->deletePhong($id);
+    }
+    
+    public function getPhongById($id)
+    {
+        return $this->phongRepository->getPhongById($id);
+    }
 }

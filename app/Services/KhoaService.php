@@ -38,4 +38,24 @@ class KhoaService {
         return $this->khoaRepository->createKhoa($benhVienId, $input);
     }    
     
+    public function updateKhoa($id, array $input)
+    {
+        return $this->khoaRepository->updateKhoa($id, $input);
+    }    
+    
+    public function deleteKhoa($id)
+    {
+        return $this->khoaRepository->deleteKhoa($id);
+    }    
+    
+    public function getListKhoaByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords)
+    {
+        return $this->khoaRepository->getListKhoaByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords);
+    }
+    
+    public function getKhoaById($id)
+    {
+        return $this->khoaRepository->getKhoaById($id);
+    }
+    
 }

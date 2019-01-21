@@ -24,12 +24,12 @@ class PhongFormRequest extends ApiFormRequest
         return [
             'khoa_id'       => 'int',
             'so_phong'      => 'required|int',
-            'ma_nhom'       => 'string',
+            'ma_nhom'       => 'required|string',
             'ten_phong'     => 'required|string',
-            'loai_phong'    => 'int',
-            'loai_benh_an'  => 'int',
-            'trang_thai'    => 'int',
-            'ten_nhom'      => 'string'
+            'loai_phong'    => 'required|int',
+            'loai_benh_an'  => 'required|int',
+            'trang_thai'    => 'required|int',
+            'ten_nhom'      => 'required|string'
         ];
     }
 }

@@ -158,8 +158,16 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });     
     
     Route::group(['prefix' => 'khoaphong'], function () {
-		Route::post('createKhoa/{benhVienId}','KhoaPhongController@createKhoa');
-		Route::post('createPhong/{khoaId}','KhoaPhongController@createPhong');
+        Route::get('danhsachkhoabenhvien/{benhVienId}','KhoaPhong\KhoaPhongController@getListKhoaByBenhVienIdKeywords');
+		Route::post('createKhoa/{benhVienId}','KhoaPhong\KhoaPhongController@createKhoa');
+		Route::post('updateKhoa/{id}','KhoaPhong\KhoaPhongController@updateKhoa');
+		Route::delete('deleteKhoa/{id}','KhoaPhong\KhoaPhongController@deleteKhoa');
+		Route::get('getKhoa/{id}','KhoaPhong\KhoaPhongController@getKhoaById');
+		Route::post('createPhong/{khoaId}','KhoaPhong\KhoaPhongController@createPhong');
+		Route::post('updatePhong/{id}','KhoaPhong\KhoaPhongController@updatePhong');
+		Route::delete('deletePhong/{id}','KhoaPhong\KhoaPhongController@deletePhong');
+		Route::get('getPhong/{id}','KhoaPhong\KhoaPhongController@getPhongById');
+		
     });     
     
     Route::group(['prefix' => 'thungan'], function () {
