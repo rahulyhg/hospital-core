@@ -34,7 +34,8 @@ class KhoaPhongController extends APIController
     {
         try {
             $isNumericId = is_numeric($id);
-            $input = $request->except('ten_benh_vien', 'loai_khoa');
+            //$input = $request->except('ten_benh_vien');
+            $input = $request->all();
             
             if($isNumericId) {
                 $this->khoaService->updateKhoa($id, $input);
