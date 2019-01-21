@@ -106,7 +106,7 @@ class DieuTriService
                 
                 // GET OLD FILE
                 $item = $this->hsbaPhongKhamRepository->getByHsbaKpId($dieuTriParams['hsba_khoa_phong_id']);
-                $fileItem =  json_decode($item->upload_file_kham_benh, true);
+                $fileItem =  isset($item->$item->upload_file_kham_benh) ? json_decode($item->upload_file_kham_benh, true) : [];
                 
                 // Remove File old
                 if(!empty($input['oldFiles'])) {
@@ -154,7 +154,6 @@ class DieuTriService
                     
                     unset($input['files']);
                 }
-                
                 $this->hsbaPhongKhamRepository->update($dieuTriParams['hsba_khoa_phong_id'], $input);
             } catch (\Exception $ex) {
                  throw $ex;
