@@ -183,4 +183,22 @@ class DangKyKhamBenhController extends APIController
         $data = $this->hanhChinhService->getThxByKey($request->thxKey);
         return $data;
     }    
+    
+    public function getListHinhThucChuyen()
+    {
+        $data = $this->danhMucTrangThaiService->getListHinhThucChuyen();
+        return $data;
+    }
+    
+    public function getListTuyen()
+    {
+        $data = $this->danhMucTrangThaiService->getListTuyen();
+        return $data;
+    }
+    
+    public function getListLyDoChuyen()
+    {
+        $data = $this->danhMucTrangThaiService->getListLyDoChuyen();
+        return $data;
+    }
 }

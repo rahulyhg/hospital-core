@@ -32,6 +32,7 @@ class BenhVienRepository extends BaseRepositoryV2
         $khoaKhamBenh = $settingHospital->khoa->khoa_kham_benh;
         $data['bucket']     = $settingHospital->bucket;
         $data['khoaHienTai'] = intval($khoaKhamBenh->id); //khoa kham benh
+        $data['khoaKhamBenh'] = intval($khoaKhamBenh->id); //khoa kham benh
         $data['phongDonTiepID'] = intval($khoaKhamBenh->phong->phong_don_tiep);
         return $data;
     }

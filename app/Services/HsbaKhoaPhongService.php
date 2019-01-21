@@ -38,12 +38,62 @@ class HsbaKhoaPhongService
         $this->hsbaKhoaPhongRedisRepository = $hsbaKhoaPhongRedisRepository;
     }
     
+    /**
+     * Deprecating
+     */
     public function getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit, $page, $keyword, $status, $option)
     {
         $data = $this->hsbaKhoaPhongRepository->getList($phongId, $benhVienId, $dataBenhVienThietLap, $startDay, $endDay, $limit, $page, $keyword, $status, $option);
         
         return $data;
     }
+    
+    
+    
+    public function getListKhoaKhamBenh($benhVienId, $phongId, $limit, $page, $options) {
+        $dataBenhVienThietLap = $this->getBenhVienThietLap($benhVienId);
+        $khoaId = $dataBenhVienThietLap['khoaKhamBenh'];
+        $loaiBenhAn = HsbaKhoaPhongRepository::BENH_AN_KHAM_BENH;
+        return $this->getListV2($benhVienId, $khoaId, $phongId, $loaiBenhAn, $limit, $page, $options);
+    }
+    
+    public function getListKhoaNoiTru() {
+        // TBD
+        /*
+        $dataBenhVienThietLap = $this->getBenhVienThietLap($benhVienId);
+        $khoaId = $dataBenhVienThietLap['khoaNoiTru'];
+        return $this->getListV2($benhVienId, $khoaId, $phongId, $loaiBenhAn, $limit, $page, $options);
+        */
+    }
+    
+    public function getListKhoaCapCuu() {
+        // TBD
+        /*
+        $dataBenhVienThietLap = $this->getBenhVienThietLap($benhVienId);
+        $khoaId = $dataBenhVienThietLap['khoaCapCuu'];
+        return $this->getListV2($benhVienId, $khoaId, $phongId, $loaiBenhAn, $limit, $page, $options);
+        */
+    }
+    
+    private function getListV2($benhVienId, $khoaId, $phongId, $loaiBenhAn, $limit, $page, $options) {
+        $repo = $this->hsbaKhoaPhongRepository;
+        $dataBenhVienThietLap = $this->getBenhVienThietLap($benhVienId);
+        $khoaId = $dataBenhVienThietLap['khoaHienTai'];
+        $phongId = $phongId;
+        
+        $repo = $repo   ->setKhoaPhongParams($benhVienId, $khoaId, $phongId, $loaiBenhAn)
+                        ->setKeyWordParams($options['keyword']??null)
+                        ->setKhoangThoiGianVaoVienParams($options['thoi_gian_vao_vien_from']??null, $options['thoi_gian_vao_vien_to']??null)
+                        ->setKhoangThoiGianRaVienParams($options['thoi_gian_ra_vien_from']??null, $options['thoi_gian_ra_vien_to']??null)
+                        ->setLoaiVienPhiParams($options['loai_vien_phi']??null)
+                        ->setStatusParams($options['status']??null)
+                        ->setPaginationParams($limit, $page);
+        $data = $repo->getListV2();                
+        return $data;
+    }
+    
+    
+    
     
     public function update($hsbaKhoaPhongId, array $params)
     {
