@@ -20,29 +20,34 @@ class PhongService {
            $this->phongRepository->getListPhong($loaiPhong,$khoaId)
         );
     }
-    
+
     public function getNhomPhong($loaiPhong,$khoaId)
     {
         return PhongResource::collection(
            $this->phongRepository->getNhomPhong($loaiPhong,$khoaId)
         );
     }
-    
+
+    public function getListPhongByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords)
+    {
+        return $this->khoaRepository->getListPhongByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords);
+    }
+
     public function createPhong($khoaId, array $input)
     {
         return $this->phongRepository->createPhong($khoaId, $input);
     }
-    
+
     public function updatePhong($id, array $input)
     {
         $this->phongRepository->updatePhong($id, $input);
     }
-    
+
     public function deletePhong($id)
     {
         $this->phongRepository->deletePhong($id);
     }
-    
+
     public function getPhongById($id)
     {
         return $this->phongRepository->getPhongById($id);

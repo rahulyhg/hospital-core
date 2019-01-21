@@ -27,7 +27,7 @@ class KhoaRepository extends BaseRepositoryV2
     {
         $offset = ($page - 1) * $limit;
         
-        $column = [
+        $columns = [
             'id',
             'ma_khoa',
             'ten_khoa',
@@ -49,7 +49,7 @@ class KhoaRepository extends BaseRepositoryV2
             $data = $query->orderBy('ten_khoa', 'asc')
                         ->offset($offset)
                         ->limit($limit)
-                        ->get($column);
+                        ->get($columns);
         } else {
             $totalPage = 0;
             $data = [];

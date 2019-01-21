@@ -22,7 +22,7 @@ class PhongFormRequest extends ApiFormRequest
     public function rules()
     {
         return [
-            'khoa_id'       => 'int',
+            'khoa_id'       => 'required|int',
             'so_phong'      => 'required|int',
             'ma_nhom'       => 'required|string',
             'ten_phong'     => 'required|string',
