@@ -25,4 +25,16 @@ class Icd10Service {
         $data = $this->icd10Repository->getListIcd10ByCode($icd10Code);
         return $data;
     }    
+    
+    public function searchIcd10Code($icd10Code)
+    {
+        $data = $this->icd10Repository->searchIcd10Code($icd10Code);
+        return $data;
+    }
+    
+    public function searchIcd10Text($icd10Text)
+    {
+        $data = $this->icd10Repository->searchIcd10Text($icd10Text);
+        return $data;
+    }
 }
