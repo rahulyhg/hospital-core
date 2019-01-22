@@ -76,15 +76,27 @@ class PhongRepository extends BaseRepositoryV2
           'ten_phong',
           'loai_phong',
           'loai_benh_an',
+          'danh_muc_trang_thai.dien_giai as loai_benh_an_ct',
+          'danh_muc_tong_hop.dien_giai as loai_phong_ct',
           'trang_thai',
-          'ten_nhom'
+          'ten_nhom',
+          'benh_vien.id as benh_vien_id'
         ];
-
-        $query = $this->model->leftJoin('khoa','phong.khoa_id','=','khoa.id')
-                             ->leftJoin('benh_vien','khoa.benh_vien_id','=','benh_vien.id')
+                             
+        $query = $this->model->join('khoa', function ($join) {
+                                $join->on('phong.khoa_id', '=', 'khoa.id');})
+                             ->join('benh_vien', function ($join) {
+                                $join->on('khoa.benh_vien_id', '=', 'benh_vien.id');})
+                             ->join('danh_muc_trang_thai', function ($join) {
+                                $join->on('danh_muc_trang_thai.gia_tri', '=', DB::raw('cast(loai_benh_an as text)'));})
+                             ->join('danh_muc_tong_hop', function ($join) {
+                                $join->on('danh_muc_tong_hop.gia_tri', '=', DB::raw('cast(loai_phong as text)'));})
                              ->where([
-                               ['benh_vien.id', '=', $benhVienId]
+                               ['benh_vien.id', '=', $benhVienId],
+                               ['danh_muc_trang_thai.khoa', '=', 'loai_benh_an'],
+                               ['danh_muc_tong_hop.khoa', '=', 'loai_phong'],
                              ]);
+                                
         //->leftJoin('danh_muc_trang_thai','danh_muc_trang_thai.gia_tri','=','phong.loai_benh_an as text')
                              //->leftJoin('danh_muc_tong_hop','danh_muc_tong_hop.gia_tri','=','cast(phong.loai_phong as text)')
         //['danh_muc_trang_thai.khoa', '=', 'loai_benh_an'],
@@ -141,6 +153,22 @@ class PhongRepository extends BaseRepositoryV2
 
     public function getPhongById($id)
     {
-        return $this->model->where('id', $id)->first();
+        $columns = [
+            'phong.id',
+            'khoa_id',
+            'so_phong',
+            'ma_nhom',
+            'ten_phong',
+            'loai_phong',
+            'loai_benh_an',
+            'trang_thai',
+            'ten_nhom',
+            'benh_vien.id as benhVienId',
+            'khoa.id as khoaId',
+            'ten_khoa'
+            ];
+        return $this->model->leftJoin('khoa','khoa.id','=','phong.khoa_id')
+                           ->leftJoin('benh_vien','benh_vien.id','=','khoa.benh_vien_id')
+                           ->where('phong.id', $id)->get($columns)->first();
     }
 }
