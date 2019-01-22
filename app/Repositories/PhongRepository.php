@@ -76,21 +76,19 @@ class PhongRepository extends BaseRepositoryV2
           'ten_phong',
           'loai_phong',
           'loai_benh_an',
-          'danh_muc_trang_thai.dien_giai as loai_benh_an_ct',
-          'danh_muc_tong_hop.dien_giai as loai_phong_ct',
           'trang_thai',
           'ten_nhom'
         ];
 
-        $query = $this->model->leftJoin('khoa','khoa_id','=','khoa.id')
+        $query = $this->model->leftJoin('khoa','phong.khoa_id','=','khoa.id')
                              ->leftJoin('benh_vien','khoa.benh_vien_id','=','benh_vien.id')
-                             ->leftJoin('danh_muc_trang_thai','danh_muc_trang_thai.gia_tri','=','loai_benh_an')
-                             ->leftJoin('danh_muc_tong_hop','danh_muc_tong_hop.gia_tri','=','loai_phong')
                              ->where([
-                               ['benh_vien.id', '=', $benhVienId],
-                               ['danh_muc_trang_thai.khoa', '=', 'loai_benh_an'],
-                               ['danh_muc_tong_hop.khoa', '=', 'loai_phong']
+                               ['benh_vien.id', '=', $benhVienId]
                              ]);
+        //->leftJoin('danh_muc_trang_thai','danh_muc_trang_thai.gia_tri','=','phong.loai_benh_an as text')
+                             //->leftJoin('danh_muc_tong_hop','danh_muc_tong_hop.gia_tri','=','cast(phong.loai_phong as text)')
+        //['danh_muc_trang_thai.khoa', '=', 'loai_benh_an'],
+                               //['danh_muc_tong_hop.khoa', '=', 'loai_phong']
 
         if($keyWords != ''){
            $query->whereRaw('LOWER(ten_phong) LIKE ? or LOWER(ten_khoa) LIKE ?',
@@ -132,8 +130,8 @@ class PhongRepository extends BaseRepositoryV2
 
     public function updatePhong($id, array $input)
     {
-        $khoa = $this->model->findOrFail($id);
-        $khoa->update($input);
+        $phong = $this->model->findOrFail($id);
+        $phong->update($input);
     }
 
     public function deletePhong($id)

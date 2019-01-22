@@ -30,7 +30,7 @@ class PhongService {
 
     public function getListPhongByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords)
     {
-        return $this->khoaRepository->getListPhongByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords);
+        return $this->phongRepository->getListPhongByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords);
     }
 
     public function createPhong($khoaId, array $input)

@@ -23,13 +23,13 @@ class PhongFormRequest extends ApiFormRequest
     {
         return [
             'khoa_id'       => 'required|int',
-            'so_phong'      => 'required|int',
-            'ma_nhom'       => 'required|string',
+            'so_phong'      => 'nullable|int',
+            'ma_nhom'       => 'nullable|string',
             'ten_phong'     => 'required|string',
             'loai_phong'    => 'required|int',
             'loai_benh_an'  => 'required|int',
             'trang_thai'    => 'required|int',
-            'ten_nhom'      => 'required|string'
+            'ten_nhom'      => 'nullable|string'
         ];
     }
 }

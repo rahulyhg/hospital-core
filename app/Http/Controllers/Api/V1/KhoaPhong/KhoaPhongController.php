@@ -15,18 +15,18 @@ class KhoaPhongController extends APIController
         $this->khoaService = $khoaService;
         $this->phongService = $phongService;
     }
-
+    
     public function createKhoa($benhVienId, KhoaFormRequest $request)
     {
         $input = $request->all();
-
+        
         $id = $this->khoaService->createKhoa($benhVienId, $input);
         if($id) {
             $this->setStatusCode(201);
         } else {
             $this->setStatusCode(400);
         }
-
+        
         return $this->respond([]);
     }
 
@@ -36,7 +36,7 @@ class KhoaPhongController extends APIController
             $isNumericId = is_numeric($id);
             //$input = $request->except('ten_benh_vien');
             $input = $request->all();
-
+            
             if($isNumericId) {
                 $this->khoaService->updateKhoa($id, $input);
             } else {
@@ -45,33 +45,33 @@ class KhoaPhongController extends APIController
         } catch (\Exception $ex) {
             return $ex;
         }
-    }
-
+    }    
+    
     public function deleteKhoa($id)
     {
         $isNumericId = is_numeric($id);
-
+        
         if($isNumericId) {
             $this->khoaService->deleteKhoa($id);
             $this->setStatusCode(204);
         } else {
             $this->setStatusCode(400);
         }
-
-        return $this->respond([]);
+        
+        return $this->respond([]);        
     }
-
+    
     public function createPhong($khoaId, PhongFormRequest $request)
     {
         $input = $request->all();
-
+        
         $id = $this->phongService->createPhong($khoaId, $input);
         if($id) {
             $this->setStatusCode(201);
         } else {
             $this->setStatusCode(400);
         }
-
+        
         return $this->respond([]);
     }
 
@@ -79,7 +79,8 @@ class KhoaPhongController extends APIController
     {
         try {
             $isNumericId = is_numeric($id);
-
+            $input = $request->except('benh_vien_id');
+            
             if($isNumericId) {
                 $this->phongService->updatePhong($id, $input);
             } else {
@@ -88,67 +89,67 @@ class KhoaPhongController extends APIController
         } catch (\Exception $ex) {
             return $ex;
         }
-    }
-
+    }    
+    
     public function deletePhong($id)
     {
         $isNumericId = is_numeric($id);
-
+        
         if($isNumericId) {
             $this->phongService->deletePhong($id);
             $this->setStatusCode(204);
         } else {
             $this->setStatusCode(400);
         }
-
-        return $this->respond([]);
+        
+        return $this->respond([]);        
     }
-
+    
     public function getListKhoaByBenhVienIdKeywords($benhVienId, Request $request)
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         $keyWords = $request->query('keyWords');
-
+        
         $data = $this->khoaService->getListKhoaByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords);
         return $this->respond($data);
     }
-
+    
     public function getListPhongByBenhVienIdKeywords($benhVienId, Request $request)
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         $keyWords = $request->query('keyWords');
-
+        
         $data = $this->phongService->getListPhongByBenhVienIdKeywords($benhVienId, $limit, $page, $keyWords);
         return $this->respond($data);
     }
-
+    
     public function getKhoaById($id)
     {
         $isNumericId = is_numeric($id);
-
+        
         if($isNumericId) {
             $data = $this->khoaService->getKhoaById($id);
         } else {
             $this->setStatusCode(400);
             $data = [];
         }
-
+        
         return $this->respond($data);
     }
-
+    
     public function getPhongById($id)
     {
         $isNumericId = is_numeric($id);
-
+        
         if($isNumericId) {
             $data = $this->phongService->getPhongById($id);
         } else {
             $this->setStatusCode(400);
             $data = [];
         }
-
+        
         return $this->respond($data);
     }
 
