@@ -284,7 +284,7 @@ class BenhNhanServiceV2 {
     
     private function createHsbaKpKhamBenh($params) {
         //set params hsba_khoa_phong
-        $dataHsbaKp = $params;
+        $dataHsbaKp = array_except($params, ['loai_vien_phi']);
         $dataHsbaKp['khoa_hien_tai'] = $this->dataHsba['khoa_id'];
         $dataHsbaKp['hsba_id'] = $this->dataHsba['id'];
         $dataHsbaKp['trang_thai'] = 0;// TODO - define constant
@@ -295,6 +295,7 @@ class BenhNhanServiceV2 {
         $dataHsbaKp['thoi_gian_vao_vien'] = Carbon::now()->toDateTimeString();
         //insert hsba_khoa_phong
         $dataHsbaKp['id'] = $this->hsbaKhoaPhongRepository->createData($dataHsbaKp);
+        $dataHsbaKp['loai_vien_phi'] = $params['loai_vien_phi'];
         $this->dataHsbaKp = $dataHsbaKp;
         return $this;
     }
@@ -402,6 +403,7 @@ class BenhNhanServiceV2 {
         } else {
             $mucHuong = 0;
         }
+        
         $bhytTra = $mucHuong * (int)$this->dataYeuCauKham['gia_bhyt'];
         $vienPhi = (1 - $mucHuong) * (int)$this->dataYeuCauKham['gia_bhyt'] + (int)$this->dataYeuCauKham['gia'] - (int)$this->dataYeuCauKham['gia_bhyt'];
         
@@ -424,6 +426,9 @@ class BenhNhanServiceV2 {
         $dataYLenh['muc_huong'] = $mucHuong;
         $dataYLenh['bhyt_tra'] = $bhytTra;
         $dataYLenh['vien_phi'] = $vienPhi;
+        $dataYLenh['so_luong'] = 1;
+        $dataYLenh['loai_thanh_toan_cu'] = $this->dataHsbaKp['loai_vien_phi'];
+        $dataYLenh['loai_thanh_toan_moi'] = $this->dataHsbaKp['loai_vien_phi'];
         $dataYLenh['id'] = $this->yLenhRepository->createDataYLenh($dataYLenh);
         $this->dataYLenh = $dataYLenh;
         return $this;

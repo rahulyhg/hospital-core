@@ -271,7 +271,6 @@ class DieuTriService
                         $hsbaKpParams['hinh_thuc_vao_vien_id'] = self::NHAN_TU_KKB; //2: nhận từ khoa khám bệnh
                         $hsbaKpParams['vien_phi_id'] = $hsbaKp['vien_phi_id'];
                         $hsbaKpParams['bhyt_id'] = $hsbaKp['bhyt_id'];
-                        $hsbaKpParams['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
                         
                         //kiểm tra phòng chuyển đến có phải là phòng điều trị -> nếu đúng -> lấy trạng thái = 2: đang điều trị ngược lại 0: đang chờ điều trị
                         $hsbaKpParams['trang_thai'] = $phong->loai_phong == self::PHONG_DIEU_TRI_NOI_TRU || $phong->loai_phong == self::PHONG_DIEU_TRI_NGOAI_TRU ? self::TT_DANG_DIEU_TRI : self::TT_CHO_DIEU_TRI; 
@@ -293,6 +292,7 @@ class DieuTriService
                 });
         $input['trang_thai'] = $trang_thai; 
         $input['hinh_thuc_ra_vien'] = $hinh_thuc_ra_vien;
+        $input['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
         $input = array_except($input, ['hsba_khoa_phong_id', 'khoa_chuyen_den', 'phong_chuyen_den', 'ten_benh_nhan', 'nam_sinh',
                                         'xu_tri', 'giai_phau_benh', 'loai_stt', 'gioi_tinh_id', 'stt_don_tiep_id', 'ms_bhyt', 'khoa_id']);
         $this->hsbaKhoaPhongRepository->update($hsbaKp, $input);
