@@ -78,7 +78,7 @@ class BenhNhanServiceV2 {
     
     private $hsbaKpKeys = [
         'auth_users_id', 'doi_tuong_benh_nhan', 'yeu_cau_kham_id', 'cdtd_icd10_text', 'cdtd_icd10_code'
-        ,'benh_vien_id'
+        ,'benh_vien_id', 'loai_vien_phi'
     ];
     
     private $bhytKeys = ['ms_bhyt', 'ma_cskcbbd', 'tu_ngay', 'den_ngay', 'ma_noi_song', 'du5nam6thangluongcoban', 'dtcbh_luyke6thang', 'tuyen_bhyt'];
@@ -346,7 +346,8 @@ class BenhNhanServiceV2 {
     
     private function createVienPhi() {
         //set params vien_phi
-        $dataVienPhi['loai_vien_phi'] = $this->dataHsbaKp['doi_tuong_benh_nhan'] == 1 ? 4 : 1;// TODO - define constant
+        // $dataVienPhi['loai_vien_phi'] = $this->dataHsbaKp['doi_tuong_benh_nhan'] == 1 ? 2 : 1;// TODO - define constant
+        $dataVienPhi['loai_vien_phi'] = $this->dataHsbaKp['loai_vien_phi'];
         $dataVienPhi['trang_thai'] = 0;// TODO - define constant
         $dataVienPhi['khoa_id'] = $this->dataHsba['khoa_id'];
         $dataVienPhi['doi_tuong_benh_nhan'] = $this->dataHsbaKp['doi_tuong_benh_nhan'];
