@@ -215,7 +215,7 @@ class YLenhRepository extends BaseRepositoryV2
             }
             
             $dataResult['data'] = $result;
-            $dataResult['total'] = $total;
+            $dataResult['total'] = $priceBhytTra + $priceVienPhi;
             $dataResult['bhyt_tra'] = $priceBhytTra;
             $dataResult['vien_phi'] = $priceVienPhi;
             
