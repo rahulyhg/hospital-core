@@ -110,6 +110,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('updateHsbaPhongKham/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@updateHsbaPhongKham');
 		Route::get('getDetailHsbaPhongKham/{hsbaId}/{phongId}','PhongKham\PhongKhamController@getDetailHsbaPhongKham');
         Route::get('countItemYLenh/{hsbaId}','PhongKham\PhongKhamController@countItemYLenh');
+        Route::get('searchIcd10Code/{icd10Code}','PhongKham\PhongKhamController@searchIcd10Code');
+        Route::get('searchIcd10Text/{icd10Text}','PhongKham\PhongKhamController@searchIcd10Text');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
@@ -187,6 +189,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'hsbakp'], function () {
         Route::get('list/{benhVienId}/khoakhambenh','Hsba\HsbaKhoaPhongController@getListKhoaKhamBenh');
+    });
+    
+    Route::group(['prefix' => 'hsba'], function () {
+        Route::get('list/{benhVienId}/thungan','Hsba\HsbaController@getListThuNgan');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

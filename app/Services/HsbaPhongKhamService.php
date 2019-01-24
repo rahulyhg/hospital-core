@@ -29,8 +29,7 @@ class HsbaPhongKhamService {
         
         // GET OLD FILE
         $item = $this->hsbaPhongKhamRepository->getDetail($params['hsba_id'], $params['phong_id']);
-        $fileItem =  json_decode($item->upload_file_hoi_benh, true);
-        
+        $fileItem =  isset($item->$item->upload_file_hoi_benh) ? json_decode($item->upload_file_hoi_benh, true) : [];
         
         // Remove File old
         if(!empty($params['oldFiles'])) {

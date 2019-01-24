@@ -270,4 +270,28 @@ class PhongKhamController extends APIController
             
         return $this->respond($data);
     }
+    
+    public function searchIcd10Code($icd10Code)
+    {
+        if($icd10Code) {
+            $data = $this->icd10Service->searchIcd10Code($icd10Code);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function searchIcd10Text($icd10Text)
+    {
+        if($icd10Text) {
+            $data = $this->icd10Service->searchIcd10Text($icd10Text);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }

@@ -52,12 +52,6 @@ class VienPhiService
                 case 1 ://Bình thường -> tính theo giá 
                     continue;
                 case 2://BHYT = ĐCT BHYT + Chênh lệch BHYT
-                    
-                    //substr ( string $string , int $start [, int $length ] )
-                    continue;
-                case 3://Miễn phí
-                    continue;
-                case 4://Nước ngoài
                     $maDoiTuong = substr ( $item['ms_bhyt'] , 0 , 2 );
                     $heSo = substr( $item['ms_bhyt'] , 2 , 1 );
                     $dataMucHuongByHeSo = array_where($dataMucHuong, function ($value, $key) use ($heSo) {
@@ -73,7 +67,10 @@ class VienPhiService
                     }
                     else
                         break;
-                    
+                    continue;
+                case 3://Miễn phí
+                    continue;
+                case 4://Nước ngoài
                     continue;
             }
         }
@@ -98,8 +95,10 @@ class VienPhiService
     public function getMucHuong(array $input)
     {
         $dataMucHuong = $this->mucHuongRepository->getListMucHuong()->toArray();
-        $maDoiTuong = substr($input['ms_bhyt'], 0, 2);
-        $heSo = substr($input['ms_bhyt'], 2, 1);
+        $msBhyt = mb_convert_case($input['ms_bhyt'], MB_CASE_UPPER, "UTF-8");
+        $msBhyt = str_replace('-', '', $msBhyt);
+        $maDoiTuong = substr($msBhyt, 0, 2);
+        $heSo = substr($msBhyt, 2, 1);
         $dataMucHuongByHeSo = array_where($dataMucHuong, function ($value, $key) use ($heSo) {
             return $value['he_so'] == intval($heSo);
         });

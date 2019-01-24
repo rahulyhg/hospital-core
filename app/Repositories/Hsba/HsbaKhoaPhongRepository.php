@@ -8,11 +8,8 @@ use Carbon\Carbon;
 
 class HsbaKhoaPhongRepository extends BaseRepositoryV2
 {
+    const TAT_CA_TRANG_THAI = -1;
     const BENH_AN_KHAM_BENH = 24;
-    const THOI_GIAN_VAO_VIEN = 0;
-    const VIEN_PHI = 'VP';
-    const BAO_HIEM = 'BH';
-    const LOAI_VIEN_PHI_BAO_HIEM = 2;
     
     // Params KhoaPhong
     private $benhVienId = null;
@@ -25,8 +22,8 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     private $query = null;
     // Others
     private $keyword = '';
-    private $loaiVienPhi = null;
-    private $status = null;
+    private $statusHsbaKp = null;
+    private $statusHsba = null;
     private $khoangThoiGianVaoVien = [];
     private $khoangThoiGianRaVien = [];
     
@@ -35,14 +32,12 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return HsbaKhoaPhong::class;
     }
     
-    public function setKhoaPhongParams(int $benhVienId, int $khoaId, $phongId, $loaiBenhAn) {
-        // setBenhvienId, setKhoaId, setPhongId, setLoaiBenhAn
+    public function setKhoaPhongParams(int $benhVienId, int $khoaId, $phongId) {
+        // setBenhvienId, setKhoaId, setPhongId
         $this->benhVienId = $benhVienId;
         $this->khoaId = $khoaId;
         $this->phongId = $phongId;
-        $this->loaiBenhAn = $loaiBenhAn;
         return $this;
-        
     }
     
     public function setPaginationParams($limit, $page) {
@@ -52,11 +47,8 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $this;
     }
     
-    public function setLoaiVienPhiParams($loaiVienPhi) {
-        if ($loaiVienPhi && !in_array($loaiVienPhi,array(self::VIEN_PHI,self::BAO_HIEM))) {
-            throw new \Exception("invalid Loai Vien Phi");
-        }
-        $this->loaiVienPhi = $loaiVienPhi;
+    public function setLoaiBenhAnParams($loaiBenhAn) {
+        $this->loaiBenhAn = $loaiBenhAn;
         return $this;
     }
     
@@ -65,8 +57,8 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $this;
     }
     
-    public function setStatusParams(int $status) {
-        $this->status = $status;
+    public function setStatusHsbaKpParams(int $statusHsbaKp) {
+        $this->statusHsbaKp = $statusHsbaKp;
         return $this;
     }
     
@@ -82,25 +74,22 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $this;
     }
     
-    	public function getListV2()
+    public function getListV2()
     {
         if (
-            $this->khoaId === null || $this->benhVienId === null
+            ($this->khoaId === null && $this->phongId === null) || $this->benhVienId === null
         ) {
             throw new \Exception("In valid data");
         }
         
         $page = $this->page;
         $limit = $this->limit;
-        $loaiBenhAn = $this->loaiBenhAn; //kham benh
         $offset = ($page - 1) * $limit;
-        
-        // $khoaHienTai = $dataBenhVienThietLap['khoaHienTai']; //khoa kham benh
-        // $phongDonTiepID = $dataBenhVienThietLap['phongDonTiepID'];
+        $loaiBenhAn = self::BENH_AN_KHAM_BENH;
         
         $where = [
-            ['hsba_khoa_phong.loai_benh_an', '=', $this->loaiBenhAn],
-            ['hsba_khoa_phong.benh_vien_id', '=', $this->benhVienId]
+            ['hsba_khoa_phong.benh_vien_id', '=', $this->benhVienId],
+            ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn]
         ];
         
         if ($this->phongId === null) {
@@ -140,7 +129,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     ->where('tt2.tablename', '=', 'patientstatus');
             });
             
-        if($this->phongId) {
+        if($this->phongId > 0) {
             $query = $query->leftJoin('stt_phong_kham as sttpk', function($join) {
                 $join->on('sttpk.hsba_id', '=', 'hsba_khoa_phong.hsba_id')
                     ->where('sttpk.phong_id', '=', $this->phongId);
@@ -159,11 +148,11 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         
         
         if ($this->khoangThoiGianVaoVien || $this->khoangThoiGianRaVien) {
-            if ($this->khoangThoiGianVaoVien ) {
+            if ($this->khoangThoiGianVaoVien['from'] && $this->khoangThoiGianVaoVien['to']) {
                 $filterColumn = 'thoi_gian_vao_vien';
                 $from = $this->khoangThoiGianVaoVien['from'];
                 $to = $this->khoangThoiGianVaoVien['to'];
-            } elseif ($this->khoangThoiGianRaVien) {
+            } elseif ($this->khoangThoiGianRaVien['from'] && $this->khoangThoiGianRaVien['to']) {
                 $filterColumn = 'thoi_gian_ra_vien';
                 $from = $this->khoangThoiGianRaVien['from'];
                 $to = $this->khoangThoiGianRaVien['to'];
@@ -174,14 +163,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             } else {
                 $query = $query->whereBetween($filterColumn, [Carbon::parse($from)->startOfDay(), Carbon::parse($to)->endOfDay()]);
             }
-        }
-        
-        
-        if($this->loaiVienPhi === self::VIEN_PHI) {
-            $query = $query->where('vien_phi.loai_vien_phi', '<>', self::LOAI_VIEN_PHI_BAO_HIEM);
-        }
-        else if($this->loaiVienPhi === self::BAO_HIEM) {
-            $query = $query->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BAO_HIEM);
         }
         
         if($this->keyword != '') {
@@ -205,13 +186,13 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             });
         }
         
-        if($this->status != -1 && $this->phongId) {
+        if($this->statusHsbaKp != self::TAT_CA_TRANG_THAI && $this->phongId) {
             $query = $query->where(function($queryAdv) {
-                if($this->status == 0){
+                if($this->statusHsbaKp == 0){
                     $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2,3]);
                 }
                 else {
-                    $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $this->status);
+                    $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $this->statusHsbaKp);
                 }
             });
         }
