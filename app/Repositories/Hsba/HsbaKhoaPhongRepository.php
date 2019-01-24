@@ -8,15 +8,8 @@ use Carbon\Carbon;
 
 class HsbaKhoaPhongRepository extends BaseRepositoryV2
 {
-    const TAT_CA_BENH_AN = -1;
-    const TAT_CA_PHONG_KHAM = -1;
     const TAT_CA_TRANG_THAI = -1;
     const BENH_AN_KHAM_BENH = 24;
-    const THOI_GIAN_VAO_VIEN = 0;
-    const VIEN_PHI = 'VP';
-    const BAO_HIEM = 'BH';
-    const LOAI_VIEN_PHI_BINH_THUONG = 1;
-    const LOAI_VIEN_PHI_BAO_HIEM = 2;
     
     // Params KhoaPhong
     private $benhVienId = null;
@@ -29,7 +22,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     private $query = null;
     // Others
     private $keyword = '';
-    private $loaiVienPhi = null;
     private $statusHsbaKp = null;
     private $statusHsba = null;
     private $khoangThoiGianVaoVien = [];
@@ -48,20 +40,10 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $this;
     }
     
-    public function setBenhVienParams(int $benhVienId) {
-        $this->benhVienId = $benhVienId;
-        return $this;
-    }
-    
     public function setPaginationParams($limit, $page) {
         // limit, page
         $this->limit = $limit;
         $this->page = $page;
-        return $this;
-    }
-    
-    public function setLoaiVienPhiParams($loaiVienPhi) {
-        $this->loaiVienPhi = $loaiVienPhi;
         return $this;
     }
     
@@ -77,11 +59,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     
     public function setStatusHsbaKpParams(int $statusHsbaKp) {
         $this->statusHsbaKp = $statusHsbaKp;
-        return $this;
-    }
-    
-    public function setStatusHsbaParams(int $statusHsba) {
-        $this->statusHsba = $statusHsba;
         return $this;
     }
     
@@ -108,9 +85,11 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $page = $this->page;
         $limit = $this->limit;
         $offset = ($page - 1) * $limit;
+        $loaiBenhAn = self::BENH_AN_KHAM_BENH;
         
         $where = [
-            ['hsba_khoa_phong.benh_vien_id', '=', $this->benhVienId]
+            ['hsba_khoa_phong.benh_vien_id', '=', $this->benhVienId],
+            ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn]
         ];
         
         if ($this->phongId === null) {
@@ -239,135 +218,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             $data->each(function ($item, $key) {
                 $item->hsba_id = sprintf('%012d', $item->hsba_id);
                 $item->so_thu_tu = sprintf('%03d', $item->so_thu_tu);
-            });
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-        
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-        
-        return $result;
-    }
-    
-    public function getListThuNgan()
-    {
-        if ($this->benhVienId === null) {
-            throw new \Exception("In valid data");
-        }
-        
-        $page = $this->page;
-        $limit = $this->limit;
-        $offset = ($page - 1) * $limit;
-        
-        $where = [
-            ['hsba.benh_vien_id', '=', $this->benhVienId]
-        ];
-        
-        if($this->loaiBenhAn != self::TAT_CA_BENH_AN) {
-            $where[] = ['hsba.loai_benh_an', '=', $this->loaiBenhAn];
-        }
-        
-        $column = [
-            'hsba.id as hsba_id',
-            'hsba.ten_benh_nhan',
-            'hsba.nam_sinh',
-            'hsba.ms_bhyt',
-            'hsba.trang_thai_hsba',
-            'hsba.ngay_tao as thoi_gian_vao_vien',
-            'hsba.ngay_ra_vien as thoi_gian_ra_vien',
-            'hsba.loai_benh_an',
-            // 'vien_phi.trang_thai as vien_phi_trang_thai',
-            // 'vien_phi.loai_vien_phi'
-        ];
-        
-        $query = DB::table('hsba')->where($where);
-        
-        if ($this->khoangThoiGianVaoVien || $this->khoangThoiGianRaVien) {
-            if ($this->khoangThoiGianVaoVien['from'] && $this->khoangThoiGianVaoVien['to']) {
-                $filterColumn = 'ngay_tao';
-                $from = $this->khoangThoiGianVaoVien['from'];
-                $to = $this->khoangThoiGianVaoVien['to'];
-            } elseif ($this->khoangThoiGianRaVien['from'] && $this->khoangThoiGianRaVien['to']) {
-                $filterColumn = 'ngay_ra_vien';
-                $from = $this->khoangThoiGianRaVien['from'];
-                $to = $this->khoangThoiGianRaVien['to'];
-            }
-            
-            if($from == $to){
-                $query = $query->whereDate($filterColumn, '=', $from);
-            } else {
-                $query = $query->whereBetween($filterColumn, [Carbon::parse($from)->startOfDay(), Carbon::parse($to)->endOfDay()]);
-            }
-        }
-        
-        if($this->loaiVienPhi) {
-            $query = $query->leftJoin('vien_phi', function($join) {
-                if($this->loaiVienPhi === self::VIEN_PHI) {
-                    $join->on('vien_phi.hsba_id', '=', 'hsba.id')
-                        ->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BINH_THUONG);
-                }
-                else if($this->loaiVienPhi === self::BAO_HIEM) {
-                    $join->on('vien_phi.hsba_id', '=', 'hsba.id')
-                        ->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BAO_HIEM);
-                } 
-                else {
-                    $join->on('vien_phi.hsba_id', '=', 'hsba.id')
-                        ->whereIn('vien_phi.loai_vien_phi', [self::LOAI_VIEN_PHI_BINH_THUONG, self::LOAI_VIEN_PHI_BAO_HIEM]);
-                }
-            });
-        }
-        
-        if($this->keyword != '') {
-            $query = $query->where(function($queryAdv) {
-                $keyword = $this->keyword;
-                $upperCase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
-                $lowerCase = mb_convert_case($keyword, MB_CASE_LOWER, "UTF-8");
-                $titleCase = mb_convert_case($keyword, MB_CASE_TITLE, "UTF-8");
-                
-                $queryAdv->where('hsba.ten_benh_nhan', 'like', '%'.$upperCase.'%')
-                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$lowerCase.'%')
-                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$titleCase.'%')
-                        ->orWhere('hsba.ten_benh_nhan', 'like', '%'.$keyword.'%')
-                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$upperCase.'%')
-                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$lowerCase.'%')
-                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$titleCase.'%')
-                        ->orWhere('hsba.ten_benh_nhan_khong_dau', 'like', '%'.$keyword.'%')
-                        ->orWhereRaw("cast(hsba.id as text) like '%$keyword%'")
-                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$keyword%'")
-                        ->orWhereRaw("cast(hsba.ms_bhyt as text) like '%$upperCase%'");
-            });
-        }
-        
-        if($this->statusHsba != self::TAT_CA_TRANG_THAI) {
-            $query = $query->where('hsba.trang_thai_hsba', '=', $this->statusHsba);
-        }
-        
-        // TO DO : Store SQL Log
-        /*
-        $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
-        $sql = vsprintf($sql, $query->getBindings());
-        var_dump($sql);die;
-        */
-        
-        $totalRecord = $query->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('ngay_tao', 'asc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get($column);
-                        
-            $data->each(function ($item, $key) {
-                $item->hsba_id = sprintf('%012d', $item->hsba_id);
             });
         } else {
             $totalPage = 0;
