@@ -8,15 +8,8 @@ use Carbon\Carbon;
 
 class HsbaKhoaPhongRepository extends BaseRepositoryV2
 {
-    const TAT_CA_BENH_AN = -1;
-    const TAT_CA_PHONG_KHAM = -1;
-    const BENH_AN_NOI_TRU = 1;
+    const TAT_CA_TRANG_THAI = -1;
     const BENH_AN_KHAM_BENH = 24;
-    const THOI_GIAN_VAO_VIEN = 0;
-    const VIEN_PHI = 'VP';
-    const BAO_HIEM = 'BH';
-    const LOAI_VIEN_PHI_BINH_THUONG = 1;
-    const LOAI_VIEN_PHI_BAO_HIEM = 2;
     
     // Params KhoaPhong
     private $benhVienId = null;
@@ -29,7 +22,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     private $query = null;
     // Others
     private $keyword = '';
-    private $loaiVienPhi = null;
     private $statusHsbaKp = null;
     private $statusHsba = null;
     private $khoangThoiGianVaoVien = [];
@@ -45,20 +37,13 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $this->benhVienId = $benhVienId;
         $this->khoaId = $khoaId;
         $this->phongId = $phongId;
-        // $this->loaiBenhAn = $loaiBenhAn;
         return $this;
-        
     }
     
     public function setPaginationParams($limit, $page) {
         // limit, page
         $this->limit = $limit;
         $this->page = $page;
-        return $this;
-    }
-    
-    public function setLoaiVienPhiParams($loaiVienPhi) {
-        $this->loaiVienPhi = $loaiVienPhi;
         return $this;
     }
     
@@ -74,11 +59,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     
     public function setStatusHsbaKpParams(int $statusHsbaKp) {
         $this->statusHsbaKp = $statusHsbaKp;
-        return $this;
-    }
-    
-    public function setStatusHsbaParams(int $statusHsba) {
-        $this->statusHsba = $statusHsba;
         return $this;
     }
     
@@ -105,20 +85,17 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         $page = $this->page;
         $limit = $this->limit;
         $offset = ($page - 1) * $limit;
+        $loaiBenhAn = self::BENH_AN_KHAM_BENH;
         
         $where = [
-            ['hsba_khoa_phong.benh_vien_id', '=', $this->benhVienId]
+            ['hsba_khoa_phong.benh_vien_id', '=', $this->benhVienId],
+            ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn]
         ];
         
         if ($this->phongId === null) {
             $where[] = ['hsba_khoa_phong.khoa_hien_tai', '=', $this->khoaId];
         } else {
-            if($this->phongId != self::TAT_CA_PHONG_KHAM)
-                $where[] = ['hsba_khoa_phong.phong_hien_tai', '=', $this->phongId];
-        }
-        
-        if($this->loaiBenhAn != self::TAT_CA_BENH_AN) {
-            $where[] = ['hsba_khoa_phong.loai_benh_an', '=', $this->loaiBenhAn];
+            $where[] = ['hsba_khoa_phong.phong_hien_tai', '=', $this->phongId];
         }
         
         $column = [
@@ -188,18 +165,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             }
         }
         
-        if($this->loaiVienPhi) {
-            if($this->loaiVienPhi === self::VIEN_PHI) {
-                $query = $query->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BINH_THUONG);
-            }
-            else if($this->loaiVienPhi === self::BAO_HIEM) {
-                $query = $query->where('vien_phi.loai_vien_phi', '=', self::LOAI_VIEN_PHI_BAO_HIEM);
-            } 
-            else {
-                $query = $query->whereIn('vien_phi.loai_vien_phi', [self::LOAI_VIEN_PHI_BINH_THUONG, self::LOAI_VIEN_PHI_BAO_HIEM]);
-            }
-        }
-        
         if($this->keyword != '') {
             $query = $query->where(function($queryAdv) {
                 $keyword = $this->keyword;
@@ -221,7 +186,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             });
         }
         
-        if($this->statusHsbaKp != -1 && $this->phongId) {
+        if($this->statusHsbaKp != self::TAT_CA_TRANG_THAI && $this->phongId) {
             $query = $query->where(function($queryAdv) {
                 if($this->statusHsbaKp == 0){
                     $queryAdv->whereIn('hsba_khoa_phong.trang_thai', [0,2,3]);
@@ -230,10 +195,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
                     $queryAdv->where('hsba_khoa_phong.trang_thai', '=', $this->statusHsbaKp);
                 }
             });
-        }
-        
-        if($this->statusHsba != -1) {
-            $query = $query->where('hsba.trang_thai_hsba', '=', $this->statusHsba);
         }
         
         // TO DO : Store SQL Log

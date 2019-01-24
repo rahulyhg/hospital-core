@@ -5,15 +5,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Api\V1\APIController;
-use App\Services\HsbaKhoaPhongService;
+use App\Services\HsbaService;
 
 
 // 3rd party library
 use Carbon\Carbon;
 
-class HsbaKhoaPhongController extends APIController
+class HsbaController extends APIController
 {
-    public function __construct(HsbaKhoaPhongService $service)
+    public function __construct(HsbaService $service)
     {
         $this->service = $service;
     }
@@ -25,12 +25,11 @@ class HsbaKhoaPhongController extends APIController
         //return $data;
     }
     
-    public function getListKhoaKhamBenh($benhVienId, Request $request)
+    public function getListThuNgan($benhVienId, Request $request)
     {
         // main params
-        $limit = $request->query('limit', 20);
+        $limit = $request->query('limit', 1000);
         $page = $request->query('page', 1);
-        $phongId = $request->query('phongId', null);
         
         // optional params        
         $thoiGianVaoVienFrom = $request->query('thoi_gian_vao_vien_from',null);
@@ -38,13 +37,15 @@ class HsbaKhoaPhongController extends APIController
         $thoiGianRaVienFrom = $request->query('thoi_gian_ra_vien_from',null);
         $thoiGianRaVienTo = $request->query('thoi_gian_ra_vien_to',null);
         $keyword = $request->query('keyword', '');
-        $status = $request->query('status', 0);
+        $status = $request->query('statusHsba', null);
+        $loaiVienPhi = $request->query('loaiVienPhi', null);
         $loaiBenhAn = $request->query('loaiBenhAn', null);
         
         $options = [
             'keyword'                   => $keyword,
-            'status_hsba_khoa_phong'    => $status,
+            'loai_vien_phi'             => $loaiVienPhi,
             'loai_benh_an'              => $loaiBenhAn,
+            'status_hsba'               => $status,
             'thoi_gian_vao_vien_from'   => $thoiGianVaoVienFrom,
             'thoi_gian_vao_vien_to'     => $thoiGianVaoVienTo,
             'thoi_gian_ra_vien_from'    => $thoiGianRaVienFrom,
@@ -58,7 +59,7 @@ class HsbaKhoaPhongController extends APIController
         
         try 
         {
-            $listBenhNhan = $this->service->getListKhoaKhamBenh($benhVienId,$phongId, $limit, $page, $options);
+            $listBenhNhan = $this->service->getList($benhVienId, $limit, $page, $options);
             $this->setStatusCode(200);
             return $this->respond($listBenhNhan);
         } catch (\Exception $ex) {
@@ -67,5 +68,4 @@ class HsbaKhoaPhongController extends APIController
         
         return $this->respond($listBenhNhan);
     }
-    
 }

@@ -429,6 +429,7 @@ class BenhNhanServiceV2 {
         $dataYLenh['so_luong'] = 1;
         $dataYLenh['loai_thanh_toan_cu'] = $this->dataHsbaKp['loai_vien_phi'];
         $dataYLenh['loai_thanh_toan_moi'] = $this->dataHsbaKp['loai_vien_phi'];
+        $dataYLenh['ms_bhyt'] = $this->dataHsba['ms_bhyt'] ?? null;
         $dataYLenh['id'] = $this->yLenhRepository->createDataYLenh($dataYLenh);
         $this->dataYLenh = $dataYLenh;
         return $this;

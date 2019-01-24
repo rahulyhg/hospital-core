@@ -252,6 +252,11 @@ class DieuTriService
                         //update hsba_khoa_phong hiện tại
                         $this->updateHsbaKhoaPhongByXuTri($hsbaKp['id'], $request, self::TT_KET_THUC_DIEU_TRI, self::CHUYEN_KHOA); //99: kết thúc điều trị; 8: chuyển khoa
                         
+                        //update hsba.loai_benh_an
+                        $hsbaParams = null;
+                        $hsbaParams['loai_benh_an'] = $phong->loai_benh_an;
+                        $this->updateHsba($hsbaKp['hsba_id'], $hsbaParams);
+                        
                         //tạo hsba_khoa_phong 
                         $hsbaKpParams = null;
                         $hsbaKpParams['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
@@ -296,6 +301,11 @@ class DieuTriService
         $input = array_except($input, ['hsba_khoa_phong_id', 'khoa_chuyen_den', 'phong_chuyen_den', 'ten_benh_nhan', 'nam_sinh',
                                         'xu_tri', 'giai_phau_benh', 'loai_stt', 'gioi_tinh_id', 'stt_don_tiep_id', 'ms_bhyt', 'khoa_id']);
         $this->hsbaKhoaPhongRepository->update($hsbaKp, $input);
+    }
+    
+    private function updateHsba($hsbaId, $hsba)
+    {
+        $this->hsbaRepository->updateHsba($hsbaId, $hsba);
     }
     
     private function createKetThucKham(array $request)
