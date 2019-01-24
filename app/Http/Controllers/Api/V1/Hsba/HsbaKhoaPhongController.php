@@ -73,7 +73,6 @@ class HsbaKhoaPhongController extends APIController
         // main params
         $limit = $request->query('limit', 1000);
         $page = $request->query('page', 1);
-        $phongId = $request->query('phongId', -1);
         
         // optional params        
         $thoiGianVaoVienFrom = $request->query('thoi_gian_vao_vien_from',null);
@@ -103,7 +102,7 @@ class HsbaKhoaPhongController extends APIController
         
         try 
         {
-            $listBenhNhan = $this->service->getListThuNgan($benhVienId, $phongId, $limit, $page, $options);
+            $listBenhNhan = $this->service->getListThuNgan($benhVienId, $limit, $page, $options);
             $this->setStatusCode(200);
             return $this->respond($listBenhNhan);
         } catch (\Exception $ex) {
