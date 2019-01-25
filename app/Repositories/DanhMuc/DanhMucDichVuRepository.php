@@ -202,4 +202,10 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         
         return $data;
     }
+    
+    public function getDichVuByCode($code)
+    {
+        $data = $this->model->where('ma',$code)->first();
+        return $data;
+    }    
 }

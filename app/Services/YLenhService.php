@@ -7,6 +7,8 @@ use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhieuYLenh\PhieuYLenhRepository;
 use App\Repositories\DanhMuc\DanhMucKQYLRepository;
 use App\Repositories\YLenh\KetQuaYLenhRepository;
+use App\Repositories\Auth\AuthUsersRepository;
+use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
@@ -15,12 +17,14 @@ use Carbon\Carbon;
 class YLenhService {
     const PHIEU_DIEU_TRI = 3;
     
-    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository,DanhMucKQYLRepository $danhMucKQYLRepository,KetQuaYLenhRepository $ketQuaYLenhRepository)
+    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository,DanhMucKQYLRepository $danhMucKQYLRepository,KetQuaYLenhRepository $ketQuaYLenhRepository,AuthUsersRepository $authUsersRepository,DanhMucDichVuRepository $danhMucDichVuRepository)
     {
         $this->yLenhRepository = $yLenhRepository;
         $this->phieuYLenhRepository = $phieuYLenhRepository;
         $this->danhMucKQYLRepository=$danhMucKQYLRepository;
         $this->ketQuaYLenhRepository=$ketQuaYLenhRepository;
+        $this->authUsersRepository=$authUsersRepository;
+        $this->danhMucDichVuRepository=$danhMucDichVuRepository;
     }
 
     public function saveYLenh(array $input)
@@ -107,4 +111,27 @@ class YLenhService {
         $result = $this->yLenhRepository->countItemYLenh($hsbaId);
         return $result;
     }
+    
+    public function getListYLenhByVienPhiId($vienPhiId,$keyWords)
+    {
+        $loaiYLenh = array(1,2,3,4);
+        $result = $this->yLenhRepository->getListYLenhByVienPhiId($vienPhiId,$keyWords);
+        
+        foreach($result as $item){
+            $authUser = $this->authUsersRepository->getInforAuthUserById($item->auth_users_id);
+            $item['auth_users_name']=$authUser?$authUser->fullname:null;
+            if(in_array($item->loai_y_lenh,$loaiYLenh)){
+                $dataDmdv=$this->danhMucDichVuRepository->getDichVuByCode($item->ma);
+                $item['don_vi_tinh']=$dataDmdv?$dataDmdv->don_vi_tinh:null;
+                $item['ma_nhom_dich_vu']=$dataDmdv?$dataDmdv->ten_nhom:null;
+            }
+        }
+        
+        return $result;
+    }
+    
+    public function updateYLenhById($yLenhId,array $input)
+    {
+        $this->yLenhRepository->updateYLenhById($yLenhId, $input);
+    }    
 }
