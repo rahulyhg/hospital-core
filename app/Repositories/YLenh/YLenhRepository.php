@@ -112,6 +112,7 @@ class YLenhRepository extends BaseRepositoryV2
             'y_lenh.loai_y_lenh',
             'y_lenh.thoi_gian_chi_dinh',
             'y_lenh.phieu_y_lenh_id',
+            'y_lenh.so_luong',
             'phong.ten_phong'
         ];
         
