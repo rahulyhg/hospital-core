@@ -58,4 +58,15 @@ class HsbaPhongKhamRepository extends BaseRepositoryV2
         
         return $result;
     }
+    
+    public function getListHsbaPhongKham($hsbaId)
+    {
+        $where = [
+            ['hsba_id', '=', $hsbaId],
+        ];
+        
+        $result = $this->model->where($where)->get();
+        
+        return $result;
+    }    
 }

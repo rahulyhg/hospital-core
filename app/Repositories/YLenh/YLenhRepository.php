@@ -112,7 +112,9 @@ class YLenhRepository extends BaseRepositoryV2
             'y_lenh.vien_phi',
             'y_lenh.so_luong',
             'y_lenh.loai_y_lenh',
-            'y_lenh.phieu_thu_id'
+            'y_lenh.phieu_thu_id',
+            'y_lenh.ma',
+            'y_lenh.loai_thanh_toan_moi'
         ];
         
         $data = $this->model->join('phieu_y_lenh', function($join) use ($hsbaId) {
@@ -136,6 +138,12 @@ class YLenhRepository extends BaseRepositoryV2
             $priceVienPhi = 0;
             
             foreach($data as $item) {
+                $donViTinh=$this->model
+                                ->leftJoin('danh_muc_dich_vu','danh_muc_dich_vu.ma','=','y_lenh.ma')
+                                ->where('y_lenh.ma','=',$item->ma)
+                                ->get(['danh_muc_dich_vu.don_vi_tinh'])
+                                ->first();
+                $item['don_vi_tinh']=!empty($donViTinh)?$donViTinh->don_vi_tinh:null;
                 $item['gia']            = !empty($item['gia']) ? (int)$item['gia'] : 0;
                 $item['gia_bhyt']  = !empty($item['gia_bhyt']) ? (int)$item['gia_bhyt'] : 0;
                 $item['bhyt_tra']   = !empty($item['bhyt_tra']) ? (int)$item['bhyt_tra'] : 0;
@@ -325,5 +333,32 @@ class YLenhRepository extends BaseRepositoryV2
         } else {
             return null;
         }
+    }
+    
+    public function getListYLenhByVienPhiId($vienPhiId,$keyWords)
+    {
+        $column = [
+            'y_lenh.*',
+            'khoa.ten_khoa',
+            'phong.ten_phong',
+            'phieu_y_lenh.auth_users_id'
+            ];
+        $query = $this->model;
+        if($keyWords!=null){
+            $query->where('y_lenh.id','like','%'.$keyWords.'%');
+        }
+        $data = $query->where('y_lenh.vien_phi_id',$vienPhiId)
+                    ->leftJoin('khoa', 'khoa.id', '=', 'y_lenh.khoa_id')
+                    ->leftJoin('phong', 'phong.id', '=', 'y_lenh.phong_id')
+                    ->leftJoin('phieu_y_lenh', 'phieu_y_lenh.id', '=', 'y_lenh.phieu_y_lenh_id')
+                    ->orderBy('y_lenh.id','asc')
+                    ->get($column);
+        return $data;
+    }
+    
+    public function updateYLenhById($id, array $input)
+    {
+        $data = $this->model->findOrFail($id);
+		$data->update($input);
     }
 }
