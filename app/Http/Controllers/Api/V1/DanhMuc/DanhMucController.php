@@ -297,10 +297,10 @@ class DanhMucController extends APIController
         return $this->respond($data);
     }
     
-    public function getThuocVatTuByCode($maNhom)
+    public function getThuocVatTuByCode($maNhom, $loaiNhom)
     {
         if($maNhom) {
-            $data = $this->dmtvtService->getThuocVatTuByCode($maNhom);
+            $data = $this->dmtvtService->getThuocVatTuByCode($maNhom, $loaiNhom);
         } else {
             $this->setStatusCode(400);
             $data = [];

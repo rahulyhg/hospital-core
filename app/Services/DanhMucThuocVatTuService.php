@@ -50,9 +50,9 @@ class DanhMucThuocVatTuService
         return $data;
     }
     
-    public function getThuocVatTuByCode($maNhom)
+    public function getThuocVatTuByCode($maNhom, $loaiNhom)
     {
-        $data = $this->repository->getThuocVatTuByCode($maNhom);
+        $data = $this->repository->getThuocVatTuByCode($maNhom, $loaiNhom);
         
         return $data;
     }
