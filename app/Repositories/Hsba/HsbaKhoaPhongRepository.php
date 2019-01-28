@@ -465,12 +465,14 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'hsba.email_benh_nhan',
             'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
+            'hsba.trang_thai_hsba',
             // 'hsba.loai_nguoi_than',
             // 'hsba.ten_nguoi_than',
             // 'hsba.dien_thoai_nguoi_than',
             'hsba.nguoi_than',
             'hsba.ms_bhyt',
             'hsba.thx_gplace_json',
+            'bhyt.id as bhyt_id',
             'bhyt.ma_cskcbbd',
             'bhyt.tu_ngay',
             'bhyt.den_ngay',
@@ -586,4 +588,25 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
     {
 		$this->model->where('id', '=', $hsbaKhoaPhongId)->update(['thoi_gian_vao_vien' => Carbon::now()->toDateTimeString()]);
     }
+    
+    public function updateAndCreateHsbaKp($id,$hsbaKpParams)
+    {
+        $dataUpdate['vien_phi_id']=$id;
+        $model = $this->model;
+        $newId = $model->findOrFail($hsbaKpParams['hsba_khoa_phong_id'])->update($dataUpdate);
+        if($newId)
+            return $hsbaKpParams['hsba_khoa_phong_id'];
+        else {
+            return null;
+        }
+        //$find = $model::find($hsbaKpParams['hsba_khoa_phong_id']);
+        // if(!empty($find)){
+        //     $newData = $find->replicate();
+        //     $newData['trang_thai']=2;
+        //     $newData['vien_phi_id']=$id??null;
+        //     $newData['auth_users_id']=$hsbaKpParams['auth_users_id']??null;
+        //     $newData->save();
+        //     return $newData;
+        // }
+    }    
 }

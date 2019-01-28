@@ -9,6 +9,7 @@ use App\Repositories\VienPhi\VienPhiRepository;
 use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\MucHuongRepository;
 use App\Repositories\PhieuThu\PhieuThuRepository;
+use App\Repositories\Hsba\HsbaKhoaPhongRepository;
 
 class VienPhiService
 {
@@ -22,13 +23,15 @@ class VienPhiService
         VienPhiRepository $vienPhiRepository,
         YLenhRepository $yLenhRepository,
         MucHuongRepository $mucHuongRepository,
-        PhieuThuRepository $phieuThuRepository
+        PhieuThuRepository $phieuThuRepository,
+        HsbaKhoaPhongRepository $hsbaKhoaPhongRepository
     )
     {
        $this->vienPhiRepository = $vienPhiRepository;
        $this->yLenhRepository = $yLenhRepository;
        $this->mucHuongRepository = $mucHuongRepository;
        $this->phieuThuRepository = $phieuThuRepository;
+       $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
     }
     
     public function getThongTinVienPhi(array $input)
@@ -109,4 +112,48 @@ class VienPhiService
         } else
             return 0;
     }
+    
+    public function getListVienPhiByHsbaId($hsbaId)
+    {
+        $data = $this->vienPhiRepository->getListVienPhiByHsbaId($hsbaId);
+        return $data;
+    } 
+    
+    public function createVienPhi($request)
+    {
+        $vienPhiKeys = [
+            'hsba_id','loai_vien_phi','khoa_id','phong_id','doi_tuong_benh_nhan','bhyt_id','benh_nhan_id'
+        ];        
+        
+        $hsbaKpKeys = [
+            'hsba_khoa_phong_id','auth_users_id'
+        ];
+        
+        $vienPhiParams = $request->only(...$vienPhiKeys);
+        $hsbaKpParams = $request->only(...$hsbaKpKeys);
+        $result = DB::transaction(function () use ($vienPhiParams,$hsbaKpParams) {
+            try {
+                $id = $this->vienPhiRepository->updateAndCreateVienPhi($vienPhiParams);
+                if($id){
+                    $newHsbaKp = $this->hsbaKhoaPhongRepository->updateAndCreateHsbaKp($id,$hsbaKpParams);
+                    return $newHsbaKp;
+                }
+
+            } catch (\Exception $ex) {
+                var_dump($ex->getMessage());
+                echo "<br/>";
+                var_dump($ex->getFile());
+                echo "<br/>";
+                var_dump($ex->getLine());die;
+                throw $ex;
+            }
+        });
+        return $result;
+    }
+    
+    // public function getInfoThanhToanVienPhi($hsbaId,$vienPhiId)
+    // {
+    //     $data = $this->vienPhiRepository->getInfoThanhToanVienPhi($hsbaId,$vienPhiId);
+    //     return $data;
+    // }    
 }

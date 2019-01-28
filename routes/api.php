@@ -195,6 +195,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('list/{benhVienId}/thungan','Hsba\HsbaController@getListThuNgan');
     });
     
+    Route::group(['prefix' => 'thanhtoanvienphi'], function () {
+        Route::get('getListVienPhiByHsbaId/{hsbaId}','ThanhToanVienPhi\ThanhToanVienPhiController@getListVienPhiByHsbaId');
+        Route::get('getListYLenhByVienPhiId/{vienPhiId}/{keyWords}','ThanhToanVienPhi\ThanhToanVienPhiController@getListYLenhByVienPhiId');
+        Route::post('updateYLenh/{yLenhId}','ThanhToanVienPhi\ThanhToanVienPhiController@updateYLenhById');
+        Route::post('createVienPhi','ThanhToanVienPhi\ThanhToanVienPhiController@createVienPhi');
+    });    
+    
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');
