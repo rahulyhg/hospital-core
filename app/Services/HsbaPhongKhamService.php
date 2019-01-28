@@ -94,4 +94,9 @@ class HsbaPhongKhamService {
         return $data;
     }
     
+    public function getListHsbaPhongKham($hsbaId) {
+        $data = $this->hsbaPhongKhamRepository->getListHsbaPhongKham($hsbaId);
+        return $data;
+    }    
+    
 }

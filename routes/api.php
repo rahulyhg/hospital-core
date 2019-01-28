@@ -112,6 +112,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('countItemYLenh/{hsbaId}','PhongKham\PhongKhamController@countItemYLenh');
         Route::get('searchIcd10Code/{icd10Code}','PhongKham\PhongKhamController@searchIcd10Code');
         Route::get('searchIcd10Text/{icd10Text}','PhongKham\PhongKhamController@searchIcd10Text');
+        Route::get('getListHsbaPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListHsbaPhongKham');
+        Route::get('getAllCanLamSang/{hsbaId}','PhongKham\PhongKhamController@getAllCanLamSang');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {

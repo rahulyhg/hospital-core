@@ -294,4 +294,32 @@ class PhongKhamController extends APIController
         
         return $this->respond($data);
     }
+    
+    public function getListHsbaPhongKham($hsbaId)
+    {
+        $isNumeric = is_numeric($hsbaId);
+        
+        if($isNumeric) {
+            $data = $this->hsbaPhongKhamService->getListHsbaPhongKham($hsbaId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function getAllCanLamSang($hsbaId)
+    {
+        $isNumeric = is_numeric($hsbaId);
+
+        if($isNumeric) {
+            $data = $this->yLenhService->getAllCanLamSang($hsbaId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }    
 }

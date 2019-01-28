@@ -59,7 +59,22 @@ class VienPhiRepository extends BaseRepositoryV2
         $vienPhiParams['thoi_gian_tao']=Carbon::now()->toDateTimeString();
         $id = $this->model->create($vienPhiParams)->id;
         return $id;
+    }
+    
+    public function getAllCanLamSang($hsbaId)
+    {
+        $column = [
+            'y_lenh.*'
+            ];
+        $data = $this->model
+                ->where('vien_phi.hsba_id',$hsbaId)
+                ->whereIn('y_lenh.loai_y_lenh',[2,3,4])
+                ->leftJoin('y_lenh','y_lenh.vien_phi_id','=','vien_phi.id')
+                ->get($column);
+        return $data; 
     }    
+    
+    
     
     // public function getInfoThanhToanVienPhi($hsbaId,$vienPhiId)
     // {
