@@ -169,6 +169,21 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }
     
+    public function getLichSuThuocVatTu(Request $request)
+    {
+        $input = $request->all();
+        if(!$input['dieu_tri_id'])
+            $input['dieu_tri_id'] = $this->dieuTriService->getPhieuDieuTri($input);
+            
+        $data = $this->yLenhService->getLichSuThuocVatTu($input);
+        if(!$data) {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
     public function batDauKham($hsbaKhoaPhongId)
     {
         if(is_numeric($hsbaKhoaPhongId)) {
@@ -263,6 +278,20 @@ class PhongKhamController extends APIController
            
         if($isNumeric) {
             $data = $this->yLenhService->countItemYLenh($hsbaId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+            
+        return $this->respond($data);
+    }
+    
+    public function countItemThuocVatTu($hsbaId)
+    {
+        $isNumeric = is_numeric($hsbaId);
+           
+        if($isNumeric) {
+            $data = $this->yLenhService->countItemThuocVatTu($hsbaId);
         } else {
             $this->setStatusCode(400);
             $data = [];

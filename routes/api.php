@@ -104,12 +104,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
+		Route::get('getLichSuThuocVatTu','PhongKham\PhongKhamController@getLichSuThuocVatTu');
 		Route::get('getPddtByIcd10Code/{icd10Code}','PhongKham\PhongKhamController@getPddtByIcd10Code');
 		Route::get('getListPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getListPhieuYLenh');
 		Route::get('getDetailPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getDetailPhieuYLenh');	
 		Route::post('updateHsbaPhongKham/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@updateHsbaPhongKham');
 		Route::get('getDetailHsbaPhongKham/{hsbaId}/{phongId}','PhongKham\PhongKhamController@getDetailHsbaPhongKham');
         Route::get('countItemYLenh/{hsbaId}','PhongKham\PhongKhamController@countItemYLenh');
+        Route::get('countItemThuocVatTu/{hsbaId}','PhongKham\PhongKhamController@countItemThuocVatTu');
         Route::get('searchIcd10Code/{icd10Code}','PhongKham\PhongKhamController@searchIcd10Code');
         Route::get('searchIcd10Text/{icd10Text}','PhongKham\PhongKhamController@searchIcd10Text');
         Route::get('getListHsbaPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListHsbaPhongKham');
@@ -137,7 +139,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::post('updateDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@updateDanhMucTrangThai');
     	Route::delete('deleteDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@deleteDanhMucTrangThai');
     	Route::get('getThuocVatTuByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getThuocVatTuByLoaiNhom');
-    	Route::get('getThuocVatTuByCode/{maNhom}','DanhMuc\DanhMucController@getThuocVatTuByCode');
+    	Route::get('getThuocVatTuByCode/{maNhom}/{loaiNhom}','DanhMuc\DanhMucController@getThuocVatTuByCode');
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {

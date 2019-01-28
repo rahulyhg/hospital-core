@@ -55,8 +55,8 @@ class YLenhService {
                             'phong_id'              => $input['phong_id'],
                             'ma'                    => $value['ma'],
                             'ten'                   => $value['ten'],
-                            'ten_bhyt'              => $value['ten_bhyt'],
-                            'ten_nuoc_ngoai'        => $value['ten_nuoc_ngoai'],
+                            'ten_bhyt'              => $value['ten_bhyt'] ?? null,
+                            'ten_nuoc_ngoai'        => $value['ten_nuoc_ngoai'] ?? null,
                             'trang_thai'            => 0,
                             'gia'                   => $value['gia'],
                             'gia_bhyt'              => $value['gia_bhyt'],
@@ -90,6 +90,12 @@ class YLenhService {
         return $result;
     }
     
+    public function getLichSuThuocVatTu(array $input)
+    {
+        $result = $this->yLenhRepository->getLichSuThuocVatTu($input);
+        return $result;
+    }
+    
     public function getYLenhByHsbaId($hsbaId) {
         $result = $this->yLenhRepository->getYLenhByHsbaId($hsbaId);
         return $result;
@@ -111,6 +117,12 @@ class YLenhService {
     public function countItemYLenh($hsbaId)
     {
         $result = $this->yLenhRepository->countItemYLenh($hsbaId);
+        return $result;
+    }
+    
+    public function countItemThuocVatTu($hsbaId)
+    {
+        $result = $this->yLenhRepository->countItemThuocVatTu($hsbaId);
         return $result;
     }
     

@@ -12,12 +12,17 @@ class YLenhRepository extends BaseRepositoryV2
     const Y_LENH_CODE_XET_NGHIEM = 2;
     const Y_LENH_CODE_CHAN_DOAN_HINH_ANH = 3;
     const Y_LENH_CODE_CHUYEN_KHOA = 4;
+    const Y_LENH_CODE_THUOC = 5;
+    const Y_LENH_CODE_VAT_TU = 6;
     const Y_LENH_CODE_CAN_LAM_SANG = [2, 3, 4];
+    const Y_LENH_CODE_THUOC_VAT_TU = [5, 6];
     
     const Y_LENH_TEXT_YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
     const Y_LENH_TEXT_XET_NGHIEM = 'XÉT NGHIỆM';
     const Y_LENH_TEXT_CHAN_DOAN_HINH_ANH = 'CHẨN ĐOÁN HÌNH ẢNH';
     const Y_LENH_TEXT_CHUYEN_KHOA = 'CHUYÊN KHOA';
+    const Y_LENH_TEXT_THUOC = 'THUỐC';
+    const Y_LENH_TEXT_VAT_TU = 'VẬT TƯ';
     
     public function getModel()
     {
@@ -46,11 +51,12 @@ class YLenhRepository extends BaseRepositoryV2
             'phong.ten_phong'
         ];
         
-        $data = $this->model->join('phieu_y_lenh', function($join) use ($input) {
+        $data = $this->model->whereIn('loai_y_lenh', self::Y_LENH_CODE_CAN_LAM_SANG)
+                            ->orWhere('loai_y_lenh', '=', self::Y_LENH_CODE_YEU_CAU_KHAM)
+                            ->join('phieu_y_lenh', function($join) use ($input) {
                                 $join->on('phieu_y_lenh.id', '=', 'y_lenh.phieu_y_lenh_id')
                                     ->where('phieu_y_lenh.benh_nhan_id', '=', $input['benh_nhan_id'])
                                     ->where('phieu_y_lenh.hsba_id', '=', $input['hsba_id']);
-                                    // ->whereNotNull('thoi_gian_chi_dinh');
                             })
                             ->leftJoin('phong', 'phong.id', '=', 'y_lenh.phong_id')
                             ->orderBy('y_lenh.id')
@@ -98,6 +104,60 @@ class YLenhRepository extends BaseRepositoryV2
         }
     }
     
+    public function getLichSuThuocVatTu(array $input)
+    {
+        $column = [
+            'y_lenh.id',
+            'y_lenh.ten',
+            'y_lenh.loai_y_lenh',
+            'y_lenh.thoi_gian_chi_dinh',
+            'y_lenh.phieu_y_lenh_id',
+            'phong.ten_phong'
+        ];
+        
+        $data = $this->model->whereIn('loai_y_lenh', self::Y_LENH_CODE_THUOC_VAT_TU)
+                            ->join('phieu_y_lenh', function($join) use ($input) {
+                                $join->on('phieu_y_lenh.id', '=', 'y_lenh.phieu_y_lenh_id')
+                                    ->where('phieu_y_lenh.benh_nhan_id', '=', $input['benh_nhan_id'])
+                                    ->where('phieu_y_lenh.hsba_id', '=', $input['hsba_id']);
+                            })
+                            ->leftJoin('phong', 'phong.id', '=', 'y_lenh.phong_id')
+                            ->orderBy('y_lenh.id')
+                            ->get($column);
+        
+        if($data) {
+            $itemThuoc = 0;
+            $itemVatTu = 0;
+            $array = [];
+            $type = null;
+            
+            foreach($data as $item) {
+                if($item->loai_y_lenh == self::Y_LENH_CODE_THUOC) {
+                    $itemThuoc++;
+                    $type = self::Y_LENH_TEXT_THUOC;
+                }
+                if($item->loai_y_lenh == self::Y_LENH_CODE_VAT_TU) {
+                    $itemVatTu++;
+                    $type = self::Y_LENH_TEXT_VAT_TU;
+                }
+                    
+                $datetime = Carbon::parse($item->thoi_gian_chi_dinh)->format('d/m/Y');
+                $phong = $item->ten_phong;
+                $phieuYLenh = $item->phieu_y_lenh_id;
+                $item['key'] = $item->id;
+                $array[$phong][$datetime][$phieuYLenh][$type][] = $item;
+            }
+            
+            $result['itemThuoc'] = $itemThuoc;
+            $result['itemVatTu'] = $itemVatTu;
+            $result['data'] = $array;
+            
+            return $result;
+        } else {
+            return null;
+        }
+    }
+    
     public function getYLenhByHsbaId($hsbaId)
     {
         $total = 0;
@@ -128,11 +188,15 @@ class YLenhRepository extends BaseRepositoryV2
             $itemXetNghiem = [];
             $itemChanDoanHinhAnh = [];
             $itemChuyenKhoa = [];
+            $itemThuoc = [];
+            $itemVatTu = [];
             
             $priceYeuCauKham = 0;
             $priceXetNghiem = 0;
             $priceChuanDoanHinhAnh = 0;
             $priceChuyenKhoa = 0;
+            $priceThuoc = 0;
+            $priceVatTu = 0;
             
             $priceBhytTra = 0;
             $priceVienPhi = 0;
@@ -162,11 +226,18 @@ class YLenhRepository extends BaseRepositoryV2
                 if($item->loai_y_lenh == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
                     $itemChanDoanHinhAnh[] = $item;
                     $priceChuanDoanHinhAnh += $item['vien_phi'];
-                    
                 }
                 if($item->loai_y_lenh == self::Y_LENH_CODE_CHUYEN_KHOA) {
                     $itemChuyenKhoa[] = $item;
-                    $priceChuyenKhoa += $item['thanh_tien'];
+                    $priceChuyenKhoa += $item['vien_phi'];
+                }
+                if($item->loai_y_lenh == self::Y_LENH_CODE_THUOC) {
+                    $itemThuoc[] = $item;
+                    $priceThuoc += $item['vien_phi'];
+                }
+                if($item->loai_y_lenh == self::Y_LENH_CODE_VAT_TU) {
+                    $itemVatTu[] = $item;
+                    $priceVatTu += $item['vien_phi'];
                 }
                 
                 $priceBhytTra += $item['bhyt_tra'];
@@ -211,8 +282,24 @@ class YLenhRepository extends BaseRepositoryV2
                 ]; 
             }
             
+            if(!empty($itemThuoc)) {
+                $resultYeuCau[] = [
+                    'key'           => rand(). 'TH',
+                    'ten'           => 'Thuốc (' . number_format($priceThuoc) . ' đ)',
+                    'children'      => $itemThuoc
+                ]; 
+            }
+            
+            if(!empty($itemVatTu)) {
+                $resultYeuCau[] = [
+                    'key'           => rand(). 'VT',
+                    'ten'           => 'Vật tư (' . number_format($priceVatTu) . ' đ)',
+                    'children'      => $itemVatTu
+                ]; 
+            }
+            
             if(!empty($resultYeuCau)) {
-                $totalYeuCau = $priceXetNghiem + $priceChuanDoanHinhAnh + $priceChuyenKhoa;
+                $totalYeuCau = $priceXetNghiem + $priceChuanDoanHinhAnh + $priceChuyenKhoa + $priceThuoc + $priceVatTu;
                 $result[] = [
                     'key'         => 'CD',
                     'ten'         => 'CHỈ ĐỊNH (' . number_format($totalYeuCau) . ' đ)',
@@ -328,6 +415,39 @@ class YLenhRepository extends BaseRepositoryV2
             $result['itemXetNghiem'] = $itemXetNghiem;
             $result['itemChanDoanHinhAnh'] = $itemChanDoanHinhAnh;
             $result['itemChuyenKhoa'] = $itemChuyenKhoa;
+            
+            return $result;
+        } else {
+            return null;
+        }
+    }
+    
+    public function countItemThuocVatTu($hsbaId)
+    {
+        $data = $this->model->select('loai_y_lenh', DB::raw('count(loai_y_lenh) as total'))
+                            ->join('phieu_y_lenh', function($join) use ($hsbaId) {
+                                $join->on('phieu_y_lenh.id', '=', 'y_lenh.phieu_y_lenh_id')
+                                    ->where('phieu_y_lenh.hsba_id', '=', $hsbaId);
+                            })
+                            ->whereIn('loai_y_lenh', self::Y_LENH_CODE_THUOC_VAT_TU)
+                            ->groupBy('loai_y_lenh')
+                            ->get();
+        
+        if($data) {
+            $itemThuoc = 0;
+            $itemVatTu = 0;
+            
+            foreach($data as $item) {
+                if($item->loai_y_lenh == self::Y_LENH_CODE_THUOC) {
+                    $itemThuoc = $item->total;
+                }
+                if($item->loai_y_lenh == self::Y_LENH_CODE_VAT_TU) {
+                    $itemVatTu = $item->total;
+                }
+            }
+            
+            $result['itemThuoc'] = $itemThuoc;
+            $result['itemVatTu'] = $itemVatTu;
             
             return $result;
         } else {

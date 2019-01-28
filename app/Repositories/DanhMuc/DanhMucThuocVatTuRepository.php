@@ -20,6 +20,8 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
     const DANH_MUC_THUOC_BHYT = 'TT';
     const DANH_MUC_THUOC_THU_PHI = 'TNT';
     const DANH_MUC_VAT_TU_HAO_PHI = 'VT';
+    const Y_LENH_THUOC = 5;
+    const Y_LENH_VAT_TU = 6;
     
     public function getModel()
     {
@@ -96,7 +98,7 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function getThuocVatTuByCode($maNhom)
+    public function getThuocVatTuByCode($maNhom, $loaiNhom)
     {
         $column = [
             'danh_muc_thuoc_vat_tu.id',
@@ -115,7 +117,12 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
                             ->where('ma_nhom', $maNhom)
                             ->orderBy('ten')
                             ->get($column);
-        
+                            
+        $result->each(function ($item, $key) use ($loaiNhom) {
+            $item['so_luong'] = 1;
+            $item['loai_nhom'] = ($loaiNhom == self::LOAI_QUAY_PHAT_THUOC) ? self::Y_LENH_THUOC : self::Y_LENH_VAT_TU;
+        });
+            
         return $result;
     }
 }
