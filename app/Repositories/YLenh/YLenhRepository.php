@@ -360,5 +360,5 @@ class YLenhRepository extends BaseRepositoryV2
     {
         $data = $this->model->findOrFail($id);
 		$data->update($input);
-    }    
+    }
 }

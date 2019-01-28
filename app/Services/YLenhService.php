@@ -9,6 +9,7 @@ use App\Repositories\DanhMuc\DanhMucKQYLRepository;
 use App\Repositories\YLenh\KetQuaYLenhRepository;
 use App\Repositories\Auth\AuthUsersRepository;
 use App\Repositories\DanhMuc\DanhMucDichVuRepository;
+use App\Repositories\VienPhi\VienPhiRepository;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
@@ -17,7 +18,7 @@ use Carbon\Carbon;
 class YLenhService {
     const PHIEU_DIEU_TRI = 3;
     
-    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository,DanhMucKQYLRepository $danhMucKQYLRepository,KetQuaYLenhRepository $ketQuaYLenhRepository,AuthUsersRepository $authUsersRepository,DanhMucDichVuRepository $danhMucDichVuRepository)
+    public function __construct(YLenhRepository $yLenhRepository, PhieuYLenhRepository $phieuYLenhRepository,DanhMucKQYLRepository $danhMucKQYLRepository,KetQuaYLenhRepository $ketQuaYLenhRepository,AuthUsersRepository $authUsersRepository,DanhMucDichVuRepository $danhMucDichVuRepository,VienPhiRepository $vienPhiRepository)
     {
         $this->yLenhRepository = $yLenhRepository;
         $this->phieuYLenhRepository = $phieuYLenhRepository;
@@ -25,6 +26,7 @@ class YLenhService {
         $this->ketQuaYLenhRepository=$ketQuaYLenhRepository;
         $this->authUsersRepository=$authUsersRepository;
         $this->danhMucDichVuRepository=$danhMucDichVuRepository;
+        $this->vienPhiRepository = $vienPhiRepository;
     }
 
     public function saveYLenh(array $input)
@@ -133,5 +135,11 @@ class YLenhService {
     public function updateYLenhById($yLenhId,array $input)
     {
         $this->yLenhRepository->updateYLenhById($yLenhId, $input);
+    }
+    
+    public function getAllCanLamSang($hsbaId)
+    {
+        $data = $this->vienPhiRepository->getAllCanLamSang($hsbaId);
+        return $data;
     }    
 }
