@@ -55,8 +55,14 @@ return [
         ],
 
         'pgsql' => [
+            'read' => [
+                'host' => env('DB_HOST_SLAVE', '127.0.0.1'),
+            ],
+            'write' => [
+                'host' => env('DB_HOST_MASTER', '127.0.0.1')
+            ],
             'driver' => 'pgsql',
-            'host' => env('DB_HOST', '127.0.0.1'),
+            //'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
@@ -65,6 +71,7 @@ return [
             'prefix' => '',
             'schema' => 'public',
             'sslmode' => 'prefer',
+            'timezone' => config('app.timezone'),
         ],
 
         'sqlsrv' => [
@@ -105,11 +112,8 @@ return [
     */
 
     'redis' => [
-
-        'client' => 'predis',
-
         'default' => [
-            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'host' => env('REDIS_HOST', 'localhost'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => 0,
