@@ -343,17 +343,28 @@ class YLenhRepository extends BaseRepositoryV2
   
     public function getDetailPhieuYLenh($phieuYLenhId,$type)
     {
+        $typeCanLamSang = [2,3,4];
+        $typeThuocVatTu = [5,6];
         $result = $this->model
                 ->where('phieu_y_lenh_id',$phieuYLenhId)
                 ->where('loai_y_lenh',$type)
                 ->orderBy('id')
                 ->get();
         if($result){
-            foreach($result as $item){
-                $phongThucHienId = DB::table('danh_muc_dich_vu')->where('ma',$item->ma)->first();
-                if($phongThucHienId->phong_thuc_hien){
-                    $phongThucHienName = DB::table('phong')->where('id',$phongThucHienId->phong_thuc_hien)->first();
-                    $item['phong_thuc_hien']=$phongThucHienName?$phongThucHienName->ten_phong:'';
+            if(in_array($type,$typeCanLamSang)){
+                foreach($result as $item){
+                    $phongThucHienId = DB::table('danh_muc_dich_vu')->where('ma',$item->ma)->first();
+                    if($phongThucHienId->phong_thuc_hien){
+                        $phongThucHienName = DB::table('phong')->where('id',$phongThucHienId->phong_thuc_hien)->first();
+                        $item['phong_thuc_hien']=$phongThucHienName?$phongThucHienName->ten_phong:'';
+                    }
+                }
+            }
+            if(in_array($type,$typeThuocVatTu)){
+                foreach($result as $item){
+                    $dmThuocVatTu = DB::table('danh_muc_thuoc_vat_tu')->where('ma',$item->ma)->first();
+                    $item['don_vi_tinh']=$dmThuocVatTu->don_vi_tinh;
+                    $item['dang_dung']=$dmThuocVatTu->dang_dung;
                 }
             }
             return $result;
