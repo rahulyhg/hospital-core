@@ -106,7 +106,7 @@ class DieuTriService
                 
                 // GET OLD FILE
                 $item = $this->hsbaPhongKhamRepository->getByHsbaKpId($dieuTriParams['hsba_khoa_phong_id']);
-                $fileItem =  isset($item->$item->upload_file_kham_benh) ? json_decode($item->upload_file_kham_benh, true) : [];
+                $fileItem =  isset($item->upload_file_kham_benh) ? json_decode($item->upload_file_kham_benh, true) : [];
                 
                 // Remove File old
                 if(!empty($input['oldFiles'])) {
@@ -129,13 +129,6 @@ class DieuTriService
                 }
                 
                 if(!empty($input['files'])) {
-                    $arrayExtension = ['jpg', 'jpeg', 'png', 'bmp', 'mp3', 'mp4', 'pdf', 'docx'];
-                    foreach($input['files'] as $file) {
-                        if(!in_array($file->getClientOriginalExtension(), $arrayExtension)) {
-                            throw new Exception('File chứa định dạng ko cho phép để upload');
-                        }
-                    }
-                    
                     foreach ($input['files'] as $file) {
                         $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
                         $fileUpload[] = $imageFileName;
@@ -144,15 +137,14 @@ class DieuTriService
                         $mimeType = $file->getMimeType();
                         $result = $s3->putObject($imageFileName, $pathName, $mimeType);
                     }
-                        
-                    if(!empty($fileUpload)) {
-                        $input['upload_file_kham_benh'] = json_encode($fileUpload);
-                    }
-                    else {
-                        $input['upload_file_kham_benh'] = NULL;
-                    }
-                    
                     unset($input['files']);
+                }
+                
+                if(!empty($fileUpload)) {
+                    $input['upload_file_kham_benh'] = json_encode($fileUpload);
+                }
+                else {
+                    $input['upload_file_kham_benh'] = NULL;
                 }
                 $this->hsbaPhongKhamRepository->update($dieuTriParams['hsba_khoa_phong_id'], $input);
             } catch (\Exception $ex) {
