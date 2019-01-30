@@ -252,11 +252,6 @@ class DieuTriService
                         //update hsba_khoa_phong hiện tại
                         $this->updateHsbaKhoaPhongByXuTri($hsbaKp['id'], $request, self::TT_KET_THUC_DIEU_TRI, self::CHUYEN_KHOA); //99: kết thúc điều trị; 8: chuyển khoa
                         
-                        //update hsba.loai_benh_an
-                        $hsbaParams = null;
-                        $hsbaParams['loai_benh_an'] = $phong->loai_benh_an;
-                        $this->updateHsba($hsbaKp['hsba_id'], $hsbaParams);
-                        
                         //tạo hsba_khoa_phong 
                         $hsbaKpParams = null;
                         $hsbaKpParams['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
@@ -280,6 +275,12 @@ class DieuTriService
                         //kiểm tra phòng chuyển đến có phải là phòng điều trị -> nếu đúng -> lấy trạng thái = 2: đang điều trị ngược lại 0: đang chờ điều trị
                         $hsbaKpParams['trang_thai'] = $phong->loai_phong == self::PHONG_DIEU_TRI_NOI_TRU || $phong->loai_phong == self::PHONG_DIEU_TRI_NGOAI_TRU ? self::TT_DANG_DIEU_TRI : self::TT_CHO_DIEU_TRI; 
                         $idHsbaKp = $this->hsbaKhoaPhongRepository->createData($hsbaKpParams);
+                        
+                        //update hsba.loai_benh_an
+                        $hsbaParams = null;
+                        $hsbaParams['loai_benh_an'] = $phong->loai_benh_an;
+                        $this->updateHsba($hsbaKp['hsba_id'], $hsbaParams);
+                        return [];
                     break;
                 }
             }
