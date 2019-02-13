@@ -31,8 +31,9 @@ class DanhMucController extends APIController
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
+        $loaiNhom = $request->query('loai_nhom', 0);
         
-        $data = $this->dmdvService->getListDanhMucDichVu($limit, $page);
+        $data = $this->dmdvService->getListDanhMucDichVu($limit, $page, $loaiNhom);
         return $this->respond($data);
     }
     
