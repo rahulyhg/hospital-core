@@ -199,25 +199,26 @@ class DanhMucController extends APIController
         return $this->respond($data);  
     }
     
-    public function getListDanhMucTrangThai(Request $request) {
+    public function getListDanhMucTrangThai(Request $request)
+    {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
+        $dienGiai = $request->query('dien_giai', '');
+        $khoa = $request->query('khoa', '');
         
-        $data = $this->dmttService->getListDanhMucTrangThai($limit, $page);
-        
-        if(empty($data)) {
-            $this->setStatusCode(400);
-            $data = [];
-        }
+        $data = $this->dmttService->getListDanhMucTrangThai($limit, $page, $dienGiai, $khoa);
         return $this->respond($data);
     }
     
-    public function getListDanhMucTrangThaiByKhoa($khoa) {
+    public function getDanhMucTrangThaiTheoKhoa(Request $request, $khoa) {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        
         if($khoa === null){
             $this->setStatusCode(400);
             return $this->respond([]);
         }
-        $data = $this->dmttService->getListDanhMucTrangThaiByKhoa($khoa);
+        $data = $this->dmttService->getDanhMucTrangThaiTheoKhoa($khoa, $limit, $page);
         
         if(empty($data)) {
             $this->setStatusCode(400);
@@ -281,6 +282,12 @@ class DanhMucController extends APIController
         }
         
         return $this->respond([]);        
+    }
+    
+    public function getAllKhoaDanhMucTrangThai()
+    {
+        $data = $this->dmttService->getAllKhoa();
+        return $this->respond($data);  
     }
     
     public function getThuocVatTuByLoaiNhom($loaiNhom)
