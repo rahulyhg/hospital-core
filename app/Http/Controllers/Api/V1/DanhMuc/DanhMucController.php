@@ -7,6 +7,7 @@ use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
 use App\Services\DanhMucTrangThaiService;
 use App\Services\DanhMucThuocVatTuService;
+use App\Services\NhomDanhMucService;
 use App\Http\Requests\DanhMucDichVuFormRequest;
 use App\Http\Requests\DanhMucTongHopFormRequest;
 use App\Http\Requests\DanhMucTrangThaiFormRequest;
@@ -18,13 +19,15 @@ class DanhMucController extends APIController
         DanhMucDichVuService $dmdvService,
         DanhMucTongHopService $dmthService, 
         DanhMucTrangThaiService $dmttService, 
-        DanhMucThuocVatTuService $dmtvtService
+        DanhMucThuocVatTuService $dmtvtService,
+        NhomDanhMucService $nhomDanhMucService
     )
     {
         $this->dmdvService = $dmdvService;
         $this->dmthService = $dmthService;
         $this->dmttService = $dmttService;
         $this->dmtvtService = $dmtvtService;
+        $this->nhomDanhMucService = $nhomDanhMucService;
     }
     
     public function getListDanhMucDichVu(Request $request)
@@ -308,5 +311,54 @@ class DanhMucController extends APIController
         }
         
         return $this->respond($data);
+    }
+    
+    public function getListNhomDanhMuc()
+    {
+        $data = $this->nhomDanhMucService->getListNhomDanhMuc();
+        return $this->respond($data);
+    }
+    
+    public function getNhomDmById($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->nhomDanhMucService->getNhomDmById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function createNhomDanhMuc(Request $request) {
+        $input = $request->all();
+        
+        $id = $this->nhomDanhMucService->createNhomDanhMuc($input);
+        if($id) {
+            $this->setStatusCode(201);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
+    }
+    
+    public function updateNhomDanhMuc($id, Request $request)
+    {
+        try {
+            $isNumericId = is_numeric($id);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $this->nhomDanhMucService->updateNhomDanhMuc($id, $input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
     }
 }
