@@ -204,6 +204,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getListYLenhByVienPhiId/{vienPhiId}/{keyWords}','ThanhToanVienPhi\ThanhToanVienPhiController@getListYLenhByVienPhiId');
         Route::post('updateYLenh/{yLenhId}','ThanhToanVienPhi\ThanhToanVienPhiController@updateYLenhById');
         Route::post('createVienPhi','ThanhToanVienPhi\ThanhToanVienPhiController@createVienPhi');
+    });
+    
+    Route::group(['prefix' => 'kho'], function () {
+		Route::get('getListKho','Kho\KhoController@getListKho');
+		Route::post('createKho','Kho\KhoController@createKho');
+     	Route::post('updateKho/{id}','Kho\KhoController@updateKho');
+     	Route::delete('deleteKho/{id}','Kho\KhoController@deleteKho');
+ 		Route::get('getKhoById/{id}','Kho\KhoController@getKhoById');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
