@@ -37,12 +37,6 @@ class KhoaRepository extends BaseRepositoryV2
     {
         $offset = ($page - 1) * $limit;
         
-        $column = [
-            'id as phong_id',
-            'khoa_id',
-            'ten_phong as ten_khoa_phong'
-        ];
-        
         $query = $this->model->where('benh_vien_id',$benhVienId);
         
         $dataSet = [];    
@@ -58,9 +52,17 @@ class KhoaRepository extends BaseRepositoryV2
             if($data){
                 foreach($data as $item){
                     $dataPhong = DB::table('phong')
-                            ->select(DB::raw("CONCAT('0',khoa_id,id) AS key"),'id as phong_id','khoa_id','ten_phong as ten_khoa_phong')
-                            ->orderBy('ten_phong','asc')
-                            ->where('khoa_id',$item->id)
+                            ->select(DB::raw("CONCAT('0',phong.khoa_id,phong.id) AS key"),
+                                'phong.id as phong_id',
+                                'phong.khoa_id',
+                                'phong.ten_phong as ten_khoa_phong',
+                                'phong.ma_nhom as ma_phong',
+                                'khoa.ma_khoa as ma_khoa',
+                                'khoa.ten_khoa as ten_khoa'
+                            )
+                            ->leftJoin('khoa', 'khoa.id', '=', 'phong.khoa_id')
+                            ->orderBy('phong.ten_phong','asc')
+                            ->where('phong.khoa_id',$item->id)
                             ->get();
                     $dataSet[]=[
                         'key'               =>  $item->id,
