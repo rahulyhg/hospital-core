@@ -59,7 +59,7 @@ class AuthController extends APIController
         $userName = $this->authService->getUserNameByEmail($request->email);
         $extraPayload = array(
             'roles' => $data['roles'],
-            'groupId'  => $data['idGroup'][0],
+            'groupId'  => $data['idGroup'],
             'userName' => $userName->fullname,
             'userId'   => $userName->id,
         );
