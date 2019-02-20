@@ -210,6 +210,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::post('createVienPhi','ThanhToanVienPhi\ThanhToanVienPhiController@createVienPhi');
     });    
     
+    Route::group(['prefix' => 'nhacungcap'], function () {
+		Route::get('getListNhaCungCap','NhaCungCap\NhaCungCapController@getListNhaCungCap');
+		Route::post('createNhaCungCap','NhaCungCap\NhaCungCapController@createNhaCungCap');
+     	Route::post('updateNhaCungCap/{id}','NhaCungCap\NhaCungCapController@updateNhaCungCap');
+     	Route::delete('deleteNhaCungCap/{id}','NhaCungCap\NhaCungCapController@deleteNhaCungCap');
+ 		Route::get('getNhaCungCapById/{id}','NhaCungCap\NhaCungCapController@getNhaCungCapById');
+    });    
+    
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');
