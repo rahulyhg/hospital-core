@@ -106,7 +106,7 @@ class DieuTriService
                 
                 // GET OLD FILE
                 $item = $this->hsbaPhongKhamRepository->getByHsbaKpId($dieuTriParams['hsba_khoa_phong_id']);
-                $fileItem =  isset($item->$item->upload_file_kham_benh) ? json_decode($item->upload_file_kham_benh, true) : [];
+                $fileItem =  isset($item->upload_file_kham_benh) ? json_decode($item->upload_file_kham_benh, true) : [];
                 
                 // Remove File old
                 if(!empty($input['oldFiles'])) {
@@ -129,13 +129,6 @@ class DieuTriService
                 }
                 
                 if(!empty($input['files'])) {
-                    $arrayExtension = ['jpg', 'jpeg', 'png', 'bmp', 'mp3', 'mp4', 'pdf', 'docx'];
-                    foreach($input['files'] as $file) {
-                        if(!in_array($file->getClientOriginalExtension(), $arrayExtension)) {
-                            throw new Exception('File chứa định dạng ko cho phép để upload');
-                        }
-                    }
-                    
                     foreach ($input['files'] as $file) {
                         $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
                         $fileUpload[] = $imageFileName;
@@ -144,15 +137,14 @@ class DieuTriService
                         $mimeType = $file->getMimeType();
                         $result = $s3->putObject($imageFileName, $pathName, $mimeType);
                     }
-                        
-                    if(!empty($fileUpload)) {
-                        $input['upload_file_kham_benh'] = json_encode($fileUpload);
-                    }
-                    else {
-                        $input['upload_file_kham_benh'] = NULL;
-                    }
-                    
                     unset($input['files']);
+                }
+                
+                if(!empty($fileUpload)) {
+                    $input['upload_file_kham_benh'] = json_encode($fileUpload);
+                }
+                else {
+                    $input['upload_file_kham_benh'] = NULL;
                 }
                 $this->hsbaPhongKhamRepository->update($dieuTriParams['hsba_khoa_phong_id'], $input);
             } catch (\Exception $ex) {
@@ -252,11 +244,6 @@ class DieuTriService
                         //update hsba_khoa_phong hiện tại
                         $this->updateHsbaKhoaPhongByXuTri($hsbaKp['id'], $request, self::TT_KET_THUC_DIEU_TRI, self::CHUYEN_KHOA); //99: kết thúc điều trị; 8: chuyển khoa
                         
-                        //update hsba.loai_benh_an
-                        $hsbaParams = null;
-                        $hsbaParams['loai_benh_an'] = $phong->loai_benh_an;
-                        $this->updateHsba($hsbaKp['hsba_id'], $hsbaParams);
-                        
                         //tạo hsba_khoa_phong 
                         $hsbaKpParams = null;
                         $hsbaKpParams['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
@@ -280,6 +267,12 @@ class DieuTriService
                         //kiểm tra phòng chuyển đến có phải là phòng điều trị -> nếu đúng -> lấy trạng thái = 2: đang điều trị ngược lại 0: đang chờ điều trị
                         $hsbaKpParams['trang_thai'] = $phong->loai_phong == self::PHONG_DIEU_TRI_NOI_TRU || $phong->loai_phong == self::PHONG_DIEU_TRI_NGOAI_TRU ? self::TT_DANG_DIEU_TRI : self::TT_CHO_DIEU_TRI; 
                         $idHsbaKp = $this->hsbaKhoaPhongRepository->createData($hsbaKpParams);
+                        
+                        //update hsba.loai_benh_an
+                        $hsbaParams = null;
+                        $hsbaParams['loai_benh_an'] = $phong->loai_benh_an;
+                        $this->updateHsba($hsbaKp['hsba_id'], $hsbaParams);
+                        return [];
                     break;
                 }
             }

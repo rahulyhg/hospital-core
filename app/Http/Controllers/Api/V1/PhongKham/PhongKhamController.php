@@ -11,6 +11,8 @@ use App\Services\Icd10Service;
 use App\Services\YLenhService;
 use App\Services\PhacDoDieuTriService;
 use App\Services\PhieuYLenhService;
+use Validator;
+use App\Http\Requests\UploadFileFormRequest;
 
 class PhongKhamController extends APIController
 {
@@ -71,7 +73,7 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }
     
-    public function updateInfoDieuTri(Request $request)
+    public function updateInfoDieuTri(UploadFileFormRequest $request)
     {
         try 
         {
@@ -237,14 +239,13 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }    
     
-    public function updateHsbaPhongKham($hsbaKhoaPhongId, Request $request)
+    public function updateHsbaPhongKham($hsbaKhoaPhongId, UploadFileFormRequest $request)
     {
         try {
             $isNumeric = is_numeric($hsbaKhoaPhongId);
             
             if($isNumeric) {
                 $input = $request->all();
-                
                 $data = $this->hsbaPhongKhamService->update($hsbaKhoaPhongId, $input);
                 if($data['status'] === 'error') {
                     $this->setStatusCode($data['statusCode']);

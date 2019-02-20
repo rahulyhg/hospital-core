@@ -29,7 +29,7 @@ class HsbaPhongKhamService {
         
         // GET OLD FILE
         $item = $this->hsbaPhongKhamRepository->getDetail($params['hsba_id'], $params['phong_id']);
-        $fileItem =  isset($item->$item->upload_file_hoi_benh) ? json_decode($item->upload_file_hoi_benh, true) : [];
+        $fileItem =  isset($item->upload_file_hoi_benh) ? json_decode($item->upload_file_hoi_benh, true) : [];
         
         // Remove File old
         if(!empty($params['oldFiles'])) {
@@ -52,31 +52,23 @@ class HsbaPhongKhamService {
         }
         
         if(!empty($params['files'])) {
-            $arrayExtension = ['jpg', 'jpeg', 'png', 'bmp', 'mp3', 'mp4', 'pdf', 'docx'];
-            foreach($params['files'] as $file) {
-                if(!in_array($file->getClientOriginalExtension(), $arrayExtension)) {
-                    throw new Exception('File chứa định dạng ko cho phép để upload');
-                }
-            }
-            
             foreach ($params['files'] as $file) {
                 $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
-                //$move = $file->move('upload/hsbakp/hoibenh', $imageFileName);
                 $fileUpload[] = $imageFileName;
                 $pathName = $file->getPathName();
                 $mimeType = $file->getMimeType();
                 $result = $s3->putObject($imageFileName, $pathName, $mimeType);
             }
-                
-            if(!empty($fileUpload)) {
-                $params['upload_file_hoi_benh'] = json_encode($fileUpload);
-            }
-            else {
-                $params['upload_file_hoi_benh'] = NULL;
-            }
-            
             unset($params['files']);
         }
+        
+        if(!empty($fileUpload)) {
+            $params['upload_file_hoi_benh'] = json_encode($fileUpload);
+        }
+        else {
+            $params['upload_file_hoi_benh'] = NULL;
+        }
+        
         $this->hsbaPhongKhamRepository->update($hsbaKhoaPhongId, $params);
         $data = [
             'status'    => 'success'
