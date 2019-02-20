@@ -4,7 +4,6 @@ use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\DanhMucTrangThai;
 
-
 class DanhMucTrangThaiRepository extends BaseRepositoryV2
 {
     public function getModel()
@@ -52,26 +51,32 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         return $dataSet;    
     }
 
-    public function getListDanhMucTrangThai($limit = 100, $page = 1)
-    {
+    public function getListDanhMucTrangThai($limit = 100, $page = 1, $dienGiai = '', $khoa = '') {
         $offset = ($page - 1) * $limit;
-            
-        $totalRecord = $this->model->count();
+        
+        $query = $this->model
+                ->where('dien_giai', 'like', '%' . $dienGiai . '%');
+                
+        if($khoa != "") {
+            $query->where('khoa', $khoa);
+        }        
+        
+        $totalRecord = $query->count();
+        
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
             
-            $data = $this->model->limit($limit)
-                    ->offset($offset)
-                    ->orderBy('khoa','asc')
-                    ->orderBy(DB::raw('LENGTH(gia_tri), gia_tri'))
-                    ->get();
+            $data = $query->orderBy('id', 'desc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get();
         } else {
             $totalPage = 0;
             $data = [];
             $page = 0;
             $totalRecord = 0;
         }
-            
+        
         $result = [
             'data'          => $data,
             'page'          => $page,
@@ -82,31 +87,45 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getListDanhMucTrangThaiByKhoa($khoa) {
-        $dataSet = $this->model->where('khoa',$khoa)->get();
-        return $dataSet;
+    public function getDanhMucTrangThaiTheoKhoa($khoa, $limit = 100, $page = 1) {
+        $offset = ($page - 1) * $limit;
+        $query = $this->model->where('khoa', $khoa);
+        $totalRecord = $query->count();
         
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->orderBy('id', 'desc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get();
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+        
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
     }
     
     public function createDanhMucTrangThai(array $input)
     {
-        $composite_unique_count = $this->model->where([
-            ['khoa','=',$input['khoa']], 
-            ['gia_tri','=',$input['gia_tri']]
-            ])->count();
-        if($composite_unique_count == 0) return $this->model->create($input)->id;
-    
+        $id = $this->model->create($input)->id;
+        return $id;
     }
     
     public function updateDanhMucTrangThai($dmttId, array $input)
     {
-        $dmtt = $this->model->findOrFail($dmttId);
-        $composite_unique_count = $this->model->where([
-            ['id','!=',$dmttId], 
-            ['khoa','=',$input['khoa']], 
-            ['gia_tri','=',$input['gia_tri']]
-            ])->count();
-		if($composite_unique_count == 0) $dmtt->update($input);
+        $dmth = $this->model->findOrFail($dmttId);
+		$dmth->update($input);
     }
     
     public function deleteDanhMucTrangThai($dmttId)
@@ -115,9 +134,14 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     }
     
     public function getDanhMucTrangThaiById($id) {
-        $data = $this->model->where('id',$id)->first();
-        return $data;    
-        
+        $result = $this->model->find($id); 
+        return $result; 
+    }
+    
+    public function getAllKhoa()
+    {
+        $result = $this->model->select('khoa')->distinct()->get();
+        return $result;
     }
     
     public function getListHinhThucChuyen()
