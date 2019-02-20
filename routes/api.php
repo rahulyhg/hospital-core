@@ -140,6 +140,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::delete('deleteDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@deleteDanhMucTrangThai');
     	Route::get('getThuocVatTuByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getThuocVatTuByLoaiNhom');
     	Route::get('getThuocVatTuByCode/{maNhom}/{loaiNhom}','DanhMuc\DanhMucController@getThuocVatTuByCode');
+    	Route::get('getListNhomDanhMuc','DanhMuc\DanhMucController@getListNhomDanhMuc');
+    	Route::get('getNhomDmById/{id}','DanhMuc\DanhMucController@getNhomDmById');
+    	Route::post('createNhomDanhMuc','DanhMuc\DanhMucController@createNhomDanhMuc');
+    	Route::post('updateNhomDanhMuc/{id}','DanhMuc\DanhMucController@updateNhomDanhMuc');
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {
