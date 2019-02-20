@@ -133,7 +133,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::post('updateDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@updateDanhMucTongHop');
     	Route::delete('deleteDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@deleteDanhMucTongHop');
     	Route::get('getListDanhMucTrangThai','DanhMuc\DanhMucController@getListDanhMucTrangThai');
-    	Route::get('getListDanhMucTrangThaiByKhoa/{khoa}','DanhMuc\DanhMucController@getListDanhMucTrangThaiByKhoa');
+    	Route::get('getAllKhoaDanhMucTrangThai','DanhMuc\DanhMucController@getAllKhoaDanhMucTrangThai');
+    	Route::get('getDanhMucTrangThaiTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTrangThaiTheoKhoa');
     	Route::get('getDmttById/{dmttId}','DanhMuc\DanhMucController@getDmttById');
     	Route::post('createDanhMucTrangThai','DanhMuc\DanhMucController@createDanhMucTrangThai');
     	Route::post('updateDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@updateDanhMucTrangThai');
