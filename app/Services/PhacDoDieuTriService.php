@@ -13,54 +13,71 @@ class PhacDoDieuTriService
         $this->dmdvRepository = $dmdvRepository;
     }
     
-    public function getListPhacDoDieuTri($limit, $page, $keyword)
+    public function createPhacDoDieuTri(array $input)
     {
-        $data = $this->pddtRepository->getListPhacDoDieuTri($limit, $page, $keyword);
-        
-        return $data;
+        $this->pddtRepository->createPhacDoDieuTri($input);
     }
     
-    public function getPddtById($pddtId)
+    public function getPddtByIcd10Id($icd10Id)
     {
-        $result = $this->pddtRepository->getDataPhacDoDieuTriById($pddtId);
+        $result = $this->pddtRepository->getPddtByIcd10Id($icd10Id);
         if($result['listId']) {
-            $data['pddt'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
-            $data['giaiTrinh'] = $result['giaiTrinh']; 
+            $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
+            $data['pddt'] = $result['data'];
             return $data;
         } else {
             return [];
         }
     }
     
-    public function savePhacDoDieuTri($pddtId, array $input)
+    public function getPddtById($pddtId)
     {
-        $this->pddtRepository->savePhacDoDieuTri($pddtId, $input);
-    }
-    
-    public function getPddtByCode($icd10Code)
-    {
-        $data = $this->pddtRepository->getDataPddtByCode($icd10Code);
-        
-        return new PddtResource($data);
-    }
-    
-    public function getPddtByIcd10Code($icd10Code)
-    {
-        $result = $this->pddtRepository->getPddtByIcd10Code($icd10Code);
+        $result = $this->pddtRepository->getPddtById($pddtId);
         if($result['listId']) {
-            $data = $this->dmdvRepository->getYLenhByListId($result['listId']);
-            $result['yLenh'] = $data;
+            $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
+            $data['obj'] = $result['obj'];
+            return $data;
+        } else {
+            return [];
         }
-        return $result;
     }
     
-    public function saveYLenhGiaiTrinh(array $input)
+    public function updatePhacDoDieuTri($pddtId, array $input)
     {
-        $this->pddtRepository->saveYLenhGiaiTrinh($input);
+        $this->pddtRepository->updatePhacDoDieuTri($pddtId, $input);
     }
     
-    public function confirmGiaiTrinh(array $input)
-    {
-        $this->pddtRepository->confirmGiaiTrinh($input);
-    }
+    // public function getListPhacDoDieuTri($limit, $page, $keyword)
+    // {
+    //     $data = $this->pddtRepository->getListPhacDoDieuTri($limit, $page, $keyword);
+        
+    //     return $data;
+    // }
+    
+    // public function getPddtByCode($icd10Code)
+    // {
+    //     $data = $this->pddtRepository->getDataPddtByCode($icd10Code);
+        
+    //     return new PddtResource($data);
+    // }
+    
+    // public function getPddtByIcd10Code($icd10Code)
+    // {
+    //     $result = $this->pddtRepository->getPddtByIcd10Code($icd10Code);
+    //     if($result['listId']) {
+    //         $data = $this->dmdvRepository->getYLenhByListId($result['listId']);
+    //         $result['yLenh'] = $data;
+    //     }
+    //     return $result;
+    // }
+    
+    // public function saveYLenhGiaiTrinh(array $input)
+    // {
+    //     $this->pddtRepository->saveYLenhGiaiTrinh($input);
+    // }
+    
+    // public function confirmGiaiTrinh(array $input)
+    // {
+    //     $this->pddtRepository->confirmGiaiTrinh($input);
+    // }
 }

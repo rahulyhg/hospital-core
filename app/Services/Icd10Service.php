@@ -13,6 +13,12 @@ class Icd10Service {
     {
         $this->icd10Repository = $icd10Repository;
     }
+    
+    public function getListIcd10($limit, $page, $keyword)
+    {
+        $data = $this->icd10Repository->getListIcd10($limit, $page, $keyword);
+        return $data;
+    }
 
     public function getIcd10ByCode($icd10Code)
     {
@@ -35,6 +41,12 @@ class Icd10Service {
     public function searchIcd10Text($icd10Text)
     {
         $data = $this->icd10Repository->searchIcd10Text($icd10Text);
+        return $data;
+    }
+    
+    public function searchIcd10($keyword)
+    {
+        $data = $this->icd10Repository->searchIcd10($keyword);
         return $data;
     }
 }
