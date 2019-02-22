@@ -22,8 +22,8 @@ class DanhMucTrangThaiFormRequest extends ApiFormRequest
     public function rules()
     {
         return [
-            'khoa'      => 'required|string|unique:danh_muc_trang_thai,gia_tri',
-            'gia_tri'   => 'required|string',
+            'khoa'      => 'required|string',
+            'gia_tri'   => 'required|int',
             'dien_giai' => 'required|string'
         ];
     }

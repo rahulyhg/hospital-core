@@ -20,9 +20,9 @@ class DanhMucDichVuService
         );
     }
     
-    public function getListDanhMucDichVu($limit, $page)
+    public function getListDanhMucDichVu($limit, $page, $loaiNhom)
     {
-        $data = $this->repository->getListDanhMucDichVu($limit, $page);
+        $data = $this->repository->getListDanhMucDichVu($limit, $page, $loaiNhom);
         
         return $data;
     }

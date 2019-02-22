@@ -43,7 +43,7 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getListDanhMucDichVu($limit = 100, $page = 1)
+    public function getListDanhMucDichVu($limit = 100, $page = 1, $loaiNhom = 0)
     {
         $offset = ($page - 1) * $limit;
         
@@ -73,6 +73,10 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
                     ->where('dmth.khoa', '=', 'loai_nhom_dich_vu');
             })
             ->leftJoin('auth_users', 'auth_users.id', '=', 'danh_muc_dich_vu.nguoi_cap_nhat_id');
+        
+        if($loaiNhom) {
+            $query = $query->where('loai_nhom', '=', $loaiNhom);
+        }
             
         $totalRecord = $query->count();
         if($totalRecord) {
