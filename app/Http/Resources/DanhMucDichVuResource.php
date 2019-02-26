@@ -18,7 +18,7 @@ class DanhMucDichVuResource extends Resource
             'id'   => $this->id,
             'ten'    => $this->ten,
             'gia'    => $this->gia,
-            'gia_nhan_dan'    => $this->gia_nhan_dan,
+            // 'gia_nhan_dan'    => $this->gia_nhan_dan,
             'gia_bhyt'    => $this->gia_bhyt,
             'gia_nuoc_ngoai'    => $this->gia_nuoc_ngoai
         ];

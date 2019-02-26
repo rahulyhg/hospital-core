@@ -21,6 +21,12 @@ class BenhVienRepository extends BaseRepositoryV2
         return $dataSet;    
     }
     
+    public function getById($id)
+    {
+        $data = $this->model->findOrFail($id);
+        return $data;    
+    }    
+    
     public function getBenhVienThietLap($benhVienId) {
         $data = [];
         $hospital = $this->model->find($benhVienId);
