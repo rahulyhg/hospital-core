@@ -116,6 +116,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('searchIcd10Text/{icd10Text}','PhongKham\PhongKhamController@searchIcd10Text');
         Route::get('getListHsbaPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListHsbaPhongKham');
         Route::get('getAllCanLamSang/{hsbaId}','PhongKham\PhongKhamController@getAllCanLamSang');
+        Route::get('searchListIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@searchListIcd10ByCode');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
@@ -196,8 +197,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::post('updatePddt/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@updatePddt');
 // 		Route::get('getListPhacDoDieuTri','PhacDoDieuTri\PhacDoDieuTriController@getListPhacDoDieuTri');
 // 		Route::get('getPddtByCode/{icd10Code}','PhacDoDieuTri\PhacDoDieuTriController@getPddtByCode');
-// 		Route::post('saveYLenhGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@saveYLenhGiaiTrinh');
-// 		Route::post('confirmGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@confirmGiaiTrinh');
+		Route::post('saveYLenhGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@saveYLenhGiaiTrinh');
+		Route::post('confirmGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@confirmGiaiTrinh');
     });
     
     Route::group(['prefix' => 'hsbakp'], function () {

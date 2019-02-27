@@ -136,6 +136,42 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $pddt->update($dataPddt);
     }
     
+    public function getPddtByIcd10Code($icd10Code)
+    {
+        $column = [
+            'phac_do_dieu_tri.id',
+            'phac_do_dieu_tri.icd10id',
+            'phac_do_dieu_tri.xet_nghiem',
+            'phac_do_dieu_tri.chan_doan_hinh_anh',
+            'phac_do_dieu_tri.chuyen_khoa',
+            'phac_do_dieu_tri.thuoc',
+            'phac_do_dieu_tri.vat_tu',
+            'icd10.icd10code',
+            'icd10.icd10name'
+        ];
+        $icd10Code = str_replace(' ', '', $icd10Code);
+        $arrIcd10Code = explode(',', $icd10Code);
+        $result = $this->model->join('icd10', 'icd10.icd10id', '=', 'phac_do_dieu_tri.icd10id')
+                                ->whereIn('icd10code', $arrIcd10Code)
+                                ->orderBy('phac_do_dieu_tri.id', 'asc')
+                                ->get($column); 
+          
+        $listId = [];
+        $data = [];
+        if($result) {
+            foreach($result as $obj) {
+                $arrXetNghiem = $obj->xet_nghiem ? explode(',', $obj->xet_nghiem) : []; 
+                $arrChanDoanHinhAnh = $obj->chan_doan_hinh_anh ? explode(',', $obj->chan_doan_hinh_anh) : [];
+                $arrChuyenKhoa = $obj->chuyen_khoa ? explode(',', $obj->chuyen_khoa) : [];
+                $listId = array_merge($listId, $arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa);
+            }
+            $data['listId'] = array_map('intval', $listId);
+            $data['list'] = $result;
+        }
+        
+        return $data;
+    }
+    
 //     public function getListPhacDoDieuTri($limit = 100, $page = 1, $keyword = '')
 //     {
 //         $offset = ($page - 1) * $limit;
@@ -192,110 +228,88 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
 //         return $result;
 //     }
     
-//     public function getPddtByIcd10Code($icd10Code)
-//     {
-//         $icd10Code = str_replace(' ', '', $icd10Code);
-//         $arrIcd10 = explode(',', $icd10Code);
-//         $result = $this->model->whereIn('icd10code', $arrIcd10)
-//                                 ->orderBy('id', 'asc')
-//                                 ->get(); 
-//         $listId = [];
-//         $data['list'] = $result;
-//         if($result) {
-//             foreach($result as $obj) {
-//                 $arrXetNghiem = $obj->xet_nghiem ? json_decode($obj->xet_nghiem) : []; 
-//                 $arrChanDoanHinhAnh = $obj->chan_doan_hinh_anh ? json_decode($obj->chan_doan_hinh_anh) : [];
-//                 $arrChuyenKhoa = $obj->chuyen_khoa ? json_decode($obj->chuyen_khoa) : [];
-//                 $listId = array_merge($listId, $arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa);
-//             }
-//             $data['listId'] = array_map('intval', $listId);
-//         }
+    public function saveYLenhGiaiTrinh(array $input)
+    {
+        $arr = [];
+        foreach($input['icd10code'] as $item) {
+            $str = explode('-', $item);
+            
+            foreach($input['dataYLenh'] as $yLenh) {
+                if($yLenh['id'] == $str[1]) {
+                    $arr[$str[0]][$yLenh['id']] = $yLenh['loai_nhom'] . '---' . $yLenh['id'] . '--' . $yLenh['ten'] . '|' . $input['username'] . '|' . Carbon::now()->toDateTimeString();
+                    break;
+                }
+            }
+        }
         
-//         return $data;
-//     }
+        foreach($arr as $id=>$item) {
+            $pddt = $this->model->findOrFail($id);
+            $data = json_decode($pddt->giai_trinh, true);
+            $dataTmp = json_decode($pddt->giai_trinh_tmp, true);
+            if($data) {
+                $data = array_merge($data, $item);
+                $dataTmp = array_merge($dataTmp, $item);
+            }
+            else {
+                $data = $item;
+                $dataTmp = $item;
+            }
+            $params['giai_trinh'] = json_encode($data);
+            $params['giai_trinh_tmp'] = json_encode($dataTmp);
+		    $pddt->update($params);
+        }
+    }
     
-//     public function saveYLenhGiaiTrinh(array $input)
-//     {
-//         $arr = [];
-//         foreach($input['icd10code'] as $item) {
-//             $str = explode('-', $item);
+    public function confirmGiaiTrinh(array $input)
+    {
+        $pddt = $this->model->findOrFail($input['id']);
+        $data = json_decode($pddt->giai_trinh, true);
+        if($input['type'] == 'remove') {
+            foreach($data as $keyItem => $dataItem) {
+                foreach($input['data'] as $keyInput => $dataInput) {
+                    if(strpos($dataItem, $dataInput) !== false) {
+                        unset($data[$keyItem]);
+                    }
+                }
+            }
             
-//             foreach($input['dataYLenh'] as $yLenh) {
-//                 if($yLenh['id'] == $str[1]) {
-//                     $arr[$str[0]][$yLenh['id']] = $yLenh['loai_nhom'] . '---' . $yLenh['id'] . '--' . $yLenh['ten'] . '|' . $input['username'] . '|' . Carbon::now()->toDateTimeString();
-//                     break;
-//                 }
-//             }
-//         }
-        
-//         foreach($arr as $id=>$item) {
-//             $pddt = $this->model->findOrFail($id);
-//             $data = json_decode($pddt->giai_trinh, true);
-//             $dataTmp = json_decode($pddt->giai_trinh_tmp, true);
-//             if($data) {
-//                 $data = array_merge($data, $item);
-//                 $dataTmp = array_merge($dataTmp, $item);
-//             }
-//             else {
-//                 $data = $item;
-//                 $dataTmp = $item;
-//             }
-//             $params['giai_trinh'] = json_encode($data);
-//             $params['giai_trinh_tmp'] = json_encode($dataTmp);
-// 		    $pddt->update($params);
-//         }
-//     }
-    
-//     public function confirmGiaiTrinh(array $input)
-//     {
-//         $pddt = $this->model->findOrFail($input['id']);
-//         $data = json_decode($pddt->giai_trinh, true);
-//         if($input['type'] == 'remove') {
-//             foreach($data as $keyItem => $dataItem) {
-//                 foreach($input['data'] as $keyInput => $dataInput) {
-//                     if(strpos($dataItem, $dataInput) !== false) {
-//                         unset($data[$keyItem]);
-//                     }
-//                 }
-//             }
+            $pddt->giai_trinh = json_encode($data);
+            $pddt->save();
+        }
+        else {
+            $arrXetNghiem = json_decode($pddt->xet_nghiem, true);
+            $arrChanDoanHinhAnh = json_decode($pddt->chuan_doan_hinh_anh, true);
+            $arrChuyenKhoa = json_decode($pddt->chuyen_khoa, true);
             
-//             $pddt->giai_trinh = json_encode($data);
-//             $pddt->save();
-//         }
-//         else {
-//             $arrXetNghiem = json_decode($pddt->xet_nghiem, true);
-//             $arrChanDoanHinhAnh = json_decode($pddt->chuan_doan_hinh_anh, true);
-//             $arrChuyenKhoa = json_decode($pddt->chuyen_khoa, true);
-            
-//             foreach($data as $keyItem => $dataItem) {
-//                 foreach($input['data'] as $keyInput => $dataInput) {
-//                     if(strpos($dataItem, $dataInput) !== false) {
-//                         unset($data[$keyItem]);
-//                     }
+            foreach($data as $keyItem => $dataItem) {
+                foreach($input['data'] as $keyInput => $dataInput) {
+                    if(strpos($dataItem, $dataInput) !== false) {
+                        unset($data[$keyItem]);
+                    }
                     
-//                     $arrTemp = explode('---', $dataInput);
+                    $arrTemp = explode('---', $dataInput);
                     
-//                     if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
-//                         $arrXetNghiem[] = $arrTemp[1];
-//                     }
-//                     if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
-//                         $arrChanDoanHinhAnh[] = $arrTemp[1];
-//                     }
-//                     if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
-//                         $arrChuyenKhoa[] = $arrTemp[1];
-//                     }
+                    if($arrTemp[0] == self::Y_LENH_CODE_XET_NGHIEM) {
+                        $arrXetNghiem[] = $arrTemp[1];
+                    }
+                    if($arrTemp[0] == self::Y_LENH_CODE_CHAN_DOAN_HINH_ANH) {
+                        $arrChanDoanHinhAnh[] = $arrTemp[1];
+                    }
+                    if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
+                        $arrChuyenKhoa[] = $arrTemp[1];
+                    }
                     
-//                     if(count($arrXetNghiem) > 0)
-//                         $dataPddt['xet_nghiem'] = json_encode($arrXetNghiem);
-//                     if(count($arrChanDoanHinhAnh) > 0)
-//                         $dataPddt['chan_doan_hinh_anh'] = json_encode($arrChanDoanHinhAnh);
-//                     if(count($arrChuyenKhoa) > 0)
-//                         $dataPddt['chuyen_khoa'] = json_encode($arrChuyenKhoa);
+                    if(count($arrXetNghiem) > 0)
+                        $dataPddt['xet_nghiem'] = json_encode($arrXetNghiem);
+                    if(count($arrChanDoanHinhAnh) > 0)
+                        $dataPddt['chan_doan_hinh_anh'] = json_encode($arrChanDoanHinhAnh);
+                    if(count($arrChuyenKhoa) > 0)
+                        $dataPddt['chuyen_khoa'] = json_encode($arrChuyenKhoa);
                     
-//                     $dataPddt['giai_trinh'] = json_encode($data);
-//             		$pddt->update($dataPddt);
-//                 }
-//             }
-//         }
-//     }
+                    $dataPddt['giai_trinh'] = json_encode($data);
+            		$pddt->update($dataPddt);
+                }
+            }
+        }
+    }
 }

@@ -49,4 +49,10 @@ class Icd10Service {
         $data = $this->icd10Repository->searchIcd10($keyword);
         return $data;
     }
+    
+    public function searchListIcd10ByCode($icd10Text)
+    {
+        $data = $this->icd10Repository->searchListIcd10ByCode($icd10Text);
+        return $data;
+    }
 }

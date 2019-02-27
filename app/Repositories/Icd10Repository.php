@@ -157,4 +157,19 @@ class Icd10Repository extends BaseRepositoryV2
         $data = $query->orderBy('icd10id', 'asc')->get($column);
         return $data;
     }
+    
+    public function searchListIcd10ByCode($icd10Code)
+    {
+        $column = [
+            'icd10id',
+            'icd10code',
+            'icd10name'
+        ];
+        
+        $icd10Code = str_replace(' ', '', $icd10Code);
+        $arr = explode(',', $icd10Code);
+        
+        $data = $this->model->whereIn('icd10code', $arr)->orderBy('icd10id', 'asc')->get($column);
+        return $data;
+    }
 }

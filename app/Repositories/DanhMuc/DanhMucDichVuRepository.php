@@ -16,6 +16,7 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
     const XET_NGHIEM = 'G1';
     const CHAN_DOAN_HINH_ANH = 'G2';
     const CHUYEN_KHOA = 'G3';
+    const CAN_LAM_SANG = [2, 3, 4];
     
     public function getModel()
     {
@@ -211,5 +212,6 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
     {
         $data = $this->model->where('ma',$code)->first();
         return $data;
-    }    
+    } 
+    
 }

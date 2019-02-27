@@ -47,6 +47,18 @@ class PhacDoDieuTriService
         $this->pddtRepository->updatePhacDoDieuTri($pddtId, $input);
     }
     
+    public function getPddtByIcd10Code($icd10Code)
+    {
+        $result = $this->pddtRepository->getPddtByIcd10Code($icd10Code);
+        if($result['listId']) {
+            $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
+            $data['list'] = $result['list'];
+            return $data;
+        } else {
+            return [];
+        }
+    }
+    
     // public function getListPhacDoDieuTri($limit, $page, $keyword)
     // {
     //     $data = $this->pddtRepository->getListPhacDoDieuTri($limit, $page, $keyword);
@@ -61,23 +73,13 @@ class PhacDoDieuTriService
     //     return new PddtResource($data);
     // }
     
-    // public function getPddtByIcd10Code($icd10Code)
-    // {
-    //     $result = $this->pddtRepository->getPddtByIcd10Code($icd10Code);
-    //     if($result['listId']) {
-    //         $data = $this->dmdvRepository->getYLenhByListId($result['listId']);
-    //         $result['yLenh'] = $data;
-    //     }
-    //     return $result;
-    // }
+    public function saveYLenhGiaiTrinh(array $input)
+    {
+        $this->pddtRepository->saveYLenhGiaiTrinh($input);
+    }
     
-    // public function saveYLenhGiaiTrinh(array $input)
-    // {
-    //     $this->pddtRepository->saveYLenhGiaiTrinh($input);
-    // }
-    
-    // public function confirmGiaiTrinh(array $input)
-    // {
-    //     $this->pddtRepository->confirmGiaiTrinh($input);
-    // }
+    public function confirmGiaiTrinh(array $input)
+    {
+        $this->pddtRepository->confirmGiaiTrinh($input);
+    }
 }
