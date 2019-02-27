@@ -125,4 +125,25 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
             
         return $result;
     }
+    
+    public function getAllThuocVatTu()
+    {
+        $where=[
+            ['danh_muc_thuoc_vat_tu.trang_thai','=',1],
+            //['hoat_chat.trang_thai','=',1],
+            ];
+        $column=[
+            'danh_muc_thuoc_vat_tu.*',
+            //'hoat_chat.ten as hoat_chat',
+            'don_vi_tinh.ten as don_vi_tinh',
+            ];
+        $result = $this->model
+                    ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
+                    // ->leftJoin('hoat_chat', function($join) {
+                    //     $join->on(DB::raw("hoat_chat.id"), DB::raw("="), DB::raw("danh_muc_thuoc_vat_tu.hoat_chat_id::INTEGER ")); })
+                    ->where($where)
+                    ->get($column);
+                    
+        return $result;
+    }
 }
