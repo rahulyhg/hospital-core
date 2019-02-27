@@ -205,12 +205,12 @@ class SttDonTiepService
             } else {
                 $info['tu_ngay'] = $qrCodeParts[6];
             }
-            if($qrCodeParts[7]){
-                $denNgay = \DateTime::createFromFormat('d/m/Y', $qrCodeParts[7]);
-                $info['den_ngay'] = $denNgay->format('Y-m-d');
-            } else {
-                $info['den_ngay'] = $qrCodeParts[7];
-            }
+            // if($qrCodeParts[7]){
+            //     $denNgay = \DateTime::createFromFormat('d/m/Y', $qrCodeParts[7]);
+            //     $info['den_ngay'] = $denNgay->format('Y-m-d');
+            // } else {
+            //     $info['den_ngay'] = $qrCodeParts[7];
+            // }
             if($qrCodeParts[8]){
                 $ngayCap = \DateTime::createFromFormat('d/m/Y', $qrCodeParts[8]);
                 $info['ngay_cap'] = $ngayCap->format('Y-m-d');
