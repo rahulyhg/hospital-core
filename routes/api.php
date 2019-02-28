@@ -225,7 +225,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		
  		Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
  		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
- 		Route::get('getThuocVatTuES/{keyWords}','Kho\KhoController@getThuocVatTuES');
+ 		Route::get('searchThuocVatTuByKeywords/{keyWords}','Kho\KhoController@searchThuocVatTuByKeywords');
     });
     
     Route::group(['prefix' => 'phieunhapkho'], function () {

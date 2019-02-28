@@ -94,9 +94,9 @@ class KhoController extends APIController
         return $this->respond($data);
     }
     
-    public function getThuocVatTuES($keyWords)
+    public function searchThuocVatTuByKeywords($keyWords)
     {
-        $data = $this->danhMucThuocVatTuService->getThuocVatTuES($keyWords);
+        $data = $this->danhMucThuocVatTuService->searchThuocVatTuByKeywords($keyWords);
         return $this->respond($data);
     }    
 }

@@ -122,7 +122,7 @@ class DanhMucThuocVatTuService
                                 'id'                    => $item->id,
                                 'nhom_danh_muc_id'      => $item->nhom_danh_muc_id,
                                 'ten'                   => $item->ten,
-                                'ten_khong_dau'         => Util::convertViToEn($item->ten),
+                                'ten_khong_dau'         => Util::convertViToEn(strtolower($item->ten)),
                                 'ten_bhyt'              => $item->ten_bhyt,
                                 'ten_nuoc_ngoai'        => $item->ten_nuoc_ngoai,
                                 'ky_hieu'               => $item->ky_hieu,
@@ -152,7 +152,7 @@ class DanhMucThuocVatTuService
         };
     }
     
-    public function getThuocVatTuES($keyWords)
+    public function searchThuocVatTuByKeywords($keyWords)
     {
         $params = [
             'index' => 'dmtvt',
@@ -160,7 +160,7 @@ class DanhMucThuocVatTuService
             'body' => [
                 'query' => [
                     'wildcard' => [
-                        'ten_khong_dau' => '*'.Util::convertViToEn(strtolower($keyWords)).'*'
+                        'ten' => '*'.Util::convertViToEn(strtolower($keyWords)).'*'
                     ]
                 ]
             ]
