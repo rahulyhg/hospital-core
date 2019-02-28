@@ -160,7 +160,7 @@ class DanhMucThuocVatTuService
             'body' => [
                 'query' => [
                     'wildcard' => [
-                        'ten' => '*'.Util::convertViToEn(strtolower($keyWords)).'*'
+                        'ten' => '*'.$keyWords.'*'
                     ]
                 ]
             ]
