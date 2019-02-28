@@ -11,6 +11,7 @@ use App\Services\Icd10Service;
 use App\Services\YLenhService;
 use App\Services\PhacDoDieuTriService;
 use App\Services\PhieuYLenhService;
+use App\Services\DanhMucDichVuService;
 use Validator;
 use App\Http\Requests\UploadFileFormRequest;
 
@@ -25,7 +26,8 @@ class PhongKhamController extends APIController
         Icd10Service $icd10Service,
         YLenhService $yLenhService,
         PhacDoDieuTriService $pddtService,
-        PhieuYLenhService $phieuYLenhService
+        PhieuYLenhService $phieuYLenhService,
+        DanhMucDichVuService $dmdvService
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
@@ -36,6 +38,7 @@ class PhongKhamController extends APIController
         $this->yLenhService = $yLenhService;
         $this->pddtService = $pddtService;
         $this->phieuYLenhService = $phieuYLenhService;
+        $this->dmdvService = $dmdvService;
     }
     
     public function update($hsbaKhoaPhongId, Request $request)
@@ -351,5 +354,17 @@ class PhongKhamController extends APIController
         }
         
         return $this->respond($data);
-    }    
+    } 
+    
+    public function searchListIcd10ByCode($icd10Code)
+    {
+        if($icd10Code) {
+            $data = $this->icd10Service->searchListIcd10ByCode($icd10Code);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }
