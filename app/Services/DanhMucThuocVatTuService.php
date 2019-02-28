@@ -3,13 +3,20 @@
 namespace App\Services;
 
 use App\Repositories\DanhMuc\DanhMucThuocVatTuRepository;
+use App\Repositories\HoatChatRepository;
+use App\Repositories\Redis\DanhMucThuocVatTu\DanhMucThuocVatTuRepository as DanhMucThuocVatTuRedisRepository;
+
 use Illuminate\Http\Request;
+use App\Helper\Util;
+use Cviebrock\LaravelElasticsearch\Facade as Elasticsearch;
 
 class DanhMucThuocVatTuService
 {
-    public function __construct(DanhMucThuocVatTuRepository $repository)
+    public function __construct(DanhMucThuocVatTuRepository $repository,DanhMucThuocVatTuRedisRepository $danhMucThuocVatTuRedisRepository,HoatChatRepository $hoatChatRepository)
     {
-        $this->repository = $repository;        
+        $this->repository = $repository;
+        $this->danhMucThuocVatTuRedisRepository = $danhMucThuocVatTuRedisRepository;
+        $this->hoatChatRepository = $hoatChatRepository;
     }
     
     // public function getListDanhMucThuocVatTu($limit, $page)
@@ -56,4 +63,116 @@ class DanhMucThuocVatTuService
         
         return $data;
     }
+    
+    public function pushToRedis()
+    {
+        $data = $this->repository->getAllThuocVatTu();
+        foreach($data as $item){
+            $arrayItem=[
+                'id'                    => (string)$item->id ?? '-',
+                'nhom_danh_muc_id'      => (string)$item->nhom_danh_muc_id ?? '-',
+                'ten'                   => (string)$item->ten ?? '-', 
+                'ten_bhyt'              => $item->ten_bhyt ?? '-',
+                'ten_nuoc_ngoai'        => (string)$item->ten_nuoc_ngoai ?? '-',
+                'ky_hieu'               => (string)$item->ky_hieu ?? '-',
+                'ma_bhyt'               => (string)$item->ma_bhyt ?? '-',
+                'don_vi_tinh_id'        => (string)$item->don_vi_tinh_id ?? '-',
+                'stt'                   => $item->stt ?? '-',
+                'nhan_vien_tao'         => (string)$item->nhan_vien_tao ?? '-',
+                'nhan_vien_cap_nhat'    => (string)$item->nhan_vien_cap_nhat ?? '-',
+                'thoi_gian_tao'         => (string)$item->thoi_gian_tao ?? '-',
+                'thoi_gian_cap_nhat'    => (string)$item->thoi_gian_cap_nhat ?? '-',
+                'hoat_chat_id'          => (string)$item->hoat_chat_id ?? '-',
+                'biet_duoc_id'          => (string)$item->biet_duoc_id ?? '-',
+                'nong_do'               => (string)$item->nong_do ?? '-',
+                'duong_dung'            => (string)$item->duong_dung ?? '-',
+                'dong_goi'              => (string)$item->dong_goi ?? '-',
+                'hang_san_xuat'         => (string)$item->hang_san_xuat ?? '-',
+                'nuoc_san_xuat'         => (string)$item->nuoc_san_xuat ?? '-',
+                'trang_thai'            => (string)$item->trang_thai ?? '-'
+                ];            
+            $this->danhMucThuocVatTuRedisRepository->_init();
+            //$suffix = $item['nhom_danh_muc_id'].':'.$item['id'].":".Util::convertViToEn(str_replace(" ","_",strtolower($item['ten'])));
+            $suffix='test';
+            $this->danhMucThuocVatTuRedisRepository->hmset($suffix,$arrayItem);            
+        };
+    }
+    
+    public function getListByKeywords($keyWords)
+    {
+        $this->danhMucThuocVatTuRedisRepository->_init();
+        $data = $this->danhMucThuocVatTuRedisRepository->getListByKeywords($keyWords);
+        return $data;
+    }
+    
+    public function getAllThuocVatTu()
+    {
+        $data = $this->repository->getAllThuocVatTu();
+        return $data;
+    }
+    
+    public function pushToElasticSearch()
+    {
+        $data = $this->repository->getAllThuocVatTu();
+        foreach($data as $item) {
+            $hoatChat = $this->hoatChatRepository->getById(intval($item->hoat_chat_id));
+            
+            $params = [
+                            'body' => [
+                                'id'                    => $item->id,
+                                'nhom_danh_muc_id'      => $item->nhom_danh_muc_id,
+                                'ten'                   => $item->ten,
+                                'ten_khong_dau'         => Util::convertViToEn(strtolower($item->ten)),
+                                'ten_bhyt'              => $item->ten_bhyt,
+                                'ten_nuoc_ngoai'        => $item->ten_nuoc_ngoai,
+                                'ky_hieu'               => $item->ky_hieu,
+                                'ma_bhyt'               => $item->ma_bhyt,
+                                'don_vi_tinh_id'        => $item->don_vi_tinh_id,
+                                'don_vi_tinh'           => $item->don_vi_tinh,
+                                'stt'                   => $item->stt,
+                                'nhan_vien_tao'         => $item->nhan_vien_tao,
+                                'nhan_vien_cap_nhat'    => $item->nhan_vien_cap_nhat,
+                                'thoi_gian_tao'         => $item->thoi_gian_tao,
+                                'thoi_gian_cap_nhat'    => $item->thoi_gian_cap_nhat,
+                                'hoat_chat_id'          => $item->hoat_chat_id,
+                                'hoat_chat'             => $hoatChat?$hoatChat['ten']:'',
+                                'biet_duoc_id'          => $item->biet_duoc_id,
+                                'nong_do'               => $item->nong_do,
+                                'duong_dung'            => $item->duong_dung,
+                                'dong_goi'              => $item->dong_goi,
+                                'hang_san_xuat'         => $item->hang_san_xuat,
+                                'nuoc_san_xuat'         => $item->nuoc_san_xuat,
+                                'trang_thai'            => $item->trang_thai
+                            ],
+                            'index' => 'dmtvt',
+                            'type' => 'doc',
+                            'id' => $item->id,
+                        ];
+            $return = Elasticsearch::index($params);  
+        };
+    }
+    
+    public function searchThuocVatTuByKeywords($keyWords)
+    {
+        $params = [
+            'index' => 'dmtvt',
+            'type' => 'doc',
+            'body' => [
+                'query' => [
+                    'wildcard' => [
+                        'ten' => '*'.$keyWords.'*'
+                    ]
+                ]
+            ]
+        ];
+        $response = Elasticsearch::search($params);   
+        
+        $result=[];
+        foreach($response['hits']['hits'] as $item) {
+            $result[] = $item['_source'];
+        };
+        
+        return $result;        
+    }    
+    
 }

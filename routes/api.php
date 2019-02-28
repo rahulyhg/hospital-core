@@ -222,6 +222,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateKho/{id}','Kho\KhoController@updateKho');
      	Route::delete('deleteKho/{id}','Kho\KhoController@deleteKho');
  		Route::get('getKhoById/{id}','Kho\KhoController@getKhoById');
+ 		
+ 		Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
+ 		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
+ 		Route::get('searchThuocVatTuByKeywords/{keyWords}','Kho\KhoController@searchThuocVatTuByKeywords');
+    });
+    
+    Route::group(['prefix' => 'phieunhapkho'], function () {
+		Route::post('createPhieuNhapKho','PhieuNhapKho\PhieuNhapKhoController@createPhieuNhapKho');
     });    
     
     Route::group(['prefix' => 'nhacungcap'], function () {
