@@ -223,7 +223,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::delete('deleteKho/{id}','Kho\KhoController@deleteKho');
  		Route::get('getKhoById/{id}','Kho\KhoController@getKhoById');
  		
- 		Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
+ 		//Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
  		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
  		Route::get('searchThuocVatTuByKeywords/{keyWords}','Kho\KhoController@searchThuocVatTuByKeywords');
     });

@@ -82,11 +82,11 @@ class KhoController extends APIController
         return $this->respond($data);
     }
     
-    public function getListThuocVatTu($keyWords)
-    {
-        $data = $this->danhMucThuocVatTuService->getListByKeywords($keyWords);
-        return $this->respond($data);
-    }
+    // public function getListThuocVatTu($keyWords)
+    // {
+    //     $data = $this->danhMucThuocVatTuService->getListByKeywords($keyWords);
+    //     return $this->respond($data);
+    // }
     
     public function getAllThuocVatTu()
     {
