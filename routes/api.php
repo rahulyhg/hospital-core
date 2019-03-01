@@ -116,6 +116,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('searchIcd10Text/{icd10Text}','PhongKham\PhongKhamController@searchIcd10Text');
         Route::get('getListHsbaPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListHsbaPhongKham');
         Route::get('getAllCanLamSang/{hsbaId}','PhongKham\PhongKhamController@getAllCanLamSang');
+        Route::get('searchListIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@searchListIcd10ByCode');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
@@ -188,10 +189,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'phacdodieutri'], function () {
-		Route::get('getListPhacDoDieuTri','PhacDoDieuTri\PhacDoDieuTriController@getListPhacDoDieuTri');
-		Route::get('getPddtById/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@getPddtById');
-		Route::post('savePddt/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@savePddt');
-		Route::get('getPddtByCode/{icd10Code}','PhacDoDieuTri\PhacDoDieuTriController@getPddtByCode');
+        Route::get('getListIcd10','PhacDoDieuTri\PhacDoDieuTriController@getListIcd10');
+        Route::get('searchIcd10/{keyword}','PhacDoDieuTri\PhacDoDieuTriController@searchIcd10');
+        Route::post('createPddt','PhacDoDieuTri\PhacDoDieuTriController@createPddt');
+        Route::get('getPddtByIcd10Id/{icd10Id}','PhacDoDieuTri\PhacDoDieuTriController@getPddtByIcd10Id');
+        Route::get('getPddtById/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@getPddtById');
+        Route::post('updatePddt/{pddtId}','PhacDoDieuTri\PhacDoDieuTriController@updatePddt');
+// 		Route::get('getListPhacDoDieuTri','PhacDoDieuTri\PhacDoDieuTriController@getListPhacDoDieuTri');
+// 		Route::get('getPddtByCode/{icd10Code}','PhacDoDieuTri\PhacDoDieuTriController@getPddtByCode');
 		Route::post('saveYLenhGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@saveYLenhGiaiTrinh');
 		Route::post('confirmGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@confirmGiaiTrinh');
     });
@@ -221,6 +226,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateKho/{id}','Kho\KhoController@updateKho');
      	Route::delete('deleteKho/{id}','Kho\KhoController@deleteKho');
  		Route::get('getKhoById/{id}','Kho\KhoController@getKhoById');
+ 		
+ 		//Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
+ 		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
+ 		Route::get('searchThuocVatTuByKeywords/{keyWords}','Kho\KhoController@searchThuocVatTuByKeywords');
+    });
+    
+    Route::group(['prefix' => 'phieunhapkho'], function () {
+		Route::post('createPhieuNhapKho','PhieuNhapKho\PhieuNhapKhoController@createPhieuNhapKho');
     });    
     
     Route::group(['prefix' => 'nhacungcap'], function () {
