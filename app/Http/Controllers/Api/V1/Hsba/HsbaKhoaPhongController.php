@@ -31,7 +31,7 @@ class HsbaKhoaPhongController extends APIController
         $limit = $request->query('limit', 20);
         $page = $request->query('page', 1);
         $phongId = $request->query('phongId', null);
-        
+
         // optional params        
         $thoiGianVaoVienFrom = $request->query('thoi_gian_vao_vien_from',null);
         $thoiGianVaoVienTo = $request->query('thoi_gian_vao_vien_to',null);
