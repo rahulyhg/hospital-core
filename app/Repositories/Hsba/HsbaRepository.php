@@ -396,5 +396,14 @@ class HsbaRepository extends BaseRepositoryV2
 		$hsba->update($input);
     }
     
-    
+    public function getById($hsbaId)
+    {
+        $where = [
+            ['hsba.id', '=', $hsbaId],
+        ];
+        
+        $result = $this->model->where($where)->get()->first();
+        
+        return $result;
+    }
 }

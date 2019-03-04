@@ -69,10 +69,10 @@ class DonTiepController extends APIController
         return $this->respond($listBenhNhan);
     }
     
-    public function getByHsbaId($hsbaId) 
+    public function getByHsbaId($hsbaId, $phongId) 
     {
         if(is_numeric($hsbaId)) {
-            $data = $this->hsbaKhoaPhongService->getByHsbaId($hsbaId);
+            $data = $this->hsbaKhoaPhongService->getByHsbaId($hsbaId, $phongId);
             if($data['ms_bhyt']) {
                 $input['ms_bhyt'] = $data['ms_bhyt'];
                 $input['vien_phi_id'] = $data['vien_phi_id'];

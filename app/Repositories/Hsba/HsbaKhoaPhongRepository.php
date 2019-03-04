@@ -10,6 +10,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
 {
     const TAT_CA_TRANG_THAI = -1;
     const BENH_AN_KHAM_BENH = 24;
+    const BENH_AN_KHONG_KHAM_BENH = 0;
     
     // Params KhoaPhong
     private $benhVienId = null;
@@ -89,7 +90,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         
         $where = [
             ['hsba_khoa_phong.benh_vien_id', '=', $this->benhVienId],
-            ['hsba_khoa_phong.loai_benh_an', '=', $loaiBenhAn]
+            ['hsba_khoa_phong.loai_benh_an', '<>', self::BENH_AN_KHONG_KHAM_BENH]
         ];
         
         if ($this->phongId === null) {
@@ -97,7 +98,7 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         } else {
             $where[] = ['hsba_khoa_phong.phong_hien_tai', '=', $this->phongId];
         }
-        
+
         $column = [
             'hsba.id as hsba_id',
             'hsba_khoa_phong.id as hsba_khoa_phong_id',
@@ -116,6 +117,27 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'vien_phi.trang_thai as vien_phi_trang_thai',
             'vien_phi.loai_vien_phi'
         ];
+        
+        // echo "<pre>";
+        // print_r($where);
+        // echo "</pre>";
+        // die();
+        
+        // $query = $this->model->where($where);
+        // $data = $query->orderBy('thoi_gian_vao_vien', 'asc')
+        //                 ->offset($offset)
+        //                 ->limit($limit)
+        //                 ->get();
+                        
+        // $data->each(function ($item, $key) {
+        //     $item->hsba_id = sprintf('%012d', $item->hsba_id);
+        //     $item->so_thu_tu = sprintf('%03d', $item->so_thu_tu);
+        // });
+        
+        // echo "<pre>";
+        // print_r($data);
+        // echo "</pre>";
+        // die();
         
         $query = $this->model
             ->leftJoin('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
@@ -145,7 +167,6 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         }
             
         $query = $query->where($where);
-        
         
         if ($this->khoangThoiGianVaoVien || $this->khoangThoiGianRaVien) {
             if ($this->khoangThoiGianVaoVien['from'] && $this->khoangThoiGianVaoVien['to']) {
@@ -429,11 +450,12 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getByHsbaId($hsbaId)
+    public function getByHsbaId($hsbaId, $phongId)
     {
         $where = [
-            ['hsba_khoa_phong.loai_benh_an', '=', self::BENH_AN_KHAM_BENH],
-            ['hsba.id', '=', $hsbaId]
+            ['hsba_khoa_phong.loai_benh_an', '<>', self::BENH_AN_KHONG_KHAM_BENH],
+            ['hsba.id', '=', $hsbaId],
+            ['hsba_khoa_phong.phong_hien_tai', '=', $phongId]
         ];
         
         $column = [
