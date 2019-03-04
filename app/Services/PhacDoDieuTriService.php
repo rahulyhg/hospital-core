@@ -4,13 +4,20 @@ namespace App\Services;
 use App\Http\Resources\PddtResource;
 use App\Repositories\PhacDoDieuTriRepository;
 use App\Repositories\DanhMuc\DanhMucDichVuRepository;
+use App\Services\DanhMucThuocVatTuService;
 
 class PhacDoDieuTriService
 {
-    public function __construct(PhacDoDieuTriRepository $pddtRepository, DanhMucDichVuRepository $dmdvRepository)
+    public function __construct
+    (
+        PhacDoDieuTriRepository $pddtRepository, 
+        DanhMucDichVuRepository $dmdvRepository,
+        DanhMucThuocVatTuService $danhMucThuocVatTuService
+    )
     {
         $this->pddtRepository = $pddtRepository;
         $this->dmdvRepository = $dmdvRepository;
+        $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
     }
     
     public function createPhacDoDieuTri(array $input)
@@ -21,20 +28,33 @@ class PhacDoDieuTriService
     public function getPddtByIcd10Id($icd10Id)
     {
         $result = $this->pddtRepository->getPddtByIcd10Id($icd10Id);
-        if($result['listId']) {
-            $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
-            $data['pddt'] = $result['data'];
-            return $data;
-        } else {
-            return [];
+        $data = [];
+        
+        if($result['listIdCls']) {
+            $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listIdCls']);
+            $data['list'] = $result['list'];
         }
+        
+        if($result['listIdTvt']) {
+            $data['thuocVatTu'] = $this->danhMucThuocVatTuService->searchThuocVatTuByListId($result['listIdTvt']);
+            $data['list'] = $result['list'];
+        }
+        
+        return $data;
     }
     
     public function getPddtById($pddtId)
     {
         $result = $this->pddtRepository->getPddtById($pddtId);
         if($result['listId']) {
-            $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
+            if($result['obj']->loai_nhom == 1) {
+                $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
+                $data['thuocVatTu'] = [];
+            } else {
+                $data['yLenh'] = [];
+                $data['thuocVatTu'] = $this->danhMucThuocVatTuService->searchThuocVatTuByListId($result['listId']);
+            }
+            
             $data['obj'] = $result['obj'];
             return $data;
         } else {
@@ -50,13 +70,23 @@ class PhacDoDieuTriService
     public function getPddtByIcd10Code($icd10Code)
     {
         $result = $this->pddtRepository->getPddtByIcd10Code($icd10Code);
-        if($result['listId']) {
-            $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listId']);
+        $data = [];
+        
+        if($result) {
+            if($result['listIdCls'])
+                $data['yLenh'] = $this->dmdvRepository->getYLenhByListId($result['listIdCls']);
+            else 
+                $data['yLenh'] = [];
+                
+            if($result['listIdTvt']) 
+                $data['thuocVatTu'] = $this->danhMucThuocVatTuService->searchThuocVatTuByListId($result['listIdTvt']);
+            else
+                $data['thuocVatTu'] = [];
+                
             $data['list'] = $result['list'];
-            return $data;
-        } else {
-            return [];
         }
+        
+        return $data;
     }
     
     // public function getListPhacDoDieuTri($limit, $page, $keyword)

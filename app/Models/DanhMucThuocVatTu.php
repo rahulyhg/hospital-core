@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DanhMucThuocVatTu extends Model
 {
     //
-    protected $table='danh_muc_thuoc_vat_tu';
+    protected $table='danh_muc_thuoc_vat_tu_bk';
     
     protected $primaryKey='id';
     

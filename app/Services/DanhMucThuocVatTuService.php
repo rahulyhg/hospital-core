@@ -156,6 +156,8 @@ class DanhMucThuocVatTuService
             'index' => 'dmtvt',
             'type' => 'doc',
             'body' => [
+                'from' => 0,
+                'size' => 1000,
                 'query' => [
                     'wildcard' => [
                         'ten' => '*'.$keyWords.'*'
@@ -171,6 +173,31 @@ class DanhMucThuocVatTuService
         };
         
         return $result;        
-    }    
+    }  
+    
+    public function searchThuocVatTuByListId(array $listId)
+    {
+        $params = [
+            'index' => 'dmtvt',
+            'type' => 'doc',
+            'body' => [
+                'from' => 0,
+                'size' => 1000,
+                'query' => [
+                    'terms' => [
+                        '_id' => $listId
+                    ]
+                ]
+            ]
+        ];
+        $response = Elasticsearch::search($params);   
+        
+        $result=[];
+        foreach($response['hits']['hits'] as $item) {
+            $result[] = $item['_source'];
+        };
+        
+        return $result;        
+    } 
     
 }
