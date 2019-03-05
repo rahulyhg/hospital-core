@@ -97,10 +97,9 @@ class HsbaKhoaPhongService
         $this->hsbaKhoaPhongRepository->update($hsbaKhoaPhongId, $params);
     }
     
-    public function getByHsbaId($hsbaId)
+    public function getByHsbaId($hsbaId, $phongId)
     {
-        $data = $this->hsbaKhoaPhongRepository->getByHsbaId($hsbaId);
-         
+        $data = $this->hsbaKhoaPhongRepository->getByHsbaId($hsbaId, $phongId);
         return $data;
     }
     

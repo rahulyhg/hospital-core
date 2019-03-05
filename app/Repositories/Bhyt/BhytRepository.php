@@ -72,4 +72,14 @@ class BhytRepository extends BaseRepositoryV2
             $bhytCode = 'TE1'.sprintf('%02d',$maTinh).'KT'.'00000001';
 		return $bhytCode;
     }    
+    
+    public function getBhytByBenhNhanIdAndHsbaId($benhNhanId, $hsbaId) {
+        $where = [
+            ['byht.benh_nhan_id', '=', $benhNhanId],
+            ['byht.hsba_id', '=', $hsbaId],
+        ];
+        
+        $result = $this->model->where($where)->get()->first();
+        return $result;
+    }
 }
