@@ -84,5 +84,13 @@ class KhoRepository extends BaseRepositoryV2
               ->where('id', $id)
               ->first();
       return $data;
-    }     
+    }
+    
+    public function getAllKhoByBenhVienId($benhVienId)
+    {
+      $data = $this->model
+              ->where('benh_vien_id', $benhVienId)
+              ->get();
+      return $data;
+    }    
 }
