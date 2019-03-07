@@ -361,10 +361,18 @@ class YLenhRepository extends BaseRepositoryV2
                 }
             }
             if(in_array($type,$typeThuocVatTu)){
+                $column = [
+                    'danh_muc_thuoc_vat_tu.*',
+                    'don_vi_tinh.ten as don_vi_tinh'
+                ];
+                
                 foreach($result as $item){
-                    $dmThuocVatTu = DB::table('danh_muc_thuoc_vat_tu')->where('ma',$item->ma)->first();
-                    $item['don_vi_tinh']=$dmThuocVatTu->don_vi_tinh;
-                    $item['dang_dung']=$dmThuocVatTu->dang_dung;
+                    $dmThuocVatTu = DB::table('danh_muc_thuoc_vat_tu')
+                                        ->where('ma',$item->ma)
+                                        ->leftJoin('don_vi_tinh', 'don_vi_tinh.id', '=', 'danh_muc_thuoc_vat_tu.don_vi_tinh_id')
+                                        ->get($column)->first();
+                    $item['don_vi_tinh'] = $dmThuocVatTu->don_vi_tinh;
+                    $item['duong_dung'] = $dmThuocVatTu->duong_dung;
                 }
             }
             return $result;

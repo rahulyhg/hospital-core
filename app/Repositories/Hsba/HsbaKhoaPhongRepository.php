@@ -466,6 +466,8 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
             'hsba.so_vao_vien',
             //'vienphi.vienphicode',
             'khoa.ten_khoa',
+            'khoa.kho_thuoc',
+            'khoa.kho_vat_tu',
             'phong.ten_phong',
             'hsba.ten_benh_nhan',
             'hsba.ngay_sinh',
