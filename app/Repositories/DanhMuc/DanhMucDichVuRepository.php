@@ -17,6 +17,8 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
     const CHAN_DOAN_HINH_ANH = 'G2';
     const CHUYEN_KHOA = 'G3';
     const CAN_LAM_SANG = [2, 3, 4];
+    const PHONG_OC = 'G300';
+    const CON_HOAT_DONG = 1;
     
     public function getModel()
     {
@@ -213,5 +215,21 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
         $data = $this->model->where('ma',$code)->first();
         return $data;
     } 
+    
+    public function getDanhMucDichVuPhongOc() {
+        $column = [
+            'danh_muc_dich_vu.id',
+            'ten',
+            'gia',
+        ];
+        
+        $where = [
+            ['loai_nhom', '=', self::LOAI_CHUYEN_KHOA],    
+            ['ten_nhom', '=', self::PHONG_OC],
+            ['trang_thai', '=', self::CON_HOAT_DONG],
+        ];
+        
+        return $this->model->where($where)->orderBy('id')->get($column);
+    }
     
 }
