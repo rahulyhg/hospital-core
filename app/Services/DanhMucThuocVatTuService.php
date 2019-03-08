@@ -137,7 +137,7 @@ class DanhMucThuocVatTuService
                                 'ten_khong_dau'         => Util::convertViToEn(strtolower($item->ten)),
                                 'ten_bhyt'              => $item->ten_bhyt,
                                 'ten_nuoc_ngoai'        => $item->ten_nuoc_ngoai,
-                                'ky_hieu'               => $item->ky_hieu,
+                                'ma'                    => $item->ma,
                                 'ma_bhyt'               => $item->ma_bhyt,
                                 'don_vi_tinh_id'        => $item->don_vi_tinh_id,
                                 'don_vi_tinh'           => $item->don_vi_tinh,
@@ -156,6 +156,10 @@ class DanhMucThuocVatTuService
                                 'nuoc_san_xuat'         => $item->nuoc_san_xuat,
                                 'trang_thai'            => $item->trang_thai,
                                 'kho_id'                => $item->kho_id,
+                                'loai_nhom'             => $item->loai_nhom,
+                                'gia'                   => $item->gia,
+                                'gia_bhyt'              => $item->gia_bhyt,
+                                'gia_nuoc_ngoai'        => $item->gia_nuoc_ngoai
                             ],
                             'index' => 'dmtvt',
                             'type' => 'doc',
@@ -171,6 +175,8 @@ class DanhMucThuocVatTuService
             'index' => 'dmtvt',
             'type' => 'doc',
             'body' => [
+                'from' => 0,
+                'size' => 1000,
                 'query' => [
                     'wildcard' => [
                         'ten' => '*'.$keyWords.'*'
@@ -186,6 +192,31 @@ class DanhMucThuocVatTuService
         };
         
         return $result;
-    }    
+    }      
+    
+    public function searchThuocVatTuByListId(array $listId)
+    {
+        $params = [
+            'index' => 'dmtvt',
+            'type' => 'doc',
+            'body' => [
+                'from' => 0,
+                'size' => 1000,
+                'query' => [
+                    'terms' => [
+                        '_id' => $listId
+                    ]
+                ]
+            ]
+        ];
+        $response = Elasticsearch::search($params);   
+        
+        $result=[];
+        foreach($response['hits']['hits'] as $item) {
+            $result[] = $item['_source'];
+        };
+        
+        return $result;        
+    } 
     
 }
