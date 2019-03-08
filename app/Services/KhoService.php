@@ -43,5 +43,11 @@ class KhoService {
     {
         $data = $this->khoRepository->getKhoById($id);
         return $data;
+    }
+    
+    public function getAllKhoByBenhVienId($benhVienId)
+    {
+        $data = $this->khoRepository->getAllKhoByBenhVienId($benhVienId);
+        return $data;
     }    
 }

@@ -111,9 +111,23 @@ class DanhMucThuocVatTuService
     
     public function pushToElasticSearch()
     {
-        $data = $this->repository->getAllThuocVatTu();
+        $lastParams = [
+            'index' => 'dmtvt',
+            'type' => 'doc',
+            'size' => 1,
+            'body' => [
+                'sort' =>[
+                    'id' => [
+                        'order' => 'desc'
+                        ]
+                ]
+            ]
+        ];
+        $last = Elasticsearch::search($lastParams);
+        $lastId = $last['hits']['hits'][0]['_source']['id'];
+        
+        $data = $this->repository->getThuocVatTu($lastId);
         foreach($data as $item) {
-            $hoatChat = $this->hoatChatRepository->getById(intval($item->hoat_chat_id));
             
             $params = [
                             'body' => [
@@ -133,7 +147,7 @@ class DanhMucThuocVatTuService
                                 'thoi_gian_tao'         => $item->thoi_gian_tao,
                                 'thoi_gian_cap_nhat'    => $item->thoi_gian_cap_nhat,
                                 'hoat_chat_id'          => $item->hoat_chat_id,
-                                'hoat_chat'             => $hoatChat?$hoatChat['ten']:'',
+                                'hoat_chat'             => $item->hoat_chat,
                                 'biet_duoc_id'          => $item->biet_duoc_id,
                                 'nong_do'               => $item->nong_do,
                                 'duong_dung'            => $item->duong_dung,
@@ -141,6 +155,7 @@ class DanhMucThuocVatTuService
                                 'hang_san_xuat'         => $item->hang_san_xuat,
                                 'nuoc_san_xuat'         => $item->nuoc_san_xuat,
                                 'trang_thai'            => $item->trang_thai,
+                                'kho_id'                => $item->kho_id,
                                 'loai_nhom'             => $item->loai_nhom,
                                 'gia'                   => $item->gia,
                                 'gia_bhyt'              => $item->gia_bhyt,
@@ -176,8 +191,8 @@ class DanhMucThuocVatTuService
             $result[] = $item['_source'];
         };
         
-        return $result;        
-    }  
+        return $result;
+    }      
     
     public function searchThuocVatTuByListId(array $listId)
     {
