@@ -32,6 +32,4 @@ class KhoaService {
         $data = $this->khoaRepository->getTreeListKhoaPhong($limit, $page, $benhVienId);
         return $data;
     }    
-    
-    
 }

@@ -15,9 +15,8 @@ class UserSettingController extends Controller
      *
      * @param $service
      */
-    public function __construct(KhuVucService $khuVucService,QuayService $quayService)
+    public function __construct(KhuVucService $khuVucService, QuayService $quayService)
     {
-        
         $this->khuVucService = $khuVucService;
         $this->quayService = $quayService;
     }
