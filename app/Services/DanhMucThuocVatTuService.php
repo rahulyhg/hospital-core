@@ -204,7 +204,7 @@ class DanhMucThuocVatTuService
         return $result;        
     } 
     
-    public function searchThuocVatTuByHoatChat($hoatChat)
+    public function searchThuocVatTuByHoatChat($keyword)
     {
         $params = [
             'index' => 'dmtvt',
@@ -213,8 +213,15 @@ class DanhMucThuocVatTuService
                 'from' => 0,
                 'size' => 1000,
                 'query' => [
-                    'wildcard' => [
-                        'hoat_chat' => '*'.$hoatChat.'*'
+                    'bool' => [
+                        'should' => [
+                            'wildcard' => [
+                                'ten' => '*'.$keyword.'*',
+                            ], 
+                            'wildcard' => [
+                                'hoat_chat' => '*'.$keyword.'*'
+                            ]
+                        ]    
                     ]
                 ]
             ]

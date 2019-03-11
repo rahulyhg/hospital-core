@@ -371,10 +371,10 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }
     
-    public function searchThuocVatTuByHoatChat($hoatChat)
+    public function searchThuocVatTuByHoatChat($keyword)
     {
-        if($hoatChat) {
-            $data = $this->dmTvtService->searchThuocVatTuByHoatChat($hoatChat);
+        if($keyword) {
+            $data = $this->dmTvtService->searchThuocVatTuByHoatChat($keyword);
         } else {
             $this->setStatusCode(400);
             $data = [];
