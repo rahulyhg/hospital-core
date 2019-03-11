@@ -12,6 +12,7 @@ use App\Services\YLenhService;
 use App\Services\PhacDoDieuTriService;
 use App\Services\PhieuYLenhService;
 use App\Services\DanhMucDichVuService;
+use App\Services\DanhMucThuocVatTuService;
 use Validator;
 use App\Http\Requests\UploadFileFormRequest;
 
@@ -27,7 +28,8 @@ class PhongKhamController extends APIController
         YLenhService $yLenhService,
         PhacDoDieuTriService $pddtService,
         PhieuYLenhService $phieuYLenhService,
-        DanhMucDichVuService $dmdvService
+        DanhMucDichVuService $dmdvService,
+        DanhMucThuocVatTuService $dmTvtService
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
@@ -39,6 +41,7 @@ class PhongKhamController extends APIController
         $this->pddtService = $pddtService;
         $this->phieuYLenhService = $phieuYLenhService;
         $this->dmdvService = $dmdvService;
+        $this->dmTvtService = $dmTvtService;
     }
     
     public function update($hsbaKhoaPhongId, Request $request)
@@ -367,4 +370,16 @@ class PhongKhamController extends APIController
         
         return $this->respond($data);
     }
+    
+    public function searchThuocVatTuByHoatChat($hoatChat)
+    {
+        if($hoatChat) {
+            $data = $this->dmTvtService->searchThuocVatTuByHoatChat($hoatChat);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    } 
 }
