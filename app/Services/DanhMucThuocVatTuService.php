@@ -204,7 +204,7 @@ class DanhMucThuocVatTuService
         return $result;        
     } 
     
-    public function searchThuocVatTuByHoatChat($keyword)
+    public function searchThuocVatTuByTenVaHoatChat($keyword)
     {
         $params = [
             'index' => 'dmtvt',
