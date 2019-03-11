@@ -98,5 +98,11 @@ class KhoController extends APIController
     {
         $data = $this->danhMucThuocVatTuService->searchThuocVatTuByKeywords($keyWords);
         return $this->respond($data);
+    }
+    
+    public function getAllKhoByBenhVienId($benhVienid)
+    {
+        $data = $this->khoService->getAllKhoByBenhVienId($benhVienid);
+        return $this->respond($data);
     }    
 }

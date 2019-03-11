@@ -222,6 +222,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'kho'], function () {
 		Route::get('getListKho','Kho\KhoController@getListKho');
+		Route::get('getAllKhoByBenhVienId/{benhVienId}','Kho\KhoController@getAllKhoByBenhVienId');
 		Route::post('createKho','Kho\KhoController@createKho');
      	Route::post('updateKho/{id}','Kho\KhoController@updateKho');
      	Route::delete('deleteKho/{id}','Kho\KhoController@deleteKho');
@@ -242,6 +243,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updatePhongBenh/{id}','NoiTru\PhongBenhController@updatePhongBenh');
      	Route::delete('deletePhongBenh/{id}','NoiTru\PhongBenhController@deletePhongBenh');
  		Route::get('getPhongBenhById/{id}','NoiTru\PhongBenhController@getPhongBenhById');
+    });
+
+    Route::group(['prefix' => 'phieuyeucau'], function () {
+		Route::get('getTonKhaDungByThuocVatTuId/{id}','PhieuYeuCau\PhieuYeuCauController@getTonKhaDungByThuocVatTuId');
+		Route::post('createPhieuYeuCau','PhieuYeuCau\PhieuYeuCauController@createPhieuYeuCau');
     });    
     
     Route::group(['prefix' => 'nhacungcap'], function () {
