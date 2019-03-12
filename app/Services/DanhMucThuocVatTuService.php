@@ -219,4 +219,35 @@ class DanhMucThuocVatTuService
         return $result;        
     } 
     
+    public function searchThuocVatTuByTenVaHoatChat($keyword)
+    {
+        $params = [
+            'index' => 'dmtvt',
+            'type' => 'doc',
+            'body' => [
+                'from' => 0,
+                'size' => 1000,
+                'query' => [
+                    'bool' => [
+                        'should' => [
+                            'wildcard' => [
+                                'ten' => '*'.$keyword.'*',
+                            ], 
+                            'wildcard' => [
+                                'hoat_chat' => '*'.$keyword.'*'
+                            ]
+                        ]    
+                    ]
+                ]
+            ]
+        ];
+        $response = Elasticsearch::search($params);   
+        
+        $result=[];
+        foreach($response['hits']['hits'] as $item) {
+            $result[] = $item['_source'];
+        };
+        
+        return $result;        
+    }  
 }
