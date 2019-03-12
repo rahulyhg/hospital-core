@@ -204,6 +204,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'hanhchinh'], function () {
+        Route::get('list/{benhVienId}/phongcho','HanhChinh\HanhChinhController@getListPhongHanhChinh');
+        Route::get('getPhongChoByHsbaId/{hsbaId}/{phongId}','HanhChinh\HanhChinhController@getPhongChoByHsbaId');
         Route::post('luuNhapKhoa','HanhChinh\HanhChinhController@luuNhapKhoa');
     });
     

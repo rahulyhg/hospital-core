@@ -67,5 +67,4 @@ class HsbaKhoaPhongController extends APIController
         
         return $this->respond($listBenhNhan);
     }
-    
 }
