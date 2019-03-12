@@ -37,4 +37,19 @@ class GiuongBenhRepository extends BaseRepositoryV2
     public function deleteByRoomId($id) {
         $this->model->where('phong_id', $id)->delete();
     }
+    
+    public function getGiuongBenhChuaSuDungByPhong($phongId) {
+        $column = [
+            'giuong_benh.id',
+            'giuong_benh.stt',
+        ];
+        
+        $where = [
+            ['giuong_benh.phong_id', '=', $phongId],
+            ['giuong_benh.tinh_trang', '=', 0]
+        ];
+        
+        $result = $this->model->where($where)->get($column);
+        return $result;
+    }
 }

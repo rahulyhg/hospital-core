@@ -72,11 +72,11 @@ class PhongBenhController extends APIController
         return $this->respond($data);
     }    
     
-    public function getPhongBenhConTrongByKhoa($khoaId) {
+    public function getPhongBenhConTrongByKhoa($khoaId, $loaiPhong) {
         $isNumericId = is_numeric($khoaId);
         
         if($isNumericId) {
-            $data = $this->phongBenhService->getPhongConTrongByKhoa($khoaId);
+            $data = $this->phongBenhService->getPhongConTrongByKhoa($khoaId, $loaiPhong);
         } else {
             $this->setStatusCode(400);
             $data = [];
@@ -90,6 +90,19 @@ class PhongBenhController extends APIController
         
         if($isNumericId) {
             $data = $this->phongBenhService->getGiuongBenhChuaSuDungByPhong($phongId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function getLoaiPhongByKhoaId($khoaId) {
+        $isNumericId = is_numeric($khoaId);
+        
+        if($isNumericId) {
+            $data = $this->phongBenhService->getLoaiPhongByKhoaId($khoaId);
         } else {
             $this->setStatusCode(400);
             $data = [];

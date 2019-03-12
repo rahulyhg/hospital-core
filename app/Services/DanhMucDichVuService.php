@@ -58,4 +58,9 @@ class DanhMucDichVuService
         return $data;
     }
     
+    public function getDanhMucDichVuPhongOc() {
+        $data = $this->repository->getDanhMucDichVuPhongOc();
+        
+        return $data;
+    }
 }

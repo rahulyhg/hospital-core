@@ -77,4 +77,19 @@ class PhongBenhService {
         });
         return $result;
     }
+    
+    public function getPhongConTrongByKhoa($khoaId, $loaiPhong) {
+        $data = $this->phongBenhRepository->getPhongConTrongByKhoa($khoaId, $loaiPhong);
+        return $data;
+    }
+    
+    public function getGiuongBenhChuaSuDungByPhong($phongId) {
+        $data = $this->giuongBenhRepository->getGiuongBenhChuaSuDungByPhong($phongId);
+        return $data;
+    }
+    
+    public function getLoaiPhongByKhoaId($khoaId) {
+        $data = $this->phongBenhRepository->getLoaiPhongByKhoaId($khoaId);
+        return $data;
+    }
 }

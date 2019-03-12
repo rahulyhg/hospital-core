@@ -112,6 +112,11 @@ class DanhMucController extends APIController
         return $this->respond($data);
     }
     
+    public function getDanhMucDichVuPhongOc() {
+        $data = $this->dmdvService->getDanhMucDichVuPhongOc();
+        return $this->respond($data);
+    }
+    
     public function getListDanhMucTongHop(Request $request)
     {
         $limit = $request->query('limit', 100);

@@ -19,7 +19,8 @@ class PhongBenhRepository extends BaseRepositoryV2
             'phong_benh.loai_phong',
             'phong_benh.so_luong_giuong',
             'phong_benh.con_trong',
-            'khoa.ten_khoa'
+            'khoa.ten_khoa',
+            'danh_muc_dich_vu.ten as ten_loai_phong'
         ];
         
         $offset = ($page - 1) * $limit;
@@ -31,7 +32,8 @@ class PhongBenhRepository extends BaseRepositoryV2
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
             $data = $model
                         ->leftJoin('khoa', 'khoa.id', '=', 'phong_benh.khoa_id')
-                        ->where('ten', 'like', '%' . $keyWords . '%')
+                        ->leftJoin('danh_muc_dich_vu', 'danh_muc_dich_vu.id', '=', 'phong_benh.loai_phong')
+                        ->where('phong_benh.ten', 'like', '%' . $keyWords . '%')
                         ->orderBy('id', 'desc')
                         ->offset($offset)
                         ->limit($limit)
@@ -74,5 +76,35 @@ class PhongBenhRepository extends BaseRepositoryV2
     public function delete($id)
     {
         $this->model->where('id', $id)->delete();
+    }
+    
+    public function getPhongConTrongByKhoa($khoaId, $loaiPhong) {
+        $column = [
+            'phong_benh.id',
+            'phong_benh.ten',
+        ];
+        
+        $where = [
+            ['phong_benh.khoa_id', '=', $khoaId],
+            ['phong_benh.con_trong', '<>', 0],
+            ['phong_benh.loai_phong', '=', $loaiPhong]
+        ];
+        
+        $result = $this->model->where($where)->get($column);
+        return $result;
+    }
+    
+    public function getLoaiPhongByKhoaId($khoaId) {
+        $column = [
+            'phong_benh.loai_phong',
+            'danh_muc_dich_vu.ten as ten',
+        ];
+        
+        $data = $this->model
+                ->leftJoin('danh_muc_dich_vu', 'danh_muc_dich_vu.id', '=', 'phong_benh.loai_phong')
+                ->where('khoa_id', $khoaId)
+                ->distinct('loai_phong')
+                ->get($column);
+        return $data;
     }
 }

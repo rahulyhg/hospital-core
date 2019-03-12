@@ -272,6 +272,14 @@ class DieuTriService
                         $hsbaParams = null;
                         $hsbaParams['loai_benh_an'] = $phong->loai_benh_an;
                         $this->updateHsba($hsbaKp['hsba_id'], $hsbaParams);
+                        
+                        // tao dieu tri
+                        $dataDieuTri['hsba_khoa_phong_id'] = $idHsbaKp;
+                        $dataDieuTri['hsba_id'] = $hsbaKp['hsba_id'];
+                        $dataDieuTri['khoa_id'] = $hsbaKpParams['khoa_hien_tai'];
+                        $dataDieuTri['phong_id'] = $hsbaKpParams['phong_hien_tai'];
+                        $dataDieuTri['benh_nhan_id'] =  $hsbaKp['benh_nhan_id'];
+                        $dataDieuTri['id'] = $this->dieuTriRepository->createDataDieuTri($dataDieuTri);
                         return [];
                     break;
                 }
