@@ -57,5 +57,41 @@ class PhieuKhoService {
                 $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams);
             }
         });
-    } 
+    }
+    
+    public function createPhieuYeuCau(array $input)
+    {
+        DB::transaction(function () use ($input) {
+            $phieuKhoParams = [];
+            $phieuKhoParams['kho_id']=$input['kho_id'];
+            $phieuKhoParams['kho_id_xu_ly']=$input['kho_id_xu_ly'];
+            $phieuKhoParams['ten_kho_xu_ly']=$input['ten_kho_xu_ly'];
+            $phieuKhoParams['loai_phieu']=$input['loai_phieu'];
+            $phieuKhoParams['trang_thai']=$input['trang_thai'];
+            $phieuKhoParams['dien_giai']=$input['ghi_chu'];
+            $phieuKhoParams['nhan_vien_yeu_cau']=$input['nguoi_lap_phieu_id'];
+            $phieuKhoParams['thoi_gian_yeu_cau']=$input['ngay_lap_phieu'];
+            
+            $phieuKhoId = $this->phieuKhoRepository->createPhieuKho($phieuKhoParams);
+            
+            foreach($input['data_dich_vu'] as $item) {
+                $theKhoParams = [];
+                $theKhoParams['kho_id']=$input['kho_id_xu_ly'];
+                $theKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
+                $theKhoParams['so_luong']=$item['so_luong'];
+ 
+                $theKhoId = $this->theKhoRepository->updateTheKho($theKhoParams);
+                
+                if($theKhoId>0) {
+                    $chiTietPhieuKhoParams = [];
+                    $chiTietPhieuKhoParams['phieu_kho_id']=$phieuKhoId;
+                    $chiTietPhieuKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
+                    $chiTietPhieuKhoParams['the_kho_id']=$theKhoId;
+                    $chiTietPhieuKhoParams['so_luong_yeu_cau']=$item['so_luong'];
+                    $chiTietPhieuKhoParams['trang_thai'] = $input['trang_thai']; 
+                    $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams); 
+                }
+            }
+        });
+    }     
 }
