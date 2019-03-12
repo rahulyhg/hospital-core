@@ -153,8 +153,34 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
     public function getThuocVatTu($lastId)
     {
         $where=[
-            ['danh_muc_thuoc_vat_tu.trang_thai','=',1],
+            //['danh_muc_thuoc_vat_tu.trang_thai','=',1],
             ['danh_muc_thuoc_vat_tu.id','>',$lastId],
+            //['hoat_chat.trang_thai','=',1]
+            ];
+        $column=[
+            'danh_muc_thuoc_vat_tu.*',
+            'hoat_chat.ten as hoat_chat',
+            'don_vi_tinh.ten as don_vi_tinh',
+            'don_vi_tinh.he_so_le_1',
+            'don_vi_tinh.he_so_le_2',
+            //'gioi_han.kho_id'
+            ];
+        $result = $this->model
+                    ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
+                    ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
+                    //->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
+                    ->where($where)
+                    ->orderBy('id','ASC')
+                    ->limit(5000)
+                    ->get($column);
+                    
+        return $result;
+    } 
+    
+    public function getByListId(array $listId)
+    {
+        $where=[
+            ['danh_muc_thuoc_vat_tu.trang_thai','=',1],
             ['hoat_chat.trang_thai','=',1]
             ];
         $column=[
@@ -168,10 +194,8 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
                     ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
                     ->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
                     ->where($where)
-                    ->orderBy('id','ASC')
-                    ->limit(5000)
+                    ->whereIn('danh_muc_thuoc_vat_tu.id',$listId)
                     ->get($column);
-                    
         return $result;
-    }    
+    }
 }

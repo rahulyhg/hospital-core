@@ -159,11 +159,13 @@ class DanhMucThuocVatTuService
                                 'loai_nhom'             => $item->loai_nhom,
                                 'gia'                   => $item->gia,
                                 'gia_bhyt'              => $item->gia_bhyt,
-                                'gia_nuoc_ngoai'        => $item->gia_nuoc_ngoai
+                                'gia_nuoc_ngoai'        => $item->gia_nuoc_ngoai,
+                                'he_so_le_1'            => $item->he_so_le_1,
+                                'he_so_le_2'            => $item->he_so_le_2
                             ],
                             'index' => 'dmtvt',
                             'type' => 'doc',
-                            'id' => $item->id,
+                            'id' => $item->id
                         ];
             $return = Elasticsearch::index($params);  
         };
@@ -172,7 +174,7 @@ class DanhMucThuocVatTuService
     public function searchThuocVatTuByKeywords($keyWords)
     {
         $params = [
-            'index' => 'dmtvt',
+            'index' => 'dmtvt_by_kho',
             'type' => 'doc',
             'body' => [
                 'from' => 0,

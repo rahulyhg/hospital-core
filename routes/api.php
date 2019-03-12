@@ -227,6 +227,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateKho/{id}','Kho\KhoController@updateKho');
      	Route::delete('deleteKho/{id}','Kho\KhoController@deleteKho');
  		Route::get('getKhoById/{id}','Kho\KhoController@getKhoById');
+ 		Route::get('searchThuocVatTuByListId','Kho\KhoController@searchThuocVatTuByListId');
  		
  		//Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
  		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
@@ -246,8 +247,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
 
     Route::group(['prefix' => 'phieuyeucau'], function () {
-		Route::get('getTonKhaDungByThuocVatTuId/{id}','PhieuYeuCau\PhieuYeuCauController@getTonKhaDungByThuocVatTuId');
+		Route::get('getTonKhaDungById/{id}/{khoId}','PhieuYeuCau\PhieuYeuCauController@getTonKhaDungById');
 		Route::post('createPhieuYeuCau','PhieuYeuCau\PhieuYeuCauController@createPhieuYeuCau');
+    });
+    
+    Route::group(['prefix' => 'phieuxuatnhapkho'], function () {
+		Route::get('getListPhieuKhoByKhoIdXuLy','PhieuXuatNhapKho\PhieuXuatNhapKhoController@getListPhieuKhoByKhoIdXuLy');
+		Route::get('createPhieuXuat','PhieuXuatNhapKho\PhieuXuatNhapKhoController@createPhieuXuat');
+		Route::get('createPhieuNhap','PhieuXuatNhapKho\PhieuXuatNhapKhoController@createPhieuNhap');
+		Route::get('getChiTietPhieuXuatNhap/{phieuKhoId}','PhieuXuatNhapKho\PhieuXuatNhapKhoController@getChiTietPhieuXuatNhap');
     });    
     
     Route::group(['prefix' => 'nhacungcap'], function () {
