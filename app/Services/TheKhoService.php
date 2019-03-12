@@ -14,9 +14,9 @@ class TheKhoService {
         $this->theKhoRepository = $theKhoRepository;
     }
     
-    public function getTonKhaDungByThuocVatTuId($id)
+    public function getTonKhaDungById($id,$khoId)
     {
-        $data = $this->theKhoRepository->getTonKhaDungByThuocVatTuId($id);
+        $data = $this->theKhoRepository->getTonKhaDungById($id,$khoId);
         return $data;
     } 
 }

@@ -14,9 +14,9 @@ class PhieuYeuCauController extends APIController
         $this->phieuKhoService = $phieuKhoService;
     }
     
-    public function getTonKhaDungByThuocVatTuId($id)
+    public function getTonKhaDungById($id,$khoId)
     {
-        $data = $this->theKhoService->getTonKhaDungByThuocVatTuId($id);
+        $data = $this->theKhoService->getTonKhaDungById($id,$khoId);
         return $this->respond($data);
     }
     

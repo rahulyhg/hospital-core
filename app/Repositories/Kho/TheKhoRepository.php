@@ -15,6 +15,7 @@ class TheKhoRepository extends BaseRepositoryV2
     {
         $find = $this->model
                      ->where('danh_muc_thuoc_vat_tu_id',$input['danh_muc_thuoc_vat_tu_id'])
+                     ->where('kho_id',$input['kho_id'])
                      ->orderBy('ma_con','DESC')
                      ->first();
         if($find) {
@@ -29,16 +30,12 @@ class TheKhoRepository extends BaseRepositoryV2
         return $id;
     }
     
-    public function getTonKhaDungByThuocVatTuId($id)
+    public function getTonKhaDungById($id,$khoId)
     {
-        $column = [
-            'sl_kha_dung',
-            'sl_ton_kho_chan',
-            'sl_ton_kho_le'
-            ];
         $data = $this->model
             ->where('danh_muc_thuoc_vat_tu_id',$id)
-            ->select(DB::raw('(sl_ton_kho_chan+sl_ton_kho_le) AS sl_ton_kho'),'sl_kha_dung')
+            ->where('kho_id',$khoId)
+            ->select(DB::raw('(sl_ton_kho_chan+sl_ton_kho_le_1+sl_ton_kho_le_2) AS sl_ton_kho'),'sl_kha_dung')
             ->get();
         $slKhaDung = 0;
         $slTonKho = 0;
@@ -62,7 +59,7 @@ class TheKhoRepository extends BaseRepositoryV2
             ];
         $find = $this->model
                      ->where($where)
-                     ->orderBy('ma_con','DESC')
+                     ->orderBy('ma_con','ASC')
                      ->first();
         if($find) {
             $newKhaDung = $find['sl_kha_dung']-$input['so_luong'];
@@ -71,5 +68,25 @@ class TheKhoRepository extends BaseRepositoryV2
         }
         else
             return 0;
-    }    
+    }
+    
+    public function getTheKho($khoId,$arrDmtvt)
+    {
+        $where = [
+            ['kho_id','=',$khoId]
+            ];
+            
+        $find = $this->model
+                    ->where($where)
+                    ->whereIn('danh_muc_thuoc_vat_tu_id',$arrDmtvt)
+                    ->orderBy('ma_con','ASC')
+                    ->get();  
+        return $find;
+    } 
+    
+    public function updateSoLuongTon($input)
+    {
+        $this->model->where('id',$input['id'])->update(['sl_ton_kho_chan'=>$input['sl_ton_kho_chan']]);
+    }
+    
 }

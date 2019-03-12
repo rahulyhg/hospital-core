@@ -9,7 +9,11 @@ class KhoRepository extends BaseRepositoryV2
     public function getModel()
     {
       return Kho::class;
-    }    
+    }
+    
+    public function getById($limit = 100, $page = 1, $keyWords ='', $benhVienId)
+    {    
+    }
     
     public function getListKho($limit = 100, $page = 1, $keyWords ='', $benhVienId)
     {
