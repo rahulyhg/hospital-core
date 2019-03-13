@@ -88,7 +88,7 @@ abstract class BaseModel
         }
         
         if (!empty($missingAttributesKeys)) {
-            throw Exception('missing attributes keys: '.implode($missingAttributesKeys,', '));
+            throw \Exception('missing attributes keys: '.implode($missingAttributesKeys,', '));
         }
         
         if ($this->skipCheckFields === false) {
@@ -103,7 +103,7 @@ abstract class BaseModel
             }
             
             if (!empty($missingBodyKeys)) {
-                throw Exception('missing body keys: '.implode($missingBodyKeys,', '));
+                throw \Exception('missing body keys: '.implode($missingBodyKeys,', '));
             }
         }
         
