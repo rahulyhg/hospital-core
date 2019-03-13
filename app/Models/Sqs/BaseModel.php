@@ -9,6 +9,12 @@ abstract class BaseModel
     
     protected $client = null;
     protected $url = null;
+    // attributes of SQS messages
+    public $attributes = [];
+    // fields of SQS messages
+    public $fields = [];
+    
+    public $skipCheckFields = false;
     
     public $message = null;
     
@@ -75,9 +81,9 @@ abstract class BaseModel
         $missingAttributesKeys = [];
         
         // check if body miss any keys
-        foreach ($this->attributes as $field) {
-            if (!in_array($field,$messageAttributesKeys)){
-                $missingAttributesKeys[] = $field;
+        foreach ($this->attributes as $attribute) {
+            if (!in_array($attribute,$messageAttributesKeys)){
+                $missingAttributesKeys[] = $attribute;
             }
         }
         
@@ -85,19 +91,22 @@ abstract class BaseModel
             throw Exception('missing attributes keys: '.implode($missingAttributesKeys,', '));
         }
         
-        $messageBodyKeys = array_keys($messageBody);
-        $missingBodyKeys = [];
-        
-        // check if body miss any keys
-        foreach ($this->fields as $field) {
-            if (!in_array($field,$messageBodyKeys)){
-                $missingBodyKeys[] = $field;
+        if ($this->skipCheckFields === false) {
+            $messageBodyKeys = array_keys($messageBody);
+            $missingBodyKeys = [];
+            
+            // check if body miss any keys
+            foreach ($this->fields as $field) {
+                if (!in_array($field,$messageBodyKeys)){
+                    $missingBodyKeys[] = $field;
+                }
+            }
+            
+            if (!empty($missingBodyKeys)) {
+                throw Exception('missing body keys: '.implode($missingBodyKeys,', '));
             }
         }
         
-        if (!empty($missingBodyKeys)) {
-            throw Exception('missing body keys: '.implode($missingBodyKeys,', '));
-        }
         
         $params = [
             'DelaySeconds' => 10,
