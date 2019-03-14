@@ -450,13 +450,22 @@ class HsbaKhoaPhongRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getByHsbaId($hsbaId, $phongId)
+    public function getByHsbaId($hsbaId, $phongId, $dataBenhVienThietLap)
     {
+        //dd($dataBenhVienThietLap);
         $where = [
             ['hsba_khoa_phong.loai_benh_an', '<>', self::BENH_AN_KHONG_KHAM_BENH],
-            ['hsba.id', '=', $hsbaId],
-            ['hsba_khoa_phong.phong_hien_tai', '=', $phongId]
+            ['hsba.id', '=', $hsbaId]
         ];
+        
+        $khoaHienTai = $dataBenhVienThietLap['khoaHienTai']; //khoa kham benh
+        $phongDonTiepID = $dataBenhVienThietLap['phongDonTiepID'];
+        
+        if ($phongDonTiepID == $phongId) {
+            $where[] = ['hsba_khoa_phong.khoa_hien_tai', '=', $khoaHienTai];
+        } else {
+            $where[] = ['hsba_khoa_phong.phong_hien_tai', '=', $phongId];
+        }
         
         $column = [
             'hsba.id as hsba_id',
