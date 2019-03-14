@@ -35,6 +35,9 @@ use App\Models\ValueObjects\NhomNguoiThan;
 
 use Validator;
 use App\Helper\AwsS3;
+use Aws\Sqs\SqsClient;
+use Aws\Exception\AwsException;
+use App\Repositories\Sqs\Dkkb\InputLogRepository as InputLogSqsRepository;
 
 class BenhNhanServiceV2 {
     
@@ -103,7 +106,7 @@ class BenhNhanServiceV2 {
         HsbaKhoaPhongService $hsbaKhoaPhongService,
         SttPhongKhamService $sttPhongKhamService,
         VienPhiService $vienPhiService,
-        
+
         BenhNhanRepository $benhNhanRepository, 
         HsbaRepository $hsbaRepository, 
         HsbaKhoaPhongRepository $hsbaKhoaPhongRepository, 
@@ -116,7 +119,8 @@ class BenhNhanServiceV2 {
         YLenhRepository $yLenhRepository, 
         PhongRepository $phongRepository, 
         HanhChinhRepository $hanhChinhRepository,
-        ChuyenVienRepository $chuyenVienRepository
+        ChuyenVienRepository $chuyenVienRepository,
+        InputLogSqsRepository $sqsRepo
     )
     {
         // Services
@@ -138,6 +142,7 @@ class BenhNhanServiceV2 {
         $this->phongRepository = $phongRepository;
         $this->hanhChinhRepository = $hanhChinhRepository;
         $this->chuyenVienRepository = $chuyenVienRepository;
+        $this->sqsRepo = $sqsRepo;
     }
     
     public function registerBenhNhan(Request $request)
@@ -150,7 +155,7 @@ class BenhNhanServiceV2 {
         $scan = $request->only('scan');
         //return $idBenhNhan;
         $arrayRequest = $request->all();
-        
+
         $this->dataNgheNghiep = $this->danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('nghe_nghiep', $request['nghe_nghiep_id']);
         $this->dataDanToc =  $this->danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('dan_toc', $request['dan_toc_id']);
         $this->dataQuocTich =  $this->danhMucTongHopRepository->getTenDanhMucTongHopByKhoaGiaTri('quoc_tich', $request['quoc_tich_id']);
@@ -187,7 +192,7 @@ class BenhNhanServiceV2 {
         $dieuTriParams = $request->only(...$this->dieuTriKeys);        
         $sttPhongKhamParams =  $request->only(...$this->sttPkKeys);
         $chuyenVienParams =  $request->only(...$this->chuyenVienKeys);
-        $result = DB::transaction(function () use ($scan, $benhNhanParams, $hsbaParams, $hsbaKpParams, $bhytParams, $dieuTriParams, $sttPhongKhamParams,$chuyenVienParams) {
+        $result = DB::transaction(function () use ($scan, $benhNhanParams, $hsbaParams, $hsbaKpParams, $bhytParams, $dieuTriParams, $sttPhongKhamParams,$chuyenVienParams, $arrayRequest) {
             try {
                 // TODO - implement try catch log inside each function carefully
                 $this->createBhyt($bhytParams)
@@ -204,7 +209,8 @@ class BenhNhanServiceV2 {
                     ->createDieuTri()
                     ->createPhieuYLenh()
                     ->createYLenh()
-                    ->pushToHsbaKpQueue();
+                    ->pushToHsbaKpQueue()
+                    ->pushLogQueue($arrayRequest);
                 
                 return $this->dataSttPk;
                 
@@ -217,7 +223,6 @@ class BenhNhanServiceV2 {
                 throw $ex;
             }
         });
-        $this->uploadInfoJson($arrayRequest);
         return $result;
     }
     
@@ -520,5 +525,28 @@ class BenhNhanServiceV2 {
     private function getMucHuong()
     {
         
+    }
+    
+    private function pushLogQueue($message) {
+        $messageAttributes = [
+            'benh_vien_id' => ['DataType' => "Number",
+                                'StringValue' => $message['benh_vien_id']
+                            ],
+            'khoa_id' => ['DataType' => "Number",
+                                'StringValue' => $message['khoa_id']
+                            ],
+            'phong_id' => ['DataType' => "Number",
+                                'StringValue' => $message['phong_id']
+                            ]
+        ];
+        
+        try {
+            // Push
+            $this->sqsRepo->push(
+                $messageAttributes, $message
+            );
+        } catch ( \Exception $ex) {
+            echo $ex->getMessage();
+        }
     }
 }
