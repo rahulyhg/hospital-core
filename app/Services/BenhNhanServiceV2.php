@@ -20,6 +20,7 @@ use App\Repositories\YLenh\YLenhRepository;
 use App\Repositories\PhongRepository;
 use App\Repositories\HanhChinhRepository;
 use App\Repositories\ChuyenVienRepository;
+use App\Repositories\BenhVienRepository;
 
 // Service
 use App\Services\SttPhongKhamService;
@@ -120,6 +121,7 @@ class BenhNhanServiceV2 {
         PhongRepository $phongRepository, 
         HanhChinhRepository $hanhChinhRepository,
         ChuyenVienRepository $chuyenVienRepository,
+        BenhVienRepository $benhVienRepository,
         InputLogSqsRepository $sqsRepo
     )
     {
@@ -142,6 +144,7 @@ class BenhNhanServiceV2 {
         $this->phongRepository = $phongRepository;
         $this->hanhChinhRepository = $hanhChinhRepository;
         $this->chuyenVienRepository = $chuyenVienRepository;
+        $this->benhVienRepository = $benhVienRepository;
         $this->sqsRepo = $sqsRepo;
     }
     
@@ -528,15 +531,23 @@ class BenhNhanServiceV2 {
     }
     
     private function pushLogQueue($message) {
+        $bucketS3 = $this->getBucketS3ByBenhVienId($message['benh_vien_id']); 
+        
         $messageAttributes = [
             'benh_vien_id' => ['DataType' => "Number",
                                 'StringValue' => $message['benh_vien_id']
                             ],
-            'khoa_id' => ['DataType' => "Number",
+            'khoa_id'   => ['DataType' => "Number",
                                 'StringValue' => $message['khoa_id']
                             ],
-            'phong_id' => ['DataType' => "Number",
+            'phong_id'  => ['DataType' => "Number",
                                 'StringValue' => $message['phong_id']
+                            ],
+            'bucket'    => ['DataType' => "String",
+                                'StringValue' => $bucketS3
+                            ],
+            'app_env'    => ['DataType' => "String",
+                                'StringValue' => env('APP_ENV')
                             ]
         ];
         
@@ -548,5 +559,10 @@ class BenhNhanServiceV2 {
         } catch ( \Exception $ex) {
             echo $ex->getMessage();
         }
+    }
+    
+    private function getBucketS3ByBenhVienId($benhVienId) {
+        $data = $this->benhVienRepository->getBenhVienThietLap($benhVienId);
+        return $data['bucket'];
     }
 }
