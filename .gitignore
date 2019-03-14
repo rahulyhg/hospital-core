@@ -12,3 +12,4 @@ npm-debug.log
 yarn-error.log
 .env
 .phpunit.result.cache
+/lambda/sqs-handler-api-v3/node_modules
